@@ -151,64 +151,83 @@
       "title": "chatGPT",
       "type": "object",
       "properties": {
+        "chatgpt.mode": {
+          "type": "string",
+          "order": 0,
+          "markdownDescription": "API mode",
+					"default": "ChatGPTAPI",
+					"enum": [
+						"ChatGPTAPI",
+						"ChatGPTUnofficialProxyAPI"
+					],
+					"enumDescriptions": [
+						"Official OpenAI API.",
+						"Unofficial ChatGPT proxy hosted by 3rd parties."
+					]
+        },
         "chatgpt.apiKey": {
           "markdownDescription": "OpenAI API key from [https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys)",
           "type": "string",
-          "order": 0
+          "order": 10
+        },
+        "chatgpt.accessToken": {
+          "markdownDescription": "ChatGPT access token from [https://chat.openai.com/api/auth/session](https://chat.openai.com/api/auth/session), lasts for ~8 hours",
+          "type": "string",
+          "order": 15
         },
         "chatgpt.pasteOnClick": {
           "type": "boolean",
           "default": true,
           "description": "Paste the code from a codeblock inside the response into the editor when you click on it",
-          "order": 2
+          "order": 20
         },
         "chatgpt.promptPrefix.explain": {
           "type": "string",
           "default": "Explain what this code does: ",
           "description": "The prompt prefix used for explaining the selected code",
-          "order": 3
+          "order": 30
         },
         "chatgpt.promptPrefix.refactor": {
           "type": "string",
           "default": "Refactor this code and explain what's changed: ",
           "description": "The prompt prefix used for refactoring the selected code",
-          "order": 4
+          "order": 40
         },
         "chatgpt.promptPrefix.findProblems": {
           "type": "string",
           "default": "Find problems with the following code, fix them and explain what was wrong (Do not change anything else, if there are no problems say so): ",
           "description": "The prompt prefix used for finding problems in the selected code",
-          "order": 5
+          "order": 50
         },
         "chatgpt.promptPrefix.documentation": {
           "type": "string",
           "default": "Write documentation for the following code: ",
           "description": "The prompt prefix used for writing documentation for the selected code",
-          "order": 7
+          "order": 70
         },
         "chatgpt.promptPrefix.optimize": {
           "type": "string",
           "default": "Optimize the following code if there is anything to improve, if not say so: ",
           "description": "The prompt prefix used for optimizing the selected code",
-          "order": 6
+          "order": 60
         },
         "chatgpt.keepConversation": {
           "type": "boolean",
           "default": true,
           "description": "Keep the conversation going by using the same conversation ID for all requests (allows follow-up questions)",
-          "order": 8
+          "order": 80
         },
         "chatgpt.timeoutLength": {
           "type": "number",
           "default": "120",
           "description": "How long should the request wait for a response before timing out (in seconds)",
-          "order": 9
+          "order": 90
         },
         "chatgpt.selectedInsideCodeblock": {
           "type": "boolean",
           "default": true,
           "description": "Append selected code as a codeblock (```...code...```) instead of plain text",
-          "order": 10
+          "order": 100
         }
       }
     }
@@ -238,11 +257,13 @@
     "mocha": "^10.1.0",
     "ts-loader": "^9.4.1",
     "typescript": "^4.9.3",
+    "vscode": "^1.1.37",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.0"
   },
   "dependencies": {
-    "chatgpt": "^4.1.1",
+    "chatgpt": "^4.7.2",
+    "fetch": "^1.1.0",
     "node-fetch": "^3.3.0"
   }
 }

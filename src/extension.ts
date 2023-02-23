@@ -1,8 +1,12 @@
 import * as vscode from 'vscode';
-import { ChatGPTAPI } from 'chatgpt';
+import { ChatGPTAPI, ChatGPTUnofficialProxyAPI } from 'chatgpt';
 
 
-type AuthInfo = {apiKey?: string};
+type AuthInfo = {
+	mode?: string,
+	apiKey?: string,
+	accessToken?: string
+};
 type Settings = {selectedInsideCodeblock?: boolean, pasteOnClick?: boolean, keepConversation?: boolean, timeoutLength?: number};
 
 
@@ -17,7 +21,9 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Put configuration settings into the provider
 	provider.setAuthenticationInfo({
-		apiKey: config.get('apiKey')
+		mode: config.get('mode'),
+		apiKey: config.get('apiKey'),
+		accessToken: config.get('accessToken')
 	});
 	provider.setSettings({
 		selectedInsideCodeblock: config.get('selectedInsideCodeblock') || false,
@@ -57,9 +63,17 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Change the extension's session token or settings when configuration is changed
 	vscode.workspace.onDidChangeConfiguration((event: vscode.ConfigurationChangeEvent) => {
-		if (event.affectsConfiguration('chatgpt.apiKey')) {
+		if (
+			event.affectsConfiguration('chatgpt.mode') ||
+			event.affectsConfiguration('chatgpt.apiKey') ||
+			event.affectsConfiguration('chatgpt.accessToken')
+		) {
 			const config = vscode.workspace.getConfiguration('chatgpt');
-			provider.setAuthenticationInfo({apiKey: config.get('apiKey')});
+			provider.setAuthenticationInfo({
+				mode: config.get('mode'),
+				apiKey: config.get('apiKey'),
+				accessToken: config.get('accessToken')
+			});
 		} else if (event.affectsConfiguration('chatgpt.selectedInsideCodeblock')) {
 			const config = vscode.workspace.getConfiguration('chatgpt');
 			provider.setSettings({ selectedInsideCodeblock: config.get('selectedInsideCodeblock') || false });
@@ -84,7 +98,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 	public static readonly viewType = 'chatgpt.chatView';
 	private _view?: vscode.WebviewView;
 
-	private _chatGPTAPI?: ChatGPTAPI;
+	private _chatGPTAPI?: ChatGPTAPI | ChatGPTUnofficialProxyAPI;
 	private _conversation?: any;
 
 	private _response?: string;
@@ -122,13 +136,30 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 	// This private method initializes a new ChatGPTAPI instance
 	private _newAPI() {
 		console.log("New API");
-		if (!this._authInfo || !this._authInfo?.apiKey) {
-			console.warn("API key not set, please go to extension settings (read README.md for more info)");
-		}else{
-			this._chatGPTAPI = new ChatGPTAPI({
-				apiKey: this._authInfo.apiKey
-			});
+
+		if (!this._authInfo) {
+			console.warn("Invalid auth info, please set working mode and related auth info.");
+			return;
 		}
+		if (this._authInfo?.mode === "ChatGPTAPI") {
+			if (!this._authInfo?.apiKey) {
+				console.warn("API key not set, please go to extension settings (read README.md for more info)");
+			}else{
+				this._chatGPTAPI = new ChatGPTAPI({
+					apiKey: this._authInfo.apiKey
+				});
+			}
+		} else if (this._authInfo?.mode === "ChatGPTUnofficialProxyAPI") {
+			if (!this._authInfo?.accessToken) {
+				console.warn("Access token not set, please go to extension settings (read README.md for more info)");
+			}else{
+				this._chatGPTAPI = new ChatGPTUnofficialProxyAPI({
+					accessToken: this._authInfo.accessToken,
+					debug: false
+				});
+			}			
+		}
+
 	}
 
 	public resolveWebviewView(
@@ -288,10 +319,10 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 
 	private _getHtmlForWebview(webview: vscode.Webview) {
 
-		const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.js'));
-		const microlightUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'scripts', 'microlight.min.js'));
-		const tailwindUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'scripts', 'showdown.min.js'));
-		const showdownUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'scripts', 'tailwind.min.js'));
+		const scriptUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'main.js'));
+		const microlightUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'scripts', 'microlight.min.js'));
+		const tailwindUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'scripts', 'showdown.min.js'));
+		const showdownUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'scripts', 'tailwind.min.js'));
 
 		return `<!DOCTYPE html>
 			<html lang="en">
