@@ -112,7 +112,6 @@
 
       insertButton.style.display = "block";
       codeBlock.style.display = "block";
-      codeBlock.parentNode.style.textAlign = "center";
 
       insertButton.addEventListener('click', function (e) {
         e.preventDefault();

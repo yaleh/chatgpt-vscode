@@ -66,7 +66,7 @@
       {
         "command": "chatgpt.complete",
         "title": "ChatGPT: Complete code"
-      },      
+      },
       {
         "command": "chatgpt.resetConversation",
         "title": "Reset ChatGPT conversation"
@@ -137,7 +137,7 @@
         {
           "command": "chatgpt.complete",
           "when": "editorHasSelection"
-        },        
+        },
         {
           "command": "chatgpt.resetConversation"
         }
@@ -169,15 +169,15 @@
           "type": "string",
           "order": 0,
           "markdownDescription": "API mode",
-					"default": "ChatGPTAPI",
-					"enum": [
-						"ChatGPTAPI",
-						"ChatGPTUnofficialProxyAPI"
-					],
-					"enumDescriptions": [
-						"Official OpenAI API.",
-						"Unofficial ChatGPT proxy hosted by 3rd parties."
-					]
+          "default": "ChatGPTAPI",
+          "enum": [
+            "ChatGPTAPI",
+            "ChatGPTUnofficialProxyAPI"
+          ],
+          "enumDescriptions": [
+            "Official OpenAI API.",
+            "Unofficial ChatGPT proxy hosted by 3rd parties."
+          ]
         },
         "chatgpt.apiKey": {
           "markdownDescription": "OpenAI API key from [https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys)",
@@ -283,6 +283,7 @@
   },
   "dependencies": {
     "chatgpt": "^4.7.2",
+    "cheerio": "^1.0.0-rc.12",
     "fetch": "^1.1.0",
     "node-fetch": "^3.3.0"
   }

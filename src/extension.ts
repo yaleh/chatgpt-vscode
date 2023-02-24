@@ -1,6 +1,9 @@
 import * as vscode from 'vscode';
 import { ChatGPTAPI, ChatGPTUnofficialProxyAPI } from 'chatgpt';
 
+import * as path from 'path';
+import * as fs from 'fs';
+import * as cheerio from 'cheerio';
 
 type AuthInfo = {
 	mode?: string,
@@ -17,7 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
 	const config = vscode.workspace.getConfiguration('chatgpt');
 
 	// Create a new ChatGPTViewProvider instance and register it with the extension's context
-	const provider = new ChatGPTViewProvider(context.extensionUri);
+	const provider = new ChatGPTViewProvider(context.extensionPath, context.extensionUri);
 
 	// Put configuration settings into the provider
 	provider.setAuthenticationInfo({
@@ -48,13 +51,13 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Register the commands that can be called from the extension's package.json
 	context.subscriptions.push(
-		vscode.commands.registerCommand('chatgpt.ask', () => 
+		vscode.commands.registerCommand('chatgpt.ask', () =>
 			vscode.window.showInputBox({ prompt: 'What do you want to do?' })
-			.then((value) => {
-				if (value) {
-					provider.searchSelection(value);
-				}
-			})
+				.then((value) => {
+					if (value !== undefined && value !== null) {
+						provider.searchSelection(value);
+					}
+				})
 		),
 		vscode.commands.registerCommand('chatgpt.explain', () => commandHandler('promptPrefix.explain')),
 		vscode.commands.registerCommand('chatgpt.refactor', () => commandHandler('promptPrefix.refactor')),
@@ -64,7 +67,6 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.commands.registerCommand('chatgpt.complete', () => commandHandler('promptPrefix.complete')),
 		vscode.commands.registerCommand('chatgpt.resetConversation', () => provider.resetConversation())
 	);
-
 
 	// Change the extension's session token or settings when configuration is changed
 	vscode.workspace.onDidChangeConfiguration((event: vscode.ConfigurationChangeEvent) => {
@@ -123,7 +125,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 	private _authInfo?: AuthInfo;
 
 	// In the constructor, we store the URI of the extension
-	constructor(private readonly _extensionUri: vscode.Uri) {
+	constructor(private readonly _extensionPath: string, private readonly _extensionUri: vscode.Uri) {
 
 	}
 	
@@ -352,83 +354,22 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 	}
 
 	private _getHtmlForWebview(webview: vscode.Webview) {
-
+		const indexHtmlPath = path.join(this._extensionPath, 'media', 'html', 'index.html');
+		const indexHtml = fs.readFileSync(indexHtmlPath, 'utf8');
+		
+		const $ = cheerio.load(indexHtml);
+		$('#response').empty();
+		
 		const scriptUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'main.js'));
 		const microlightUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'scripts', 'microlight.min.js'));
 		const tailwindUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'scripts', 'showdown.min.js'));
 		const showdownUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'scripts', 'tailwind.min.js'));
-
-		return `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<script src="${tailwindUri}"></script>
-	<script src="${showdownUri}"></script>
-	<script src="${microlightUri}"></script>
-	<style>
-	html,body {height: 100%;margin: 0;}
-		.code {
-			white-space: pre;
-		}
-		p {
-			padding-top: 0.3rem;
-			padding-bottom: 0.3rem;
-		}
-		/* overrides vscodes style reset, displays as if inside web browser */
-		ul, ol {
-			list-style: initial !important;
-			margin-left: 10px !important;
-		}
-		h1, h2, h3, h4, h5, h6 {
-			font-weight: bold !important;
-		}
-		.flex-container {
-			display: flex;
-			align-items: center;
-			/* position: fixed;
-			bottom: 0;
-			left: 0;
-			right: 0; */
-			padding: 10px;
-			/* background-color: grey; */
-		}
-		#response {
-			padding-bottom: 60px;
-			/* background-color: blue; */
-		}
-
-		.conversation {
-			display: flex;
-			flex-direction: column;
-			height: 100%;
-		}
-		.messages-container {
-			flex-shrink: 10;
-			height: 100%;
-			overflow: auto;
-		}
-		.messages-container, .scroll {
-			transform: scale(1,-1);
-		}
-	</style>
-</head>
-<body>
-	<div class="conversation">
-		<div class="messages-container">
-			<div id="response" class="pt-4 text-sm scroll">
-			</div>
-		</div>
-		<div class="flex-container">
-			<input class="h-10 w-full text-white bg-stone-700 p-4 text-sm" placeholder="Ask ChatGPT something" id="prompt-input" />
-			<button id="stop-button" class="px-4 py-2 bg-red-600 text-white font-semibold text-sm ml-2">Stop</button>
-		</div>
-	</div>
-	<script src="${scriptUri}"></script>
-</body>
-</html>
-		`;
+		
+		return $.html()
+			.replace('{{tailwindUri}}', tailwindUri.toString())
+			.replace('{{showdownUri}}', showdownUri.toString())
+			.replace('{{microlightUri}}', microlightUri.toString())
+			.replace('{{scriptUri}}', scriptUri.toString());
 	}
 }
 
