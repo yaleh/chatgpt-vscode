@@ -104,4 +104,11 @@
       });
     }
   });
+
+  // Listen for click events on the stop button
+  document.getElementById('stop-button').addEventListener('click', function () {
+    vscode.postMessage({
+      type: 'abort'
+    });
+  });
 })();
