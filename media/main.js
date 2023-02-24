@@ -28,7 +28,7 @@
         mode = message.value;
         if (mode === "asking") {
           toggleStopButton(true);
-        }else{
+        } else {
           toggleStopButton(false);
         }
         break;
@@ -37,70 +37,100 @@
   });
 
   function fixCodeBlocks(response) {
-  // Use a regular expression to find all occurrences of the substring in the string
-  const REGEX_CODEBLOCK = new RegExp('\`\`\`', 'g');
-  const matches = response.match(REGEX_CODEBLOCK);
+    // Use a regular expression to find all occurrences of the substring in the string
+    const REGEX_CODEBLOCK = new RegExp('\`\`\`', 'g');
+    const matches = response.match(REGEX_CODEBLOCK);
 
-  // Return the number of occurrences of the substring in the response, check if even
-  const count = matches ? matches.length : 0;
-  if (count % 2 === 0) {
-    return response;
-  } else {
-    // else append ``` to the end to make the last code block complete
-    return response.concat('\n\`\`\`');
+    // Return the number of occurrences of the substring in the response, check if even
+    const count = matches ? matches.length : 0;
+    if (count % 2 === 0) {
+      return response;
+    } else {
+      // else append ``` to the end to make the last code block complete
+      return response.concat('\n\`\`\`');
+    }
+
   }
 
-  }
+  let lastMessageId = null;
 
-  function setResponse() {
-        var converter = new showdown.Converter({
-          omitExtraWLInCodeBlocks: true, 
-          simplifiedAutoLink: true,
-          excludeTrailingPunctuationFromURLs: true,
-          literalMidWordUnderscores: true,
-          simpleLineBreaks: true
+  function setResponse(messageId = null) {
+    var converter = new showdown.Converter({
+      omitExtraWLInCodeBlocks: true,
+      simplifiedAutoLink: true,
+      excludeTrailingPunctuationFromURLs: true,
+      literalMidWordUnderscores: true,
+      simpleLineBreaks: true
+    });
+    response = fixCodeBlocks(response);
+    html = converter.makeHtml(response);
+
+    var responseDiv = document.getElementById("response");
+    // responseDiv.innerHTML = html;
+
+    if ((responseDiv.childElementCount > 0 && responseDiv.lastChild !== null) && ( messageId === null || messageId === lastMessageId )) {
+      // Update the existing response
+      console.log("Current child elements: ", responseDiv.childElementCount);
+      console.log("Last child: ", responseDiv.lastChild);
+      responseDiv.lastChild.innerHTML = html;
+      console.log("Updated response.");
+    } else {
+      // Create a new div and append it to the "response" div
+      var newDiv = document.createElement('div');
+      newDiv.innerHTML = html;
+      // newDiv.innerHTML = "<p>test</p>";
+      responseDiv.appendChild(newDiv);
+      console.log("Created a new response.");
+    }
+
+    var preCodeBlocks = document.querySelectorAll("pre code");
+    for (var i = 0; i < preCodeBlocks.length; i++) {
+      preCodeBlocks[i].classList.add(
+        "p-2",
+        "my-2",
+        "block",
+        "overflow-x-scroll"
+      );
+    }
+
+    var codeBlocks = document.querySelectorAll('code.block');
+
+    for (var i = 0; i < codeBlocks.length; i++) {
+      // Check if innertext starts with "Copy code"
+      if (codeBlocks[i].innerText.startsWith("Copy code")) {
+        codeBlocks[i].innerText = codeBlocks[i].innerText.replace("Copy code", "");
+      }
+
+      codeBlocks[i].classList.add("inline-flex", "max-w-full", "overflow-hidden", "rounded-sm", "cursor-pointer");
+
+      var insertButton = document.createElement('button');
+      insertButton.textContent = "Insert";
+      insertButton.classList.add("text-xs", "font-medium", "leading-5", "text-white", "bg-indigo-600", "hover:bg-indigo-500", "focus:outline-none", "focus:ring", "focus:ring-indigo-500", "focus:ring-opacity-50", "px-2", "py-1", "rounded-sm");
+
+      var codeBlock = codeBlocks[i];
+      codeBlock.parentNode.insertBefore(insertButton, codeBlock);
+
+      insertButton.style.display = "block";
+      codeBlock.style.display = "block";
+      codeBlock.parentNode.style.textAlign = "center";
+
+      insertButton.addEventListener('click', function (e) {
+        e.preventDefault();
+        var code = this.nextElementSibling.innerText;
+        vscode.postMessage({
+          type: 'codeSelected',
+          value: code
         });
-        response = fixCodeBlocks(response);
-        html = converter.makeHtml(response);
-        document.getElementById("response").innerHTML = html;
+      });
 
-        var preCodeBlocks = document.querySelectorAll("pre code");
-        for (var i = 0; i < preCodeBlocks.length; i++) {
-            preCodeBlocks[i].classList.add(
-              "p-2",
-              "my-2",
-              "block",
-              "overflow-x-scroll"
-            );
-        }
-        
-        var codeBlocks = document.querySelectorAll('code');
-        for (var i = 0; i < codeBlocks.length; i++) {
-            // Check if innertext starts with "Copy code"
-            if (codeBlocks[i].innerText.startsWith("Copy code")) {
-                codeBlocks[i].innerText = codeBlocks[i].innerText.replace("Copy code", "");
-            }
+      const d = document.createElement('div');
+      d.innerHTML = codeBlocks[i].innerHTML;
+      codeBlocks[i].innerHTML = null;
+      codeBlocks[i].appendChild(d);
+      d.classList.add("code");
+    }
 
-            codeBlocks[i].classList.add("inline-flex", "max-w-full", "overflow-hidden", "rounded-sm", "cursor-pointer");
-
-            codeBlocks[i].addEventListener('click', function (e) {
-                e.preventDefault();
-                vscode.postMessage({
-                    type: 'codeSelected',
-                    value: this.innerText
-                });
-            });
-
-            const d = document.createElement('div');
-            d.innerHTML = codeBlocks[i].innerHTML;
-            codeBlocks[i].innerHTML = null;
-            codeBlocks[i].appendChild(d);
-            d.classList.add("code");
-        }
-
-        microlight.reset('code');
-
-        //document.getElementById("response").innerHTML = document.getElementById("response").innerHTML.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+    microlight.reset('code');
   }
 
   function toggleStopButton(enableld) {
@@ -114,7 +144,7 @@
       button.classList.remove('bg-red-600', 'hover:bg-red-700');
       button.classList.add('bg-gray-400', 'cursor-not-allowed');
     }
-  }  
+  }
 
   toggleStopButton(false);
 
