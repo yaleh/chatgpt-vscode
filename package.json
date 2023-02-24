@@ -33,7 +33,8 @@
     "onCommand:chatgpt.refactor",
     "onCommand:chatgpt.optimize",
     "onCommand:chatgpt.findProblems",
-    "onCommand:chatgpt.documentation"
+    "onCommand:chatgpt.documentation",
+    "onCommand:chatgpt.complete"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -62,6 +63,10 @@
         "command": "chatgpt.documentation",
         "title": "ChatGPT: Write documentation"
       },
+      {
+        "command": "chatgpt.complete",
+        "title": "ChatGPT: Complete code"
+      },      
       {
         "command": "chatgpt.resetConversation",
         "title": "Reset ChatGPT conversation"
@@ -98,6 +103,11 @@
           "command": "chatgpt.documentation",
           "when": "editorHasSelection",
           "group": "chatgpt-menu-group@6"
+        },
+        {
+          "command": "chatgpt.complete",
+          "when": "editorHasSelection",
+          "group": "chatgpt-menu-group@7"
         }
       ],
       "commandPalette": [
@@ -124,6 +134,10 @@
           "command": "chatgpt.documentation",
           "when": "editorHasSelection"
         },
+        {
+          "command": "chatgpt.complete",
+          "when": "editorHasSelection"
+        },        
         {
           "command": "chatgpt.resetConversation"
         }
@@ -204,6 +218,12 @@
           "default": "Write documentation for the following code: ",
           "description": "The prompt prefix used for writing documentation for the selected code",
           "order": 70
+        },
+        "chatgpt.promptPrefix.complete": {
+          "type": "string",
+          "default": "Don't explain the following code.\n\nDon't explain the generated code.\n\nShow the updated code only, no description.\n\nGenerate code according to the last comment:\n\n* Append the code after the comment\n* Keep the comment text",
+          "description": "Complete the code according to the last comment.",
+          "order": 71
         },
         "chatgpt.promptPrefix.optimize": {
           "type": "string",

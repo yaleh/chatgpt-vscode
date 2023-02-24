@@ -57,6 +57,7 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.commands.registerCommand('chatgpt.optimize', () => commandHandler('promptPrefix.optimize')),
 		vscode.commands.registerCommand('chatgpt.findProblems', () => commandHandler('promptPrefix.findProblems')),
 		vscode.commands.registerCommand('chatgpt.documentation', () => commandHandler('promptPrefix.documentation')),
+		vscode.commands.registerCommand('chatgpt.complete', () => commandHandler('promptPrefix.complete')),
 		vscode.commands.registerCommand('chatgpt.resetConversation', () => provider.resetConversation())
 	);
 
