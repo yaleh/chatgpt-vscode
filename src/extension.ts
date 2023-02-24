@@ -43,14 +43,18 @@ export function activate(context: vscode.ExtensionContext) {
 	const commandHandler = (command:string) => {
 		const config = vscode.workspace.getConfiguration('chatgpt');
 		const prompt = config.get(command) as string;
-		provider.search(prompt);
+		provider.searchSelection(prompt);
 	};
 
 	// Register the commands that can be called from the extension's package.json
 	context.subscriptions.push(
 		vscode.commands.registerCommand('chatgpt.ask', () => 
 			vscode.window.showInputBox({ prompt: 'What do you want to do?' })
-			.then((value) => provider.search(value))
+			.then((value) => {
+				if (value) {
+					provider.searchSelection(value);
+				}
+			})
 		),
 		vscode.commands.registerCommand('chatgpt.explain', () => commandHandler('promptPrefix.explain')),
 		vscode.commands.registerCommand('chatgpt.refactor', () => commandHandler('promptPrefix.refactor')),
@@ -202,7 +206,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 					}
 				case 'prompt':
 					{
-						this.search(data.value);
+						this.searchSelection(data.value);
 					}
 				case 'abort':
 					{
@@ -226,7 +230,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 	}
 
 
-	public async search(prompt?:string) {
+	public async searchSelection(prompt?:string) {
 		this._prompt = prompt;
 		if (!prompt) {
 			prompt = '';
@@ -264,12 +268,17 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 		}
 		this._fullPrompt = searchPrompt;
 
+		this.sendMessageAndGetResponse(searchPrompt);
+	}
+
+	private async sendMessageAndGetResponse(searchPrompt: string): Promise<string> {
+		let response = '';
 		if (!this._chatGPTAPI) {
 			response = '[ERROR] "API key not set or wrong, please go to extension settings to set it (read README.md for more info)"';
 		} else {
 			// If successfully signed in
 			console.log("sendMessage");
-			
+
 			// Make sure the prompt is shown
 			this._view?.webview.postMessage({ type: 'setPrompt', value: this._prompt });
 			this._view?.webview.postMessage({ type: 'addResponse', value: '...' });
@@ -300,7 +309,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 				});
 
 				if (this._currentMessageNumber !== currentMessageNumber) {
-					return;
+					return '';
 				}
 
 				response = res.text;
@@ -324,6 +333,8 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 			this._view.show?.(true);
 			this._view.webview.postMessage({ type: 'addResponse', value: response });
 		}
+
+		return response;
 	}
 
 	public abort(){
@@ -340,46 +351,57 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 		const showdownUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'scripts', 'tailwind.min.js'));
 
 		return `<!DOCTYPE html>
-					<html lang="en">
-					<head>
-						<meta charset="UTF-8">
-						<meta name="viewport" content="width=device-width, initial-scale=1.0">
-						<script src="${tailwindUri}"></script>
-						<script src="${showdownUri}"></script>
-						<script src="${microlightUri}"></script>
-						<style>
-						.code {
-							white-space: pre;
-						}
-						p {
-							padding-top: 0.3rem;
-							padding-bottom: 0.3rem;
-						}
-						/* overrides vscodes style reset, displays as if inside web browser */
-						ul, ol {
-							list-style: initial !important;
-							margin-left: 10px !important;
-						}
-						h1, h2, h3, h4, h5, h6 {
-							font-weight: bold !important;
-						}
-						.flex-container {
-							display: flex;
-							align-items: center;
-						}
-						</style>
-					</head>
-					<body>
-						<div class="flex-container">
-							<input class="h-10 w-full text-white bg-stone-700 p-4 text-sm" placeholder="Ask ChatGPT something" id="prompt-input" />
-							<button id="stop-button" class="px-4 py-2 bg-red-600 text-white font-semibold text-sm ml-2">Stop</button>
-						</div>
-						<div id="response" class="pt-4 text-sm">
-						</div>
-		
-						<script src="${scriptUri}"></script>
-					</body>
-					</html>`;
+		<html lang="en">
+		<head>
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<script src="${tailwindUri}"></script>
+			<script src="${showdownUri}"></script>
+			<script src="${microlightUri}"></script>
+			<style>
+				.code {
+					white-space: pre;
+				}
+				p {
+					padding-top: 0.3rem;
+					padding-bottom: 0.3rem;
+				}
+				/* overrides vscodes style reset, displays as if inside web browser */
+				ul, ol {
+					list-style: initial !important;
+					margin-left: 10px !important;
+				}
+				h1, h2, h3, h4, h5, h6 {
+					font-weight: bold !important;
+				}
+.flex-container {
+	display: flex;
+	align-items: center;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	padding: 10px;
+	// background-color: grey;
+}
+				#response {
+					padding-bottom: 60px;
+					// background-color: blue;
+				}
+			</style>
+		</head>
+		<body>
+		<div class="conversation">
+			<div id="response" class="pt-4 text-sm">
+			</div>
+			<div class="flex-container">
+				<input class="h-10 w-full text-white bg-stone-700 p-4 text-sm" placeholder="Ask ChatGPT something" id="prompt-input" />
+				<button id="stop-button" class="px-4 py-2 bg-red-600 text-white font-semibold text-sm ml-2">Stop</button>
+			</div>
+		</div>
+			<script src="${scriptUri}"></script>
+		</body>
+		</html>`;
 	}
 }
 
