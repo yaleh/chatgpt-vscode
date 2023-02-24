@@ -65,22 +65,22 @@
     response = fixCodeBlocks(response);
     html = converter.makeHtml(response);
 
-    var responseDiv = document.getElementById("response");
+    var responseDiv = document.getElementById("responses");
     // responseDiv.innerHTML = html;
 
-    if ((responseDiv.childElementCount > 0 && responseDiv.lastChild !== null) && ( messageId === null || messageId === lastMessageId )) {
+    if ((responseDiv.childElementCount > 0 && responseDiv.lastChild !== null) && (messageId === null || messageId === lastMessageId)) {
       // Update the existing response
-      console.log("Current child elements: ", responseDiv.childElementCount);
-      console.log("Last child: ", responseDiv.lastChild);
+      // console.log("Current child elements: ", responseDiv.childElementCount);
+      // console.log("Last child: ", responseDiv.lastChild);
       responseDiv.lastChild.innerHTML = html;
-      console.log("Updated response.");
+      // console.log("Updated response.");
     } else {
       // Create a new div and append it to the "response" div
       var newDiv = document.createElement('div');
+      newDiv.classList.add('response'); // add the 'response' class
       newDiv.innerHTML = html;
-      // newDiv.innerHTML = "<p>test</p>";
       responseDiv.appendChild(newDiv);
-      console.log("Created a new response.");
+      // console.log("Created a new response.");
     }
 
     var preCodeBlocks = document.querySelectorAll("pre code");

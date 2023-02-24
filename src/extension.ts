@@ -358,7 +358,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 		const indexHtml = fs.readFileSync(indexHtmlPath, 'utf8');
 		
 		const $ = cheerio.load(indexHtml);
-		$('#response').empty();
+		$('#responses').empty();
 		
 		const scriptUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'main.js'));
 		const microlightUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'scripts', 'microlight.min.js'));
