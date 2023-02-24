@@ -288,6 +288,8 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 
 			const agent = this._chatGPTAPI;
 
+			this._view?.webview.postMessage({ type: 'setDisplayingMode', value: 'asking'});
+
 			try {
 				// Send the search prompt to the ChatGPTAPI instance and store the response
 				let currentMessageNumber = this._currentMessageNumber;
@@ -308,6 +310,8 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 					...this._conversation
 				});
 
+				this._view?.webview.postMessage({ type: 'setDisplayingMode', value: 'idle'});
+
 				if (this._currentMessageNumber !== currentMessageNumber) {
 					return '';
 				}
@@ -320,6 +324,8 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 					};
 				}
 			} catch (e) {
+				this._view?.webview.postMessage({ type: 'setDisplayingMode', value: 'idle'});
+
 				console.error(e);
 				response += `\n\n---\n[ERROR] ${e}`;
 			}
@@ -338,6 +344,8 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 	}
 
 	public abort(){
+		this._view?.webview.postMessage({ type: 'setDisplayingMode', value: 'idle'});
+
 		this._abortController?.abort();
 		// reset the controller
 		this._abortController = new AbortController();
@@ -350,58 +358,77 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 		const tailwindUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'scripts', 'showdown.min.js'));
 		const showdownUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'scripts', 'tailwind.min.js'));
 
-		return `<!DOCTYPE html>
-		<html lang="en">
-		<head>
-			<meta charset="UTF-8">
-			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<script src="${tailwindUri}"></script>
-			<script src="${showdownUri}"></script>
-			<script src="${microlightUri}"></script>
-			<style>
-				.code {
-					white-space: pre;
-				}
-				p {
-					padding-top: 0.3rem;
-					padding-bottom: 0.3rem;
-				}
-				/* overrides vscodes style reset, displays as if inside web browser */
-				ul, ol {
-					list-style: initial !important;
-					margin-left: 10px !important;
-				}
-				h1, h2, h3, h4, h5, h6 {
-					font-weight: bold !important;
-				}
-.flex-container {
-	display: flex;
-	align-items: center;
-	position: fixed;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	padding: 10px;
-	// background-color: grey;
-}
-				#response {
-					padding-bottom: 60px;
-					// background-color: blue;
-				}
-			</style>
-		</head>
-		<body>
-		<div class="conversation">
-			<div id="response" class="pt-4 text-sm">
-			</div>
-			<div class="flex-container">
-				<input class="h-10 w-full text-white bg-stone-700 p-4 text-sm" placeholder="Ask ChatGPT something" id="prompt-input" />
-				<button id="stop-button" class="px-4 py-2 bg-red-600 text-white font-semibold text-sm ml-2">Stop</button>
+		return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="${tailwindUri}"></script>
+	<script src="${showdownUri}"></script>
+	<script src="${microlightUri}"></script>
+	<style>
+	html,body {height: 100%;margin: 0;}
+		.code {
+			white-space: pre;
+		}
+		p {
+			padding-top: 0.3rem;
+			padding-bottom: 0.3rem;
+		}
+		/* overrides vscodes style reset, displays as if inside web browser */
+		ul, ol {
+			list-style: initial !important;
+			margin-left: 10px !important;
+		}
+		h1, h2, h3, h4, h5, h6 {
+			font-weight: bold !important;
+		}
+		.flex-container {
+			display: flex;
+			align-items: center;
+			/* position: fixed;
+			bottom: 0;
+			left: 0;
+			right: 0; */
+			padding: 10px;
+			/* background-color: grey; */
+		}
+		#response {
+			padding-bottom: 60px;
+			/* background-color: blue; */
+		}
+
+		.conversation {
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+		}
+		.messages-container {
+			flex-shrink: 10;
+			height: 100%;
+			overflow: auto;
+		}
+		.messages-container, .scroll {
+			transform: scale(1,-1);
+		}
+	</style>
+</head>
+<body>
+	<div class="conversation">
+		<div class="messages-container">
+			<div id="response" class="pt-4 text-sm scroll">
 			</div>
 		</div>
-			<script src="${scriptUri}"></script>
-		</body>
-		</html>`;
+		<div class="flex-container">
+			<input class="h-10 w-full text-white bg-stone-700 p-4 text-sm" placeholder="Ask ChatGPT something" id="prompt-input" />
+			<button id="stop-button" class="px-4 py-2 bg-red-600 text-white font-semibold text-sm ml-2">Stop</button>
+		</div>
+	</div>
+	<script src="${scriptUri}"></script>
+</body>
+</html>
+		`;
 	}
 }
 

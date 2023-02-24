@@ -24,6 +24,15 @@
         document.getElementById("prompt-input").value = message.value;
         break;
       }
+      case "setDisplayingMode": {
+        mode = message.value;
+        if (mode === "asking") {
+          toggleStopButton(true);
+        }else{
+          toggleStopButton(false);
+        }
+        break;
+      }
     }
   });
 
@@ -93,6 +102,21 @@
 
         //document.getElementById("response").innerHTML = document.getElementById("response").innerHTML.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
   }
+
+  function toggleStopButton(enableld) {
+    const button = document.getElementById('stop-button');
+    if (enableld) {
+      button.disabled = false;
+      button.classList.remove('bg-gray-400', 'cursor-not-allowed');
+      button.classList.add('bg-red-600', 'hover:bg-red-700');
+    } else {
+      button.disabled = true;
+      button.classList.remove('bg-red-600', 'hover:bg-red-700');
+      button.classList.add('bg-gray-400', 'cursor-not-allowed');
+    }
+  }  
+
+  toggleStopButton(false);
 
   // Listen for keyup events on the prompt input element
   document.getElementById('prompt-input').addEventListener('keyup', function (e) {
