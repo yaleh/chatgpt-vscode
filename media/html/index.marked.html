@@ -4,10 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="{{tailwindUri}}"></script>
-    <script src="{{markedUri}}"></script>
-    <link rel="stylesheet" href="{{highlightcssUri}}">
-    <script src="{{highlightUri}}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/a11y-dark.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/highlight.min.js"></script>
     <style>
         html,
         body {
@@ -89,7 +88,8 @@
                         </li>
                         <li>
                             <p>The <code>get()</code> method is removed and the current element is assigned to the
-                                <code>contour</code> variable during each iteration of the loop.</p>
+                                <code>contour</code> variable during each iteration of the loop.
+                            </p>
                         </li>
                     </ol>
                     <div class="timestamp">Timestamp: [INSERT TIMESTAMP HERE]</div>
@@ -97,19 +97,63 @@
             </div>
         </div>
         <div class="dropdown-menu">
-        <label for="dropdown-select" style="display: block; margin-bottom: 2px;">Context</label>
-        <select id="dropdown-select" class="bg-stone-700">
-            <option value="none" selected>None</option>
-            <option value="selection">Selection</option>
-        </select>
+            <label for="dropdown-select" style="display: block; margin-bottom: 2px;">Context</label>
+            <select id="dropdown-select" class="bg-stone-700">
+                <option value="none" selected>None</option>
+                <option value="selection">Selection</option>
+            </select>
         </div>
         <div class="flex-container">
-        <input class="h-10 w-full text-white bg-stone-700 p-4 text-sm" placeholder="Ask ChatGPT something"
-            id="prompt-input" />
-        <button id="stop-button" class="px-4 py-2 bg-red-600 text-white font-semibold text-sm ml-2">Stop</button>
+            <input class="h-10 w-full text-white bg-stone-700 p-4 text-sm" placeholder="Ask ChatGPT something"
+                id="prompt-input" />
+            <button id="stop-button" class="px-4 py-2 bg-red-600 text-white font-semibold text-sm ml-2">Stop</button>
         </div>
     </div>
-    <script src="{{scriptUri}}"></script>
+    <script>
+        // const button = document.querySelector(".text-xs");
+        const responsesDiv = document.querySelector("#responses");
+        const markdown_example = `
+## Code
+
+Syntax highlighting
+
+\`\`\` js
+function $initHighlight(block, cls) {
+  try {
+    if (cls.search(/\\bno\\-highlight\\b/) != -1)
+      return process(block, true, 0x0F) +
+\`\`\`
+            `;
+
+        marked.setOptions({
+            renderer: new marked.Renderer(),
+            highlight: function (code, lang) {
+                // console.log("code: ", code);
+                // console.log("lang: ", lang);
+                // const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+                // console.log("language: ", language);
+                // return hljs.highlight(code, { language }).value;
+                // return hljs.highlight('<h1>Hello World!</h1>', {language: 'xml'}).value;
+
+                return hljs.highlightAuto(code).value;
+            },
+            langPrefix: 'hljs language-', // highlight.js css expects a top-level 'hljs' class.
+            pedantic: false,
+            gfm: true,
+            breaks: false,
+            sanitize: false,
+            smartypants: false,
+            xhtml: false
+        });
+
+        // button.addEventListener("click", () => {
+        const code = document.querySelector(".code").innerText;
+        const markdown = "```" + code + "```";
+        const html = marked.parse(markdown_example);
+        responsesDiv.innerHTML = html;
+            // });
+    </script>
+
 </body>
 
 </html>

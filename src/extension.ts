@@ -361,14 +361,20 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 		$('#responses').empty();
 		
 		const scriptUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'main.js'));
-		const microlightUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'scripts', 'microlight.min.js'));
+		// const microlightUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'scripts', 'microlight.min.js'));
 		const tailwindUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'scripts', 'showdown.min.js'));
-		const showdownUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'scripts', 'tailwind.min.js'));
-		
+		// const showdownUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'scripts', 'tailwind.min.js'));
+		const markedUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'scripts', 'marked.min.js'));
+		const highlightUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'scripts', 'highlight.min.js'));
+		const highlightcssUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'styles', 'highlight-vscode.min.css'));
+
 		return $.html()
 			.replace('{{tailwindUri}}', tailwindUri.toString())
-			.replace('{{showdownUri}}', showdownUri.toString())
-			.replace('{{microlightUri}}', microlightUri.toString())
+			// .replace('{{showdownUri}}', showdownUri.toString())
+			// .replace('{{microlightUri}}', microlightUri.toString())
+			.replace('{{markedUri}}', markedUri.toString())
+			.replace('{{highlightUri}}', highlightUri.toString())
+			.replace('{{highlightcssUri}}', highlightcssUri.toString())
 			.replace('{{scriptUri}}', scriptUri.toString());
 	}
 }

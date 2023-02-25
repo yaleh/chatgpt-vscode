@@ -55,46 +55,37 @@
   let lastMessageId = null;
 
   function setResponse(messageId = null) {
-    var converter = new showdown.Converter({
-      omitExtraWLInCodeBlocks: true,
-      simplifiedAutoLink: true,
-      excludeTrailingPunctuationFromURLs: true,
-      literalMidWordUnderscores: true,
-      simpleLineBreaks: true
+    marked.setOptions({
+      renderer: new marked.Renderer(),
+      highlight: function (code, lang) {
+        return hljs.highlightAuto(code).value;
+      },
+      langPrefix: 'hljs language-', // highlight.js css expects a top-level 'hljs' class.
+      pedantic: false,
+      gfm: true,
+      breaks: false,
+      sanitize: false,
+      smartypants: false,
+      xhtml: false
     });
+
     response = fixCodeBlocks(response);
-    html = converter.makeHtml(response);
+    html = marked.parse(response);
 
     var responseDiv = document.getElementById("responses");
-    // responseDiv.innerHTML = html;
 
     if ((responseDiv.childElementCount > 0 && responseDiv.lastChild !== null) && (messageId === null || messageId === lastMessageId)) {
       // Update the existing response
-      // console.log("Current child elements: ", responseDiv.childElementCount);
-      // console.log("Last child: ", responseDiv.lastChild);
       responseDiv.lastChild.innerHTML = html;
-      // console.log("Updated response.");
     } else {
       // Create a new div and append it to the "response" div
       var newDiv = document.createElement('div');
-      newDiv.classList.add('response'); // add the 'response' class
+      newDiv.classList.add('response');
       newDiv.innerHTML = html;
       responseDiv.appendChild(newDiv);
-      // console.log("Created a new response.");
     }
 
-    var preCodeBlocks = document.querySelectorAll("pre code");
-    for (var i = 0; i < preCodeBlocks.length; i++) {
-      preCodeBlocks[i].classList.add(
-        "p-2",
-        "my-2",
-        "block",
-        "overflow-x-scroll"
-      );
-    }
-
-    var codeBlocks = document.querySelectorAll('code.block');
-
+    var codeBlocks = document.querySelectorAll('pre > code');
     for (var i = 0; i < codeBlocks.length; i++) {
       // Check if innertext starts with "Copy code"
       if (codeBlocks[i].innerText.startsWith("Copy code")) {
@@ -128,8 +119,6 @@
       codeBlocks[i].appendChild(d);
       d.classList.add("code");
     }
-
-    microlight.reset('code');
   }
 
   function toggleStopButton(enableld) {
