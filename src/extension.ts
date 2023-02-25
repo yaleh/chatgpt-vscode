@@ -364,11 +364,13 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 		const microlightUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'scripts', 'microlight.min.js'));
 		const tailwindUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'scripts', 'showdown.min.js'));
 		const showdownUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'scripts', 'tailwind.min.js'));
+		const markedUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'scripts', 'marked.min.js'));
 		
 		return $.html()
 			.replace('{{tailwindUri}}', tailwindUri.toString())
 			.replace('{{showdownUri}}', showdownUri.toString())
 			.replace('{{microlightUri}}', microlightUri.toString())
+			.replace('{{markedUri}}', markedUri.toString())
 			.replace('{{scriptUri}}', scriptUri.toString());
 	}
 }
