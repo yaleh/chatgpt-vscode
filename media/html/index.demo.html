@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/showdown-highlight@3.1.0/lib/index.min.js"></script> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/a11y-dark.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/highlight.min.js"></script>
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+
+        .code {
+            white-space: pre;
+        }
+
+        p {
+            padding-top: 0.3rem;
+            padding-bottom: 0.3rem;
+        }
+
+        /* overrides vscodes style reset, displays as if inside web browser */
+        ul,
+        ol {
+            list-style: initial !important;
+            margin-left: 10px !important;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-weight: bold !important;
+        }
+
+        .flex-container {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            /* background-color: grey; */
+        }
+
+        #responses {
+            padding-bottom: 60px;
+            /* background-color: blue; */
+        }
+
+        .conversation {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .messages-container {
+            flex-shrink: 10;
+            height: 100%;
+            overflow: auto;
+        }
+
+        .messages-container,
+        .scroll {
+            transform: scale(1, -1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="conversation">
+        <div class="messages-container">
+            <div id="responses" class="pt-4 text-sm scroll">
+                <div class="response">
+                    <p>Following content is a example of reponse. It will be deleted from the working page.</p>
+                    <p>Here's a refactored version of the code with an explanation of the changes made:</p>
+                    <pre><button class="text-xs font-medium leading-5 text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 focus:ring-opacity-50 px-2 py-1 rounded-sm" style="display: block;">Insert</button><code class="p-2 my-2 block overflow-x-scroll inline-flex max-w-full overflow-hidden rounded-sm cursor-pointer" style="display: block;"><div class="code"><span style="text-shadow: 0px 0px 9px rgba(215, 186, 125,0.7), 0px 0px 2px rgba(215, 186, 125,0.4)">for</span><span style=""> </span><span style="opacity:.6;text-shadow: 0px 0px 7px rgba(215, 186, 125,0.25), 0px 0px 3px rgba(215, 186, 125,0.25)">(</span><span style="text-shadow: 0px 0px 9px rgba(215, 186, 125,0.7), 0px 0px 2px rgba(215, 186, 125,0.4)">let</span><span style=""> </span><span style="">contour</span><span style=""> </span><span style="">of</span><span style=""> </span><span style="text-shadow: 0px 0px 9px rgba(215, 186, 125,0.7), 0px 0px 2px rgba(215, 186, 125,0.4)">this</span><span style="opacity:.6;text-shadow: 0px 0px 7px rgba(215, 186, 125,0.25), 0px 0px 3px rgba(215, 186, 125,0.25)">.</span><span style="">contours</span><span style="opacity:.6;text-shadow: 0px 0px 7px rgba(215, 186, 125,0.25), 0px 0px 3px rgba(215, 186, 125,0.25)">)</span><span style=""> </span><span style="opacity:.6;text-shadow: 0px 0px 7px rgba(215, 186, 125,0.25), 0px 0px 3px rgba(215, 186, 125,0.25)">{</span><span style="">
+                      </span><span style="text-shadow: 0px 0px 9px rgba(215, 186, 125,0.7), 0px 0px 2px rgba(215, 186, 125,0.4)">const</span><span style=""> </span><span style="">area</span><span style=""> </span><span style="opacity:.6;text-shadow: 0px 0px 7px rgba(215, 186, 125,0.25), 0px 0px 3px rgba(215, 186, 125,0.25)">=</span><span style=""> </span><span style="">cv</span><span style="opacity:.6;text-shadow: 0px 0px 7px rgba(215, 186, 125,0.25), 0px 0px 3px rgba(215, 186, 125,0.25)">.</span><span style="">contourArea</span><span style="opacity:.6;text-shadow: 0px 0px 7px rgba(215, 186, 125,0.25), 0px 0px 3px rgba(215, 186, 125,0.25)">(</span><span style="">contour</span><span style="opacity:.6;text-shadow: 0px 0px 7px rgba(215, 186, 125,0.25), 0px 0px 3px rgba(215, 186, 125,0.25)">)</span><span style="opacity:.6;text-shadow: 0px 0px 7px rgba(215, 186, 125,0.25), 0px 0px 3px rgba(215, 186, 125,0.25)">;</span><span style="">
+                      </span><span style="text-shadow: 0px 0px 9px rgba(215, 186, 125,0.7), 0px 0px 2px rgba(215, 186, 125,0.4)">const</span><span style=""> </span><span style="">areaRatio</span><span style=""> </span><span style="opacity:.6;text-shadow: 0px 0px 7px rgba(215, 186, 125,0.25), 0px 0px 3px rgba(215, 186, 125,0.25)">=</span><span style=""> </span><span style="">area</span><span style=""> </span><span style="opacity:.6;text-shadow: 0px 0px 7px rgba(215, 186, 125,0.25), 0px 0px 3px rgba(215, 186, 125,0.25)">/</span><span style=""> </span><span style="">srcArea</span><span style="opacity:.6;text-shadow: 0px 0px 7px rgba(215, 186, 125,0.25), 0px 0px 3px rgba(215, 186, 125,0.25)">;</span><span style="">
+                    </span><span style="opacity:.6;text-shadow: 0px 0px 7px rgba(215, 186, 125,0.25), 0px 0px 3px rgba(215, 186, 125,0.25)">}</span></div></code></pre>
+                    <ol>
+                        <li>
+                            <p>The <code>size()</code> method is replaced with a <code>for...of</code> loop that
+                                iterates over the <code>this.contours</code> collection directly.</p>
+                        </li>
+                        <li>
+                            <p>The <code>get()</code> method is removed and the current element is assigned to the
+                                <code>contour</code> variable during each iteration of the loop.
+                            </p>
+                        </li>
+                    </ol>
+                    <div class="timestamp">Timestamp: [INSERT TIMESTAMP HERE]</div>
+                </div>
+            </div>
+        </div>
+        <div class="dropdown-menu">
+            <label for="dropdown-select" style="display: block; margin-bottom: 2px;">Context</label>
+            <select id="dropdown-select" class="bg-stone-700">
+                <option value="none" selected>None</option>
+                <option value="selection">Selection</option>
+            </select>
+        </div>
+        <div class="flex-container">
+            <input class="h-10 w-full text-white bg-stone-700 p-4 text-sm" placeholder="Ask ChatGPT something"
+                id="prompt-input" />
+            <button id="stop-button" class="px-4 py-2 bg-red-600 text-white font-semibold text-sm ml-2">Stop</button>
+        </div>
+    </div>
+    <script>
+
+        var converter = new showdown.Converter({
+            omitExtraWLInCodeBlocks: true,
+            simplifiedAutoLink: true,
+            excludeTrailingPunctuationFromURLs: true,
+            literalMidWordUnderscores: true,
+            simpleLineBreaks: true
+        });
+
+        const responsesDiv = document.querySelector("#responses");
+        const markdown_example = `
+## Code
+
+Syntax highlighting
+
+\`\`\` js
+function $initHighlight(block, cls) {
+  try {
+    if (cls.search(/\\bno\\-highlight\\b/) != -1)
+      return process(block, true, 0x0F) +
+\`\`\`
+            `;
+
+        // button.addEventListener("click", () => {
+        //     response = fixCodeBlocks(response);
+        // html = converter.makeHtml(response);
+        const html = converter.makeHtml(markdown_example);
+        responsesDiv.innerHTML = html;
+            // });
+    </script>
+
+</body>
+
+</html>
