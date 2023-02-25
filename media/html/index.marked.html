@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/a11y-dark.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/a11y-dark.min.css">
     <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/highlight.min.js"></script>
     <style>
         html,
@@ -129,12 +128,14 @@ function $initHighlight(block, cls) {
         marked.setOptions({
             renderer: new marked.Renderer(),
             highlight: function (code, lang) {
-                console.log("code: ", code);
-                console.log("lang: ", lang);
-                const language = hljs.getLanguage(lang) ? lang : 'plaintext';
-                console.log("language: ", language);
-                return hljs.highlight(code, { language }).value;
+                // console.log("code: ", code);
+                // console.log("lang: ", lang);
+                // const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+                // console.log("language: ", language);
+                // return hljs.highlight(code, { language }).value;
                 // return hljs.highlight('<h1>Hello World!</h1>', {language: 'xml'}).value;
+
+                return hljs.highlightAuto(code).value;
             },
             langPrefix: 'hljs language-', // highlight.js css expects a top-level 'hljs' class.
             pedantic: false,

@@ -55,24 +55,19 @@
   let lastMessageId = null;
 
   function setResponse(messageId = null) {
-    // var renderer = new marked.Renderer();
-
-    // renderer.code = function (code, language) {
-    //   var highlightedCode = microlight.highlight(code);
-    //   return '<pre><code class="block overflow-x-scroll p-2 my-2">' + highlightedCode + '</code></pre>';
-    // };
-
-    // var options = {
-    //   omitExtraWLInCodeBlocks: true,
-    //   simplifiedAutoLink: true,
-    //   excludeTrailingPunctuationFromURLs: true,
-    //   literalMidWordUnderscores: true,
-    //   breaks: true
-    // };
-
-    // var converter = new marked.Converter(options);
-    // converter.setOptions(options);
-    // converter.setRenderer(renderer);
+    marked.setOptions({
+      renderer: new marked.Renderer(),
+      highlight: function (code, lang) {
+        return hljs.highlightAuto(code).value;
+      },
+      langPrefix: 'hljs language-', // highlight.js css expects a top-level 'hljs' class.
+      pedantic: false,
+      gfm: true,
+      breaks: false,
+      sanitize: false,
+      smartypants: false,
+      xhtml: false
+    });
 
     response = fixCodeBlocks(response);
     html = marked.parse(response);
@@ -90,7 +85,7 @@
       responseDiv.appendChild(newDiv);
     }
 
-    var codeBlocks = document.querySelectorAll('code.block');
+    var codeBlocks = document.querySelectorAll('pre > code');
     for (var i = 0; i < codeBlocks.length; i++) {
       // Check if innertext starts with "Copy code"
       if (codeBlocks[i].innerText.startsWith("Copy code")) {
@@ -124,8 +119,6 @@
       codeBlocks[i].appendChild(d);
       d.classList.add("code");
     }
-
-    microlight.reset('code');
   }
 
   function toggleStopButton(enableld) {
