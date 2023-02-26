@@ -1,0 +1,45 @@
+/* Set global font and background colors */
+body {
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+}
+
+/* Set font to monospace for all text elements */
+body, p, h1, h2, h3, h4, h5, h6, code, pre {
+  font-family: 'Fira Code', monospace;
+}
+
+/* Style code blocks with VS Code theme colors and padding */
+pre {
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+  padding: 1rem;
+  border-radius: 0.25rem;
+}
+
+code {
+  color: #d4d4d4;
+  font-size: 0.9rem;
+}
+
+/* Add borders and padding to various elements */
+button, input, select, textarea {
+  border: 1px solid #2d2d2d;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+}
+
+a {
+  color: #4e8cff;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #2d2d2d;
+  padding: 0.5rem;
+}

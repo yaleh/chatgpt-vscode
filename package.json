@@ -1,13 +1,13 @@
 {
-  "name": "chatgpt",
-  "displayName": "ChatGPT: write and improve code using AI",
-  "description": "Use ChatGPT right inside the IDE to enhance and automate your coding with AI-powered assistance (unofficial)",
-  "version": "0.6.3",
-  "publisher": "timkmecl",
+  "name": "chatgpt-ai",
+  "displayName": "ChatGPT AI: write and improve code using AI",
+  "description": "Use ChatGPT AI right inside the IDE to enhance and automate your coding with AI-powered assistance (unofficial)",
+  "version": "0.7.0",
+  "publisher": "YaleHuang",
   "icon": "resources/extensionIcon.png",
   "license": "MIT",
   "repository": {
-    "url": "https://github.com/timkmecl/chatgpt-vscode"
+    "url": "https://github.com/yaleh/chatgpt-vscode"
   },
   "engines": {
     "vscode": "^1.73.0"

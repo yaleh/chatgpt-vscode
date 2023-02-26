@@ -1,9 +1,6 @@
 # ChatGPT extension for VSCode
 
-[![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/timkmecl.chatgpt)](https://marketplace.visualstudio.com/items?itemName=timkmecl.chatgpt)
-[![Visual Studio Marketplace Rating (Stars)](https://img.shields.io/visual-studio-marketplace/stars/timkmecl.chatgpt)](https://marketplace.visualstudio.com/items?itemName=timkmecl.chatgpt)
-[![Visual Studio Marketplace Downloads](https://img.shields.io/visual-studio-marketplace/d/timkmecl.chatgpt)](https://marketplace.visualstudio.com/items?itemName=timkmecl.chatgpt)
-[![Github stars](https://img.shields.io/github/stars/timkmecl/chatgpt-vscode)](https://github.com/timkmecl/chatgpt-vscode)
+[![Github stars](https://img.shields.io/github/stars/yaleh/chatgpt-vscode)](https://github.com/yaleh/chatgpt-vscode)
 
 This Visual Studio Code extension allows you to use the [unofficial ChatGPT API](https://github.com/transitive-bullshit/chatgpt-api) to generate code or natural language responses from OpenAI's [ChatGPT](https://chat.openai.com/chat) to your questions, right within the editor.
 
@@ -13,14 +10,9 @@ Supercharge your coding with AI-powered assistance! Automatically write new code
 
 ### Links:
 
-- **[Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=timkmecl.chatgpt)**
-- **[Github Repository](https://github.com/timkmecl/chatgpt-vscode)**
+- **[Github Repository](https://github.com/yaleh/chatgpt-vscode)**
 
 <br>
-
-<a href="https://www.buymeacoffee.com/timkmecl" target="_blank"><img src="resources/buy-default-yellow-small.png" alt="Buy Me A Coffee" style="height: 40px" ></a>
-
-
 
 <img src="examples/main.png" alt="Refactoring selected code using chatGPT"/>
 
@@ -57,8 +49,6 @@ To use this extension, you will need an API key from OpenAI. To obtain one, foll
 3. Copy the key and paste it into the `API Key` field in the extension settings.
 
 ### Building from source (not applicable for VSCode marketplace version)
-
-*Update: The model used in this extension was disabled. You can make it work by updating the `chatgpt` module to the newest version, however it will use GPT-3 instead of ChatGPT which means spending your OpenAI account's credits and worse performance.*
 
 To build the extension from source, clone the repository and run `npm install` to install the dependencies. You have to change some code in `chatgpt` module because VSCode runtime does not support `fetch`. Open `node_modules/chatgpt/dist/index.js` and add the following code at the top of the file:
 
@@ -113,12 +103,11 @@ To **reset the conversation context**, click `ctrl+shift+p` and select `ChatGPT:
 ---
 
 Please note that this extension is currently a proof of concept and may have some limitations or bugs. We welcome feedback and contributions to improve the extension. Also check out [CodeGPT](https://github.com/timkmecl/codegpt) extension that uses official OpenAI API and also supports other GPT3 models.
-If you enjoy this extension, please consider [buying me a coffee ☕️](https://www.buymeacoffee.com/timkmecl) to support my work! 
 
 
 ## Credits
 
 - This wouldn't be possible without OpenAI's [ChatGPT](https://chat.openai.com/chat)
 - The extension makes use of [chatgpt-api](https://github.com/transitive-bullshit/chatgpt-api) (by [Travis Fischer](https://github.com/transitive-bullshit)), which uses unofficial ChatGPT API in order to login and communicate with it.
-- The project was started by [mpociot](https://github.com/mpociot/)
+- The project was started by [mpociot](https://github.com/mpociot/) and [timkmecl](https://github.com/timkmecl)
 - `v0.3` inspired by [barnesoir/chatgpt-vscode-plugin](https://github.com/barnesoir/chatgpt-vscode-plugin) and [gencay/vscode-chatgpt](https://github.com/gencay/vscode-chatgpt)
