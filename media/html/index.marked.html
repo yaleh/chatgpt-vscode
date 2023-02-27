@@ -82,17 +82,21 @@
                 </div>
             </div>
         </div>
-        <div class="dropdown-menu">
-            <label for="dropdown-select" style="display: block; margin-bottom: 2px;">Context</label>
-            <select id="dropdown-select" class="bg-stone-700">
-                <option value="none" selected>None</option>
-                <option value="selection">Selection</option>
-            </select>
-        </div>
+        <div class="flex items-center justify-between">
+            <div class="dropdown-menu">
+                <label for="dropdown-select" style="display: block; margin-bottom: 2px;">Context</label>
+                <select id="dropdown-select" class="bg-stone-700">
+                    <option value="none" selected>None</option>
+                    <option value="selection">Selection</option>
+                </select>
+            </div>
+            <div class="stop-container ml-auto">
+                <button id="stop-button" class="px-4 py-2 bg-red-600 text-white font-semibold text-sm">Stop</button>
+            </div>
+        </div>     
         <div class="flex-container">
             <input class="h-10 w-full text-white bg-stone-700 p-4 text-sm" placeholder="Ask ChatGPT something"
                 id="prompt-input" />
-            <button id="stop-button" class="px-4 py-2 bg-red-600 text-white font-semibold text-sm ml-2">Stop</button>
         </div>
     </div>
     <script>
