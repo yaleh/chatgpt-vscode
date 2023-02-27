@@ -11,7 +11,7 @@ type AuthInfo = {
 	accessToken?: string
 };
 type Settings = {selectedInsideCodeblock?: boolean, pasteOnClick?: boolean, keepConversation?: boolean, timeoutLength?: number};
-
+type WorkingState = 'idle' | 'asking';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -116,6 +116,8 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 	private _fullPrompt?: string;
 	private _currentMessageNumber = 0;
 
+	private _workingState: WorkingState;
+
 	private _settings: Settings = {
 		selectedInsideCodeblock: false,
 		pasteOnClick: true,
@@ -126,7 +128,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 
 	// In the constructor, we store the URI of the extension
 	constructor(private readonly _extensionPath: string, private readonly _extensionUri: vscode.Uri) {
-
+		this._workingState = 'idle';
 	}
 	
 	// Set the API key and create a new API instance based on this key
@@ -141,6 +143,11 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 
 	public getSettings() {
 		return this._settings;
+	}
+
+	private _setWorkingState(mode: WorkingState) {
+		this._workingState = mode;
+		this._view?.webview.postMessage({ type: 'setWorkingState', value: this._workingState});
 	}
 
 	// This private method initializes a new ChatGPTAPI instance
@@ -193,6 +200,11 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 		// add an event listener for messages received by the webview
 		webviewView.webview.onDidReceiveMessage(data => {
 			switch (data.type) {
+				case 'webviewLoaded':
+				{
+					this._view?.webview.postMessage({ type: 'setWorkingState', value: this._workingState});
+					break;
+				}
 				case 'codeSelected':
 					{
 						// do nothing if the pasteOnClick option is disabled
@@ -285,14 +297,13 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 
 			// Make sure the prompt is shown
 			this._view?.webview.postMessage({ type: 'setPrompt', value: this._prompt });
-			this._view?.webview.postMessage({ type: 'addResponse', value: '...' });
 
 			// Increment the message number
 			this._currentMessageNumber++;
 
 			const agent = this._chatGPTAPI;
 
-			this._view?.webview.postMessage({ type: 'setDisplayingMode', value: 'asking'});
+			this._setWorkingState('asking');
 
 			try {
 				// Send the search prompt to the ChatGPTAPI instance and store the response
@@ -314,7 +325,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 					...this._conversation
 				});
 
-				this._view?.webview.postMessage({ type: 'setDisplayingMode', value: 'idle'});
+				this._view?.webview.postMessage({ type: 'setWorkingState', value: 'idle'});
 
 				if (this._currentMessageNumber !== currentMessageNumber) {
 					return '';
@@ -328,7 +339,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 					};
 				}
 			} catch (e) {
-				this._view?.webview.postMessage({ type: 'setDisplayingMode', value: 'idle'});
+				this._view?.webview.postMessage({ type: 'setWorkingState', value: 'idle'});
 
 				console.error(e);
 				response += `\n\n---\n[ERROR] ${e}`;
@@ -348,7 +359,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 	}
 
 	public abort(){
-		this._view?.webview.postMessage({ type: 'setDisplayingMode', value: 'idle'});
+		this._view?.webview.postMessage({ type: 'setWorkingState', value: 'idle'});
 
 		this._abortController?.abort();
 		// reset the controller

@@ -11,6 +11,7 @@ declare const acquireVsCodeApi: () => any;
   const vscode = acquireVsCodeApi();
 
   let response = '';
+  let workingState = 'idle';
 
   // Handle messages sent from the extension to the webview
   window.addEventListener("message", (event: MessageEvent) => {
@@ -30,9 +31,8 @@ declare const acquireVsCodeApi: () => any;
         promptInput.value = message.value;
         break;
       }
-      case "setDisplayingMode": {
-        const mode = message.value;
-        toggleStopButton(mode === "asking");
+      case "setWorkingState": {
+        setWorkingState(message.value);
         break;
       }
     }
@@ -112,6 +112,17 @@ declare const acquireVsCodeApi: () => any;
     }
   }
 
+  function setWorkingState(state: string) {
+    workingState = state;
+    toggleStopButton(workingState === 'asking');
+    const workingStateElement = document.getElementById('working-state') as HTMLElement;
+    if (workingState === 'asking') {
+      workingStateElement.innerText = 'Thinking...';
+    } else {
+      workingStateElement.innerText = '';
+    }
+  }
+
   function toggleStopButton(enabled: boolean) {
     const button = document.getElementById('stop-button') as HTMLButtonElement;
     if (enabled) {
@@ -124,8 +135,6 @@ declare const acquireVsCodeApi: () => any;
       button.classList.add('bg-gray-400', 'cursor-not-allowed');
     }
   }
-
-  toggleStopButton(false);
 
   // Listen for keyup events on the prompt input element
   const promptInput = document.getElementById('prompt-input') as HTMLInputElement;
@@ -146,5 +155,7 @@ declare const acquireVsCodeApi: () => any;
       type: 'abort'
     });
   });
+
+  vscode.postMessage({type: 'webviewLoaded'});
 })();
 
