@@ -6,9 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.1.2/dist/tailwind.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/a11y-dark.min.css">
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/a11y-dark.min.css"> -->
     <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/highlight.min.js"></script>
-    <link rel="stylesheet" href="../styles/vscode-simulation.css">
+    <link rel="stylesheet" href="../styles/highlight-vscode.min.css">
+    <link rel="stylesheet" href="../styles/vscode-simulation.css">    
     <style>
         html,
         body {
@@ -108,9 +109,9 @@ Syntax highlighting
 
 \`\`\` js
 function $initHighlight(block, cls) {
-  try {
-    if (cls.search(/\\bno\\-highlight\\b/) != -1)
-      return process(block, true, 0x0F) +
+    for (let i = 0; i < codeBlocks.length; i++) {
+      insertButton.classList.add("text-xs", "font-medium", "leading-5", "text-white", "bg-indigo-600", "hover:bg-indigo-500", "focus:outline-none", "focus:ring", "focus:ring-indigo-500", "focus:ring-opacity-50", "px-2", "py-1", "rounded-sm");
+      codeBlock.parentNode?.parentNode?.insertBefore(insertButton, codeBlock.parentNode);
 \`\`\`
             `;
 

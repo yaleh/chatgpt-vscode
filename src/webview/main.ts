@@ -95,8 +95,7 @@ declare const acquireVsCodeApi: () => any;
 
       codeBlock.parentNode?.parentNode?.insertBefore(insertButton, codeBlock.parentNode);
 
-      insertButton.style.display = "block";
-      codeBlock.style.display = "block";
+      codeBlock.classList.add('hljs');
 
       insertButton.addEventListener('click', function (e: MouseEvent) {
         e.preventDefault();
