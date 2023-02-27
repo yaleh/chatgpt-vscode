@@ -40,15 +40,27 @@ To use this extension, install it from the VSCode marketplace.
 
 After completing these steps, the extension should be ready to use.
 
-### Obtaining API key
+## API Modes
 
-To use this extension, you will need an API key from OpenAI. To obtain one, follow these steps:
+Currently, there are two modes for accessing the API: "ChatGPTAPI" and "ChatGPTUnofficialProxyAPI".
+### ChatGPTAPI
+
+To use this extension, you will need an `API key` from OpenAI. To obtain one, follow these steps:
 
 1. Go to [OpenAI's website](https://platform.openai.com/account/api-keys). If you don't have an account, you will need to create one or sign up using your Google or Microsoft account.
 2. Click on the `Create new secret key` button.
 3. Copy the key and paste it into the `API Key` field in the extension settings.
 
-### Building from source (not applicable for VSCode marketplace version)
+### ChatGPTUnofficialProxyAPI
+
+To use the ChatGPTUnofficialProxyAPI, you need an OpenAI access token from the ChatGPT web app. You can obtain the access token in either of two ways:
+
+* Use acheong08/OpenAIAuth, which is a Python script to automatically log in and get an access token. This method works only with email and password accounts; it does not support accounts where you authenticate via Microsoft or Google.
+* Manually get an access token by logging in to the ChatGPT web app and opening https://chat.openai.com/api/auth/session, which will return a JSON object containing your access token string.
+
+Access tokens last for approximately eight hours.
+
+## Building from source (not applicable for VSCode marketplace version)
 
 To build the extension from source, clone the repository and run `npm install` to install the dependencies. You have to change some code in `chatgpt` module because VSCode runtime does not support `fetch`. Open `node_modules/chatgpt/dist/index.js` and add the following code at the top of the file:
 
@@ -87,12 +99,16 @@ To **insert a code snippet** from the AI's response into the editor, simply clic
 <img src="examples/refactor.png" alt="chatGPT explaining selected code"/>
 
 You can select some code in the editor, right click on it and choose one of the following **shortcuts** from the context menu:
-#### Commands:
-- `Ask ChatGPT`: will provide a prompt for you to enter any query
-- `ChatGPT: Explain selection`: will explain what the selected code does
-- `ChatGPT: Refactor selection`: will try to refactor the selected code
-- `ChatGPT: Find problems`: looks for problems/errors in the selected code, fixes and explains them
-- `ChatGPT: Optimize selection`: tries to optimize the selected code
+#### Commands
+
+The following commands are available:
+
+* Ask ChatGPT: This command will provide a prompt for you to enter any query.
+* ChatGPT: Explain selection: This command will explain what the selected code does.
+* ChatGPT: Refactor selection: This command will attempt to refactor the selected code.
+* ChatGPT: Find problems: This command will look for problems/errors in the selected code, fix them, and provide an explanation.
+* ChatGPT: Optimize selection: This command will attempt to optimize the selected code.
+* ChatGPT: Complete code: This command will complete the code according to the last comments of the selection.
 
 `Ask ChatGPT` is also available when nothing is selected. For the other four commands, you can **customize the exact prompt** that will be sent to the AI by editing the extension settings in VSCode Preferences.
 
