@@ -93,7 +93,7 @@ declare const acquireVsCodeApi: () => any;
       insertButton.textContent = "Insert";
       insertButton.classList.add("text-xs", "font-medium", "leading-5", "text-white", "bg-indigo-600", "hover:bg-indigo-500", "focus:outline-none", "focus:ring", "focus:ring-indigo-500", "focus:ring-opacity-50", "px-2", "py-1", "rounded-sm");
 
-      codeBlock.parentNode?.insertBefore(insertButton, codeBlock);
+      codeBlock.parentNode?.parentNode?.insertBefore(insertButton, codeBlock.parentNode);
 
       insertButton.style.display = "block";
       codeBlock.style.display = "block";
@@ -109,17 +109,7 @@ declare const acquireVsCodeApi: () => any;
         }
       });
 
-      const d = document.createElement('div');
-      d.innerHTML = innerText;
-      codeBlock.innerHTML = "";
-      codeBlock.appendChild(d);
-      d.classList.add("code");
-      codeBlock.classList.add("inline-flex", "max-w-full", "overflow-hidden", "rounded-sm", "cursor-pointer");
-
-      // Check if innertext starts with "Copy code"
-      if (innerText.startsWith("Copy code")) {
-        codeBlock.innerText = innerText.replace("Copy code", "");
-      }
+      break;
     }
   }
 
