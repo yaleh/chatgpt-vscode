@@ -38,10 +38,13 @@
             font-weight: bold !important;
         }
 
-        .flex-container {
-            display: flex;
+        .prompt-container {
+            /* display: flex; */
             align-items: center;
-            padding: 10px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            padding-left: 0px;
+            padding-right: 0px;
             /* background-color: grey; */
         }
 
@@ -91,6 +94,7 @@
             </div>
         </div>
         <div class="flex items-center justify-between">
+            <button id="reset-button" class="px-4 py-2 bg-gray-400 text-white font-semibold text-sm cursor-not-allowed" title="Reset current conversation">Reset</button>
             <div class="dropdown-menu">
                 <label for="dropdown-select" style="display: block; margin-bottom: 2px; display: none">Context</label>
                 <select id="dropdown-select" class="bg-stone-700" style="display: none">
@@ -103,11 +107,11 @@
                 <button id="stop-button" class="px-4 py-2 bg-gray-400 text-white font-semibold text-sm cursor-not-allowed">Stop</button>
             </div>
         </div>     
-        <div class="flex-container" style="padding-left: 0px; padding-right: 0px">
+        <div class="prompt-container">
             <textarea class="h-24 w-full text-white bg-stone-700 p-4 text-sm resize-none" placeholder="Ask ChatGPT something...&#10;Press Ctrl-Enter to send."
                 id="prompt-input"></textarea>
-            <button id="send-request" style="position: absolute; bottom: 25px; right:33px; transform: translate(50%, 50%);"
-                onclick="console.log('Button clicked!')">
+            <div id="conversation-id" class="w-full text-gray-300 p-0 text-xs text-right">Conversation ID</div>
+            <button id="send-request" style="position: absolute; bottom: 45px; right:33px; transform: translate(50%, 50%);">
                 📤
             </button>
         </div>

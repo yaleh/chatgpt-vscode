@@ -228,23 +228,30 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 						this.abort();
 						break;
 					}
+				case 'resetConversation':
+					{
+						this.resetConversation();
+						break;
+					}
 			}
 		});
 	}
 
-
 	public async resetConversation() {
 		console.log(this, this._conversation);
-		if (this._conversation) {
-			this._conversation = null;
+		if (this._workingState === 'idle') {
+			if (this._conversation) {
+				this._conversation = null;
+			}
+			this._prompt = '';
+			this._response = '';
+			this._fullPrompt = '';
+			this._view?.webview.postMessage({ type: 'setPrompt', value: '' });
+			this._view?.webview.postMessage({ type: 'addResponse', value: '' });
+		} else {
+			console.warn('Conversation is not in idle state. Resetting conversation is not allowed.');
 		}
-		this._prompt = '';
-		this._response = '';
-		this._fullPrompt = '';
-		this._view?.webview.postMessage({ type: 'setPrompt', value: '' });
-		this._view?.webview.postMessage({ type: 'addResponse', value: '' });
 	}
-
 
 	public async searchSelection(prompt?:string) {
 		this._prompt = prompt;
