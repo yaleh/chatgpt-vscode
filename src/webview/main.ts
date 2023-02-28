@@ -35,8 +35,19 @@ declare const acquireVsCodeApi: () => any;
         setWorkingState(message.value);
         break;
       }
+      case "setConversationId": {
+        updateConversationId(message.value);
+        break;
+      }
     }
   });
+
+  function updateConversationId(id: string) {
+    const conversationId = id || "/";
+    const conversationIdText = `Conversation ID: ${conversationId}`;
+    const conversationIdElement = document.getElementById("conversation-id") as HTMLDivElement;
+    conversationIdElement.innerText = conversationIdText;
+  }
 
   function fixCodeBlocks(response: string) {
     const REGEX_CODEBLOCK = new RegExp('\`\`\`', 'g');
@@ -220,6 +231,14 @@ declare const acquireVsCodeApi: () => any;
   stopButton.addEventListener('click', () => {
     vscode.postMessage({
       type: 'abort'
+    });
+  });
+
+  // Listen for click events on the reset button and send message resetConversation
+  const resetButton = document.getElementById('reset-button') as HTMLButtonElement;
+  resetButton.addEventListener('click', () => {
+    vscode.postMessage({
+      type: 'resetConversation'
     });
   });
 

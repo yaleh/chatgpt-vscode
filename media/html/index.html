@@ -48,6 +48,12 @@
             /* background-color: grey; */
         }
 
+        .flex-container {
+            display: flex;
+            align-items: center;
+            padding: 0px;
+        }
+
         #responses {
             padding-bottom: 60px;
             /* background-color: blue; */
@@ -64,7 +70,6 @@
             height: 100%;
             overflow: auto;
         }
-
     </style>
 </head>
 
@@ -86,7 +91,8 @@
                         </li>
                         <li>
                             <p>The <code>get()</code> method is removed and the current element is assigned to the
-                                <code>contour</code> variable during each iteration of the loop.</p>
+                                <code>contour</code> variable during each iteration of the loop.
+                            </p>
                         </li>
                     </ol>
                     <div class="timestamp">Timestamp: [INSERT TIMESTAMP HERE]</div>
@@ -94,7 +100,6 @@
             </div>
         </div>
         <div class="flex items-center justify-between">
-            <button id="reset-button" class="px-4 py-2 bg-gray-400 text-white font-semibold text-sm cursor-not-allowed" title="Reset current conversation">Reset</button>
             <div class="dropdown-menu">
                 <label for="dropdown-select" style="display: block; margin-bottom: 2px; display: none">Context</label>
                 <select id="dropdown-select" class="bg-stone-700" style="display: none">
@@ -104,14 +109,19 @@
             </div>
             <div class="stop-container flex items-center">
                 <div id="working-state" class="working-label mr-4 text-stone-300">ChatGPT AI</div>
-                <button id="stop-button" class="px-4 py-2 bg-gray-400 text-white font-semibold text-sm cursor-not-allowed">Stop</button>
+                <button id="stop-button"
+                    class="px-4 py-2 bg-gray-400 text-white font-semibold text-sm cursor-not-allowed">Stop</button>
             </div>
-        </div>     
+        </div>
         <div class="prompt-container">
-            <textarea class="h-24 w-full text-white bg-stone-700 p-4 text-sm resize-none" placeholder="Ask ChatGPT something...&#10;Press Ctrl-Enter to send."
-                id="prompt-input"></textarea>
-            <div id="conversation-id" class="w-full text-gray-300 p-0 text-xs text-right">Conversation ID</div>
-            <button id="send-request" style="position: absolute; bottom: 45px; right:33px; transform: translate(50%, 50%);">
+            <textarea class="h-24 w-full text-white bg-stone-700 p-4 text-sm resize-none"
+                placeholder="Ask ChatGPT something...&#10;Press Ctrl-Enter to send." id="prompt-input"></textarea>
+            <div class="flex-container">
+                <div id="conversation-id" class="w-full text-gray-500 p-0 text-xs text-right" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; ">Conversation ID</div>
+                <button id="reset-button" class="px-0 py-0 text-white font-semibold text-sm">🔄</button>
+            </div>
+            <button id="send-request"
+                style="position: absolute; bottom: 48px; right:33px; transform: translate(50%, 50%);" title="Send">
                 📤
             </button>
         </div>

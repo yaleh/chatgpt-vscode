@@ -238,7 +238,6 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 	}
 
 	public async resetConversation() {
-		console.log(this, this._conversation);
 		if (this._workingState === 'idle') {
 			if (this._conversation) {
 				this._conversation = null;
@@ -248,6 +247,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 			this._fullPrompt = '';
 			this._view?.webview.postMessage({ type: 'setPrompt', value: '' });
 			this._view?.webview.postMessage({ type: 'addResponse', value: '' });
+			this._view?.webview.postMessage({ type: 'setConversationId', value: ''});
 		} else {
 			console.warn('Conversation is not in idle state. Resetting conversation is not allowed.');
 		}
@@ -332,8 +332,6 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 					...this._conversation
 				});
 
-				this._view?.webview.postMessage({ type: 'setWorkingState', value: 'idle'});
-
 				if (this._currentMessageNumber !== currentMessageNumber) {
 					return '';
 				}
@@ -344,9 +342,9 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 						conversationId: res.conversationId,
 						parentMessageId: res.id
 					};
+					this._view?.webview?.postMessage({type: 'setConversationId', value: res.parentMessageId});
 				}
 			} catch (e) {
-				this._view?.webview.postMessage({ type: 'setWorkingState', value: 'idle'});
 
 				console.error(e);
 				response += `\n\n---\n[ERROR] ${e}`;
@@ -362,13 +360,15 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 			this._view.webview.postMessage({ type: 'addResponse', value: response });
 		}
 
+		this._setWorkingState("idle");
+
 		return response;
 	}
 
 	public abort(){
-		this._view?.webview.postMessage({ type: 'setWorkingState', value: 'idle'});
-
 		this._abortController?.abort();
+		this._setWorkingState("idle");
+
 		// reset the controller
 		this._abortController = new AbortController();
 	}
