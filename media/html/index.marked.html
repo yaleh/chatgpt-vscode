@@ -65,11 +65,6 @@
             height: 100%;
             overflow: auto;
         }
-
-        .messages-container,
-        .scroll {
-            transform: scale(1, -1);
-        }
     </style>
 </head>
 
@@ -108,18 +103,34 @@
     </div>
     <script>
         const responsesDiv = document.querySelector("#responses");
-        const markdown_example = `
-## Code
 
-Syntax highlighting
+        const markdown_examples = [
+  `
+## Example 1
 
-\`\`\` js
-function $initHighlight(block, cls) {
-    for (let i = 0; i < codeBlocks.length; i++) {
-      insertButton.classList.add("text-xs", "font-medium", "leading-5", "text-white", "bg-indigo-600", "hover:bg-indigo-500", "focus:outline-none", "focus:ring", "focus:ring-indigo-500", "focus:ring-opacity-50", "px-2", "py-1", "rounded-sm");
-      codeBlock.parentNode?.parentNode?.insertBefore(insertButton, codeBlock.parentNode);
+Here is a simple code snippet in JavaScript:
+
+\`\`\`js
+const greeting = "Hello, World!";
+console.log(greeting);
 \`\`\`
-            `;
+`,
+  `
+## Example 2
+
+Here is a code example in Python:
+
+\`\`\`python
+def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)
+
+print(factorial(5))  # Output: 120
+\`\`\`
+`
+];
 
         marked.setOptions({
             renderer: new marked.Renderer(),
@@ -135,7 +146,12 @@ function $initHighlight(block, cls) {
             xhtml: false
         });
 
-        const html = marked.parse(markdown_example);
+        let html = '';
+        for (let i = 0; i < markdown_examples.length; i++) {
+        const parsedBlock = marked.parse(markdown_examples[i]);
+        const timestamp = new Date().toLocaleString();
+        html += `${parsedBlock}<small>${timestamp}</small><br><br>`;
+        }
         responsesDiv.innerHTML = html;
 
         const promptInput = document.querySelector("#prompt-input");

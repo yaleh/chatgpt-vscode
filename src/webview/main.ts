@@ -72,20 +72,24 @@ declare const acquireVsCodeApi: () => any;
     response = fixCodeBlocks(response);
     const html = marked.parse(response);
 
-    const responseDiv = document.getElementById("responses") as HTMLDivElement;
+    const responsesDiv = document.getElementById("responses") as HTMLDivElement;
 
-    if (responseDiv.childElementCount > 0 && responseDiv.lastChild !== null && (messageId === null || messageId === lastMessageId)) {
+    let updatedResponseDiv: HTMLElement | null = null;
+
+    if (responsesDiv.childElementCount > 0 && responsesDiv.lastChild !== null && (messageId === null || messageId === lastMessageId)) {
       // Update the existing response
-      (responseDiv.lastChild as HTMLElement).innerHTML = html;
+      updatedResponseDiv = responsesDiv.lastChild as HTMLElement;
+      updatedResponseDiv.innerHTML = html;
     } else {
       // Create a new div and append it to the "response" div
       const newDiv = document.createElement('div');
       newDiv.classList.add('response');
       newDiv.innerHTML = html;
-      responseDiv.appendChild(newDiv);
+      responsesDiv.appendChild(newDiv);
+      updatedResponseDiv = newDiv;
     }
 
-    const codeBlocks = document.querySelectorAll('pre > code');
+    const codeBlocks = updatedResponseDiv.querySelectorAll('pre > code');
 
     for (let i = 0; i < codeBlocks.length; i++) {
       const codeBlock = codeBlocks[i] as HTMLElement;
