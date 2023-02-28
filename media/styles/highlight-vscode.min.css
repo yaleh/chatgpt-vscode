@@ -1,115 +1,114 @@
 .hljs {
-    display: block;
-    overflow-x: auto;
-    padding: 0.5em;
-    color: #d4d4d4;
-    background: #1e1e1e;
-  }
-  
-  .hljs-keyword {
-    color: #c586c0;
-  }
-  
-  .hljs-selector-tag,
-  .hljs-meta-keyword,
-  .hljs-template-tag,
-  .hljs-template-variable {
-    color: #dcdcaa;
-  }
-  
-  .hljs-literal {
-    color: #dcdcaa;
-  }
-  
-  .hljs-strong {
-    font-weight: bold;
-  }
-  
-  .hljs-emphasis {
-    font-style: italic;
-  }
-  
-  .hljs-name {
-    color: #9cdcfe;
-  }
-  
-  .hljs-bullet,
-  .hljs-attr {
-    color: #ce9178;
-  }
-  
-  .hljs-params {
-    color: #d4d4d4;
-  }
-  
-  .hljs-number {
-    color: #b5cea8;
-  }
-  
-  .hljs-regexp,
-  .hljs-link {
-    color: #ce9178;
-  }
-  
-  .hljs-string {
-    color: #ce9178;
-  }
-  
-  .hljs-symbol,
-  .hljs-meta,
-  .hljs-meta-string {
-    color: #dcdcaa;
-  }
-  
-  .hljs-comment {
-    color: #6a9955;
-  }
-  
-  .hljs-quote {
-    color: #4ec9b0;
-  }
-  
-  .hljs-doctag {
-    color: #d4d4d4;
-  }
-  
-  .hljs-title {
-    color: #4ec9b0;
-  }
-  
-  .hljs-section {
-    color: #4ec9b0;
-  }
-  
-  .hljs-type {
-    color: #4ec9b0;
-  }
-  
-  .hljs-variable {
-    color: #9cdcfe;
-  }
-  
-  .hljs-class .hljs-title {
-    color: #4fc1ff;
-  }
-  
-  .hljs-attribute {
-    color: #9cdcfe;
-  }
-  
-  .hljs-meta-string {
-    color: #ce9178;
-  }
-  
-  .hljs-built_in {
-    color: #dcdcaa;
-  }
-  
-  .hljs-symbol {
-    color: #dcdcaa;
-  }
-  
-  .hljs-link {
-    color: #dcdcaa;
-  }
-  
+  display: block;
+  overflow-x: auto;
+  padding: 0.5em;
+  color: #d4d4d4;
+  background: #1e1e1e;
+}
+
+.hljs-keyword {
+  color: #c586c0;
+}
+
+.hljs-selector-tag,
+.hljs-meta-keyword,
+.hljs-template-tag,
+.hljs-template-variable {
+  color: #dcdcaa;
+}
+
+.hljs-literal {
+  color: #dcdcaa;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-name {
+  color: #9cdcfe;
+}
+
+.hljs-bullet,
+.hljs-attr {
+  color: #ce9178;
+}
+
+.hljs-params {
+  color: #d4d4d4;
+}
+
+.hljs-number {
+  color: #b5cea8;
+}
+
+.hljs-regexp,
+.hljs-link {
+  color: #ce9178;
+}
+
+.hljs-string {
+  color: #ce9178;
+}
+
+.hljs-symbol,
+.hljs-meta,
+.hljs-meta-string {
+  color: #dcdcaa;
+}
+
+.hljs-comment {
+  color: #6a9955;
+}
+
+.hljs-quote {
+  color: #4ec9b0;
+}
+
+.hljs-doctag {
+  color: #d4d4d4;
+}
+
+.hljs-title {
+  color: #4ec9b0;
+}
+
+.hljs-section {
+  color: #4ec9b0;
+}
+
+.hljs-type {
+  color: #4ec9b0;
+}
+
+.hljs-variable {
+  color: #9cdcfe;
+}
+
+.hljs-class .hljs-title {
+  color: #4fc1ff;
+}
+
+.hljs-attribute {
+  color: #9cdcfe;
+}
+
+.hljs-meta-string {
+  color: #ce9178;
+}
+
+.hljs-built_in {
+  color: #dcdcaa;
+}
+
+.hljs-symbol {
+  color: #dcdcaa;
+}
+
+.hljs-link {
+  color: #dcdcaa;
+}

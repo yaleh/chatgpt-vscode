@@ -86,20 +86,14 @@ declare const acquireVsCodeApi: () => any;
     }
 
     const codeBlocks = document.querySelectorAll('pre > code');
+
     for (let i = 0; i < codeBlocks.length; i++) {
       const codeBlock = codeBlocks[i] as HTMLElement;
       const innerText = codeBlock.innerText;
-      const insertButton = document.createElement('button');
-      insertButton.textContent = "Insert";
-      insertButton.classList.add("text-xs", "font-medium", "leading-5", "text-white", "bg-indigo-600", "hover:bg-indigo-500", "focus:outline-none", "focus:ring", "focus:ring-indigo-500", "focus:ring-opacity-50", "px-2", "py-1", "rounded-sm");
-
-      codeBlock.parentNode?.parentNode?.insertBefore(insertButton, codeBlock.parentNode);
-
-      codeBlock.classList.add('hljs');
-
-      insertButton.addEventListener('click', function (e: MouseEvent) {
+    
+      const insertButton = createCodeSnippetButton('Insert', 'bg-indigo-600', (e) => {
         e.preventDefault();
-        const code = (this.nextElementSibling as HTMLElement)?.innerText;
+        const code = codeBlock?.innerText;
         if (code) {
           vscode.postMessage({
             type: 'codeSelected',
@@ -107,9 +101,67 @@ declare const acquireVsCodeApi: () => any;
           });
         }
       });
-
-      break;
+    
+      const copyButton = createCodeSnippetButton('Copy', 'bg-blue-400', (e) => {
+        e.preventDefault();
+        const code = codeBlock.innerText;
+        navigator.clipboard.writeText(code).then(() => {
+          console.log('Code copied to clipboard');
+          const popup = createCodeSnippetPopup('Code copied to clipboard');
+          document.body.appendChild(popup);
+          setTimeout(() => {
+            popup.remove();
+          }, 2000);
+        });
+      });
+    
+      codeBlock.parentNode?.parentNode?.insertBefore(insertButton, codeBlock.parentNode);
+      codeBlock.parentNode?.parentNode?.insertBefore(copyButton, codeBlock.parentNode);
+    
+      codeBlock.classList.add('hljs');
     }
+
+  }
+
+  function createCodeSnippetButton(text: string, color: string, clickHandler: (e: MouseEvent) => void) {
+    const button = document.createElement('button');
+    button.textContent = text;
+    button.classList.add(
+      'text-xs',
+      'font-medium',
+      'leading-5',
+      'text-white',
+      'hover:bg-gray-500',
+      'focus:outline-none',
+      'focus:ring',
+      'focus:ring-opacity-50',
+      'px-2',
+      'py-1',
+      'rounded-sm',
+      color
+    );
+    button.addEventListener('click', clickHandler);
+    return button;
+  }
+  
+  function createCodeSnippetPopup(text: string) {
+    const popup = document.createElement('div');
+    popup.textContent = text;
+    popup.classList.add(
+      'text-xs',
+      'font-medium',
+      'leading-5',
+      'text-white',
+      'bg-green-500',
+      'p-2',
+      'rounded-sm',
+      'absolute',
+      'top-0',
+      'right-0',
+      'mt-2',
+      'mr-2'
+    );
+    return popup;
   }
 
   function setWorkingState(state: string) {

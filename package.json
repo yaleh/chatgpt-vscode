@@ -162,7 +162,7 @@
       ]
     },
     "configuration": {
-      "title": "chatGPT",
+      "title": "ChatGPT AI",
       "type": "object",
       "properties": {
         "chatgpt.mode": {
