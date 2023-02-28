@@ -97,9 +97,14 @@
             </div>
         </div>     
         <div class="flex-container">
-            <input class="h-10 w-full text-white bg-stone-700 p-4 text-sm" placeholder="Ask ChatGPT something"
-                id="prompt-input" />
+            <textarea class="h-24 w-full text-white bg-stone-700 p-4 text-sm resize-none" placeholder="Ask ChatGPT something...&#10;Press Ctrl-Enter to send."
+                id="prompt-input"></textarea>
+            <button style="position: absolute; bottom: 31px; right:30px; transform: translate(50%, 50%);"
+                onclick="console.log('Button clicked!')">
+                📤
+            </button>
         </div>
+
     </div>
     <script>
         const responsesDiv = document.querySelector("#responses");

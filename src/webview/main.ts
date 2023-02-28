@@ -191,14 +191,25 @@ declare const acquireVsCodeApi: () => any;
   // Listen for keyup events on the prompt input element
   const promptInput = document.getElementById('prompt-input') as HTMLInputElement;
   promptInput.addEventListener('keyup', (e: KeyboardEvent) => {
-    // If the key that was pressed was the Enter key
-    if (e.keyCode === 13) {
-      vscode.postMessage({
-        type: 'prompt',
-        value: promptInput.value
-      });
+    // If the key combination that was pressed was Ctrl+Enter
+    if (e.keyCode === 13 && e.ctrlKey) {
+      sendMessage(promptInput.value);
     }
   });
+
+  // Listen for click events on the "send-request" button
+  const sendButton = document.getElementById('send-request') as HTMLButtonElement;
+  sendButton.addEventListener('click', () => {
+    sendMessage(promptInput.value);
+  });
+
+  // Function to send a message to the extension
+  function sendMessage(value: string) {
+    vscode.postMessage({
+      type: 'prompt',
+      value: value
+    });
+  }
 
   // Listen for click events on the stop button
   const stopButton = document.getElementById('stop-button') as HTMLButtonElement;

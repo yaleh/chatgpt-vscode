@@ -103,9 +103,13 @@
                 <button id="stop-button" class="px-4 py-2 bg-gray-400 text-white font-semibold text-sm cursor-not-allowed">Stop</button>
             </div>
         </div>     
-        <div class="flex-container">
-            <input class="h-10 w-full text-white bg-stone-700 p-4 text-sm" placeholder="Ask ChatGPT something"
-                id="prompt-input" />
+        <div class="flex-container" style="padding-left: 0px; padding-right: 0px">
+            <textarea class="h-24 w-full text-white bg-stone-700 p-4 text-sm resize-none" placeholder="Ask ChatGPT something...&#10;Press Ctrl-Enter to send."
+                id="prompt-input"></textarea>
+            <button id="send-request" style="position: absolute; bottom: 25px; right:33px; transform: translate(50%, 50%);"
+                onclick="console.log('Button clicked!')">
+                📤
+            </button>
         </div>
     </div>
     <script src="{{scriptUri}}"></script>
