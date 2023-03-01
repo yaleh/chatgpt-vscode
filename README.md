@@ -2,7 +2,7 @@
 
 [![Github stars](https://img.shields.io/github/stars/yaleh/chatgpt-vscode)](https://github.com/yaleh/chatgpt-vscode)
 
-This Visual Studio Code extension allows you to use the [unofficial ChatGPT API](https://github.com/transitive-bullshit/chatgpt-api) to generate code or natural language responses from OpenAI's [ChatGPT](https://chat.openai.com/chat) to your questions, right within the editor.
+ChatGPT AI is a Visual Studio Code extension that enables you to automatically write new code, ask questions, find bugs, refactor code, and more using the OpenAI GPT-3 language model or the [unofficial ChatGPT API](https://github.com/transitive-bullshit/chatgpt-api). The extension provides a chat interface that you can use to interact with the AI model and get suggestions and explanations for your code.
 
 Supercharge your coding with AI-powered assistance! Automatically write new code from scratch, ask questions, get explanations, refactor code, find bugs and more 🚀✨
 
@@ -23,12 +23,14 @@ Supercharge your coding with AI-powered assistance! Automatically write new code
 	- explain the selected code
 	- refactor or optimize it
 	- find problems with it
+	- complete the code according to the comments
 - 💻 View ChatGPT's responses in a panel next to the editor
 - 🚀 See the response as it is being generated **in real time**
 - 💬 Ask **follow-up questions** to the response (conversation context is maintained)
-- 📝 **Insert code snippets** from the AI's response into the active editor by clicking on them
+- 📝 **Insert code snippets** from the AI's response into the active editor or **copy code snippets** by clicking on them
 
-
+## Requirements
+ChatGPT AI requires Visual Studio Code version 1.73.0 or later to be installed on your system.
 
 ## Installation
 
@@ -120,6 +122,9 @@ To **reset the conversation context**, click `ctrl+shift+p` and select `ChatGPT:
 
 Please note that this extension is currently a proof of concept and may have some limitations or bugs. We welcome feedback and contributions to improve the extension. Also check out [CodeGPT](https://github.com/timkmecl/codegpt) extension that uses official OpenAI API and also supports other GPT3 models.
 
+## License
+
+ChatGPT AI is licensed under the MIT License. See the LICENSE file for more information.
 
 ## Credits
 
