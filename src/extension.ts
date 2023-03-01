@@ -172,7 +172,8 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 			}else{
 				this._chatGPTAPI = new ChatGPTUnofficialProxyAPI({
 					accessToken: this._authInfo.accessToken,
-					debug: false
+					apiReverseProxyUrl: 'https://gpt.pawan.krd/backend-api/conversation',
+					debug: true
 				});
 			}			
 		}
@@ -246,7 +247,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 			this._response = '';
 			this._fullPrompt = '';
 			this._view?.webview.postMessage({ type: 'setPrompt', value: '' });
-			this._view?.webview.postMessage({ type: 'addResponse', value: '' });
+			this._view?.webview.postMessage({ type: 'clearResponses', value: '' });
 			this._view?.webview.postMessage({ type: 'setConversationId', value: ''});
 		} else {
 			console.warn('Conversation is not in idle state. Resetting conversation is not allowed.');
@@ -294,10 +295,11 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 		this.sendMessageAndGetResponse(searchPrompt);
 	}
 
-	private async sendMessageAndGetResponse(searchPrompt: string): Promise<string> {
-		let response = '';
+	private async sendMessageAndGetResponse(searchPrompt: string) {
+		this._view?.show?.(true);
+
 		if (!this._chatGPTAPI) {
-			response = '[ERROR] "API key not set or wrong, please go to extension settings to set it (read README.md for more info)"';
+			this._view?.webview.postMessage({type: 'addEvent', value: {text: '[ERROR] "API key not set or wrong, please go to extension settings to set it (read README.md for more info)"'}});			
 		} else {
 			// If successfully signed in
 			console.log("sendMessage");
@@ -323,8 +325,8 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 						}
 						console.log("onProgress");
 						if (this._view && this._view.visible) {
-							response = partialResponse.text;
-							this._view.webview.postMessage({ type: 'addResponse', value: partialResponse.text });
+							// response = partialResponse.text;
+							this._view.webview.postMessage({ type: 'addResponse', value: partialResponse });
 						}
 					},
 					timeoutMs: (this._settings.timeoutLength || 60) * 1000,
@@ -336,7 +338,6 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 					return '';
 				}
 
-				response = res.text;
 				if (this._settings.keepConversation){
 					this._conversation = {
 						conversationId: res.conversationId,
@@ -347,22 +348,19 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 			} catch (e) {
 
 				console.error(e);
-				response += `\n\n---\n[ERROR] ${e}`;
+				// response += `\n\n---\n[ERROR] ${e}`;
+				this._view?.show?.(true);
+				this._view?.webview.postMessage({type: 'addEvent', value: {text: `\n\n---\n[ERROR] ${e}`}});
 			}
 		}
 
-		// Saves the response
-		this._response = response;
-
 		// Show the view and send a message to the webview with the response
-		if (this._view) {
-			this._view.show?.(true);
-			this._view.webview.postMessage({ type: 'addResponse', value: response });
-		}
+		// if (this._view) {
+		// 	this._view.show?.(true);
+		// 	// this._view.webview.postMessage({ type: 'addResponse', value: response });
+		// }
 
 		this._setWorkingState("idle");
-
-		return response;
 	}
 
 	public abort(){

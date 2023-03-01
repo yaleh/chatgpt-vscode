@@ -5,6 +5,24 @@ import hljs from 'highlight.js';
 
 declare const acquireVsCodeApi: () => any;
 
+interface ChatResponse {
+  id: string;
+  text: string;
+  parentMessageId?: string;
+  conversationId?: string;
+}
+
+interface ChatRequest {
+  id?: string;
+  text: string;
+  parentMessageId?: string;
+  conversationId?: string;
+}
+
+interface ChatEvent {
+  text: string;
+}
+
 // This script will be run within the webview itself
 // It cannot access the main VS Code APIs directly.
 (function () {
@@ -18,12 +36,21 @@ declare const acquireVsCodeApi: () => any;
     const message = event.data;
     switch (message.type) {
       case "addResponse": {
-        response = message.value;
-        setResponse();
+        // const chatResponse: ChatResponse = message.value;
+        // response = message.value;
+        updateResponse(message.value as ChatResponse);
         break;
       }
-      case "clearResponse": {
-        response = '';
+      case "addReqeust": {
+        updateRequest(message.values as ChatRequest);
+        break;
+      }
+      case "addEvent": {
+        updateEvent(message.values as ChatEvent);
+        break;
+      }
+      case "clearResponses": {
+        clearResponses();
         break;
       }
       case "setPrompt": {
@@ -61,9 +88,28 @@ declare const acquireVsCodeApi: () => any;
     }
   }
 
-  let lastMessageId: number | null = null;
+  let lastResponse: ChatResponse | null = null;
 
-  function setResponse(messageId: number | null = null) {
+  function updateResponse(response: ChatResponse){
+    const responsesDiv = document.getElementById("responses") as HTMLDivElement;
+    let updatedResponseDiv: HTMLElement | null = null;
+
+    if (responsesDiv.childElementCount > 0 && responsesDiv.lastChild !== null && (response.id === null || response?.id === lastResponse?.id)) {
+      // Update the existing response
+      updatedResponseDiv = responsesDiv.lastChild as HTMLElement;
+    } else {
+      // Create a new div and append it to the "response" div
+      const newDiv = document.createElement('div');
+      newDiv.classList.add('response');
+      responsesDiv.appendChild(newDiv);
+      updatedResponseDiv = newDiv;
+    }
+
+    updateResponseDiv(updatedResponseDiv, response);
+    lastResponse = response;
+  }
+
+  function updateResponseDiv(div: HTMLElement, response: ChatResponse) {
     const markedOptions: marked.MarkedOptions = {
       renderer: new marked.Renderer(),
       highlight: (code: string, lang: string) => {
@@ -80,27 +126,12 @@ declare const acquireVsCodeApi: () => any;
 
     marked.setOptions(markedOptions);
 
-    response = fixCodeBlocks(response);
-    const html = marked.parse(response);
+    var fixedResponseText = fixCodeBlocks(response.text);
+    const html = marked.parse(fixedResponseText);
 
-    const responsesDiv = document.getElementById("responses") as HTMLDivElement;
+    div.innerHTML = html;
 
-    let updatedResponseDiv: HTMLElement | null = null;
-
-    if (responsesDiv.childElementCount > 0 && responsesDiv.lastChild !== null && (messageId === null || messageId === lastMessageId)) {
-      // Update the existing response
-      updatedResponseDiv = responsesDiv.lastChild as HTMLElement;
-      updatedResponseDiv.innerHTML = html;
-    } else {
-      // Create a new div and append it to the "response" div
-      const newDiv = document.createElement('div');
-      newDiv.classList.add('response');
-      newDiv.innerHTML = html;
-      responsesDiv.appendChild(newDiv);
-      updatedResponseDiv = newDiv;
-    }
-
-    const codeBlocks = updatedResponseDiv.querySelectorAll('pre > code');
+    const codeBlocks = div.querySelectorAll('pre > code');
 
     for (let i = 0; i < codeBlocks.length; i++) {
       const codeBlock = codeBlocks[i] as HTMLElement;
@@ -177,6 +208,23 @@ declare const acquireVsCodeApi: () => any;
       'mr-2'
     );
     return popup;
+  }
+
+  function clearResponses(){
+    const responsesDiv = document.getElementById("responses") as HTMLDivElement;
+    // delete all children of responsesDiv
+    while (responsesDiv.firstChild) {
+      responsesDiv.removeChild(responsesDiv.firstChild);
+    }
+    lastResponse = null;
+  }
+
+  function updateRequest(request: ChatRequest){
+    // TODO
+  }
+
+  function updateEvent(event: ChatEvent){
+    // TODO
   }
 
   function setWorkingState(state: string) {
