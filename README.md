@@ -2,15 +2,14 @@
 
 [![Github stars](https://img.shields.io/github/stars/yaleh/chatgpt-vscode)](https://github.com/yaleh/chatgpt-vscode)
 
-ChatGPT AI is a Visual Studio Code extension that enables you to automatically write new code, ask questions, find bugs, refactor code, and more using the OpenAI GPT-3 language model or the [unofficial ChatGPT API](https://github.com/transitive-bullshit/chatgpt-api). The extension provides a chat interface that you can use to interact with the AI model and get suggestions and explanations for your code.
+ChatGPT AI is a Visual Studio Code extension that enables you to automatically write new code, ask questions, find bugs, refactor code, and more using the official OpenAI API or ChatGPT (via the [unofficial ChatGPT API](https://github.com/transitive-bullshit/chatgpt-api)). The extension provides a chat interface that you can use to interact with the AI model and get suggestions and explanations for your code.
 
 Supercharge your coding with AI-powered assistance! Automatically write new code from scratch, ask questions, get explanations, refactor code, find bugs and more 🚀✨
-
-#### 📢 It works now (02/25/2023), with new features and new styles.
 
 ### Links:
 
 - **[Github Repository](https://github.com/yaleh/chatgpt-vscode)**
+- **[Visual Studio Code Marketplace](https://marketplace.visualstudio.com/items?itemName=YaleHuang.chatgpt-ai)**
 
 <br>
 
