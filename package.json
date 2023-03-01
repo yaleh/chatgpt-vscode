@@ -147,7 +147,7 @@
       "activitybar": [
         {
           "id": "chatgpt",
-          "title": "ChatGPT",
+          "title": "ChatGPT AI",
           "icon": "resources/icon.png"
         }
       ]
@@ -157,7 +157,7 @@
         {
           "type": "webview",
           "id": "chatgpt.chatView",
-          "name": "ChatGPT"
+          "name": "ChatGPT AI"
         }
       ]
     },
