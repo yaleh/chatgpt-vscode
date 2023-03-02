@@ -2,7 +2,7 @@
   "name": "chatgpt-ai",
   "displayName": "ChatGPT AI",
   "description": "Automatically write new code, ask questions, find bugs, and more with ChatGPT AI",
-  "version": "0.7.3",
+  "version": "0.7.5",
   "publisher": "YaleHuang",
   "icon": "resources/extensionIcon.png",
   "license": "MIT",
@@ -147,7 +147,7 @@
       "activitybar": [
         {
           "id": "chatgpt",
-          "title": "ChatGPT",
+          "title": "ChatGPT AI",
           "icon": "resources/icon.png"
         }
       ]
@@ -157,7 +157,7 @@
         {
           "type": "webview",
           "id": "chatgpt.chatView",
-          "name": "ChatGPT"
+          "name": "ChatGPT AI"
         }
       ]
     },
@@ -189,11 +189,27 @@
           "type": "string",
           "order": 15
         },
-        "chatgpt.pasteOnClick": {
-          "type": "boolean",
-          "default": true,
-          "description": "Paste the code from a codeblock inside the response into the editor when you click on it",
-          "order": 20
+        "chatgpt.proxyUrl": {
+          "type": "string",
+          "order": 16,
+          "markdownDescription": "URL for the Unofficial ChatGPT proxy hosted by 3rd parties.",
+          "default": "https://chat.duti.tech/api/conversation",
+          "enum": [
+              "https://chat.duti.tech/api/conversation",
+              "https://gpt.pawan.krd/backend-api/conversation",
+              "Custom"
+          ],
+          "enumDescriptions": [
+            "https://chat.duti.tech/api/conversation",
+            "https://gpt.pawan.krd/backend-api/conversation",
+            "Set a custom API proxy URL below"
+          ]
+        },
+        "chatgpt.customProxyUrl": {
+          "type": "string",
+          "order": 17,
+          "markdownDescription": "Custom URL for an Unofficial ChatGPT proxy hosted by 3rd parties.",
+          "default": ""
         },
         "chatgpt.promptPrefix.explain": {
           "type": "string",
