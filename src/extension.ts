@@ -8,9 +8,10 @@ import * as cheerio from 'cheerio';
 type AuthInfo = {
 	mode?: string,
 	apiKey?: string,
-	accessToken?: string
+	accessToken?: string,
+	proxyUrl?: string
 };
-type Settings = {selectedInsideCodeblock?: boolean, pasteOnClick?: boolean, keepConversation?: boolean, timeoutLength?: number};
+type Settings = {selectedInsideCodeblock?: boolean, keepConversation?: boolean, timeoutLength?: number};
 type WorkingState = 'idle' | 'asking';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -26,11 +27,11 @@ export function activate(context: vscode.ExtensionContext) {
 	provider.setAuthenticationInfo({
 		mode: config.get('mode'),
 		apiKey: config.get('apiKey'),
-		accessToken: config.get('accessToken')
+		accessToken: config.get('accessToken'),
+		proxyUrl: config.get('proxyUrl') === "Custom" ? config.get('customProxyUrl') : config.get('proxyUrl')
 	});
 	provider.setSettings({
 		selectedInsideCodeblock: config.get('selectedInsideCodeblock') || false,
-		pasteOnClick: config.get('pasteOnClick') || false,
 		keepConversation: config.get('keepConversation') || false,
 		timeoutLength: config.get('timeoutLength') || 60,
 	});
@@ -73,20 +74,19 @@ export function activate(context: vscode.ExtensionContext) {
 		if (
 			event.affectsConfiguration('chatgpt.mode') ||
 			event.affectsConfiguration('chatgpt.apiKey') ||
-			event.affectsConfiguration('chatgpt.accessToken')
+			event.affectsConfiguration('chatgpt.accessToken') ||
+			event.affectsConfiguration('chatgpt.proxyUrl')
 		) {
 			const config = vscode.workspace.getConfiguration('chatgpt');
 			provider.setAuthenticationInfo({
 				mode: config.get('mode'),
 				apiKey: config.get('apiKey'),
-				accessToken: config.get('accessToken')
+				accessToken: config.get('accessToken'),
+				proxyUrl: config.get('proxyUrl') === "Custom" ? config.get('customProxyUrl') : config.get('proxyUrl')
 			});
 		} else if (event.affectsConfiguration('chatgpt.selectedInsideCodeblock')) {
 			const config = vscode.workspace.getConfiguration('chatgpt');
 			provider.setSettings({ selectedInsideCodeblock: config.get('selectedInsideCodeblock') || false });
-		} else if (event.affectsConfiguration('chatgpt.pasteOnClick')) {
-			const config = vscode.workspace.getConfiguration('chatgpt');
-			provider.setSettings({ pasteOnClick: config.get('pasteOnClick') || false });
 		} else if (event.affectsConfiguration('chatgpt.keepConversation')) {
 			const config = vscode.workspace.getConfiguration('chatgpt');
 			provider.setSettings({ keepConversation: config.get('keepConversation') || false });
@@ -120,7 +120,6 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 
 	private _settings: Settings = {
 		selectedInsideCodeblock: false,
-		pasteOnClick: true,
 		keepConversation: true,
 		timeoutLength: 60
 	};
@@ -169,9 +168,12 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 		} else if (this._authInfo?.mode === "ChatGPTUnofficialProxyAPI") {
 			if (!this._authInfo?.accessToken) {
 				console.warn("Access token not set, please go to extension settings (read README.md for more info)");
+			}else if (!this._authInfo?.proxyUrl) {
+				console.warn("Proxy URL not set, please go to extension settings (read README.md for more info)");
 			}else{
 				this._chatGPTAPI = new ChatGPTUnofficialProxyAPI({
 					accessToken: this._authInfo.accessToken,
+					apiReverseProxyUrl: this._authInfo.proxyUrl,
 					debug: false
 				});
 			}			
@@ -207,10 +209,6 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 				}
 				case 'codeSelected':
 					{
-						// do nothing if the pasteOnClick option is disabled
-						if (!this._settings.pasteOnClick) {
-							break;
-						}
 						let code = data.value;
 						const snippet = new vscode.SnippetString();
 						snippet.appendText(code);

@@ -211,12 +211,6 @@
           "markdownDescription": "Custom URL for an Unofficial ChatGPT proxy hosted by 3rd parties.",
           "default": ""
         },
-        "chatgpt.pasteOnClick": {
-          "type": "boolean",
-          "default": true,
-          "description": "Paste the code from a codeblock inside the response into the editor when you click on it",
-          "order": 20
-        },
         "chatgpt.promptPrefix.explain": {
           "type": "string",
           "default": "Explain what this code does: ",
