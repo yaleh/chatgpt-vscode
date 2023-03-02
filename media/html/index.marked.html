@@ -17,20 +17,14 @@
             margin: 0;
         }
 
-        .code {
-            white-space: pre;
-        }
-
         p {
-            padding-top: 0.3rem;
-            padding-bottom: 0.3rem;
+            py-1;
         }
 
-        /* overrides vscodes style reset, displays as if inside web browser */
         ul,
         ol {
-            list-style: initial !important;
-            margin-left: 10px !important;
+            list-disc;
+            ml-4;
         }
 
         h1,
@@ -39,40 +33,31 @@
         h4,
         h5,
         h6 {
-            font-weight: bold !important;
+            font-bold;
         }
 
         .prompt-container {
-            /* display: flex; */
-            align-items: center;
-            padding-top: 10px;
-            padding-bottom: 10px;
-            padding-left: 0px;
-            padding-right: 0px;
-            /* background-color: grey; */
+            items-center;
+            pt-10;
+            pb-10;
+            pl-0;
+            pr-0;
         }
 
         .flex-container {
-            display: flex;
-            align-items: center;
-            padding: 0px;
+            flex;
+            items-center;
+            p-0;
         }
 
         #responses {
-            padding-bottom: 60px;
-            /* background-color: blue; */
+            pb-60;
         }
 
         .conversation {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
-        .messages-container {
-            flex-shrink: 10;
-            height: 100%;
-            overflow: auto;
+            flex;
+            flex-col;
+            h-screen;
         }
     </style>
 </head>
