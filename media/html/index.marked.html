@@ -9,7 +9,7 @@
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/a11y-dark.min.css"> -->
     <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/highlight.min.js"></script>
     <link rel="stylesheet" href="../styles/highlight-vscode.min.css">
-    <link rel="stylesheet" href="../styles/vscode-simulation.css">    
+    <link rel="stylesheet" href="../styles/vscode-simulation.css">
     <style>
         html,
         body {
@@ -97,15 +97,17 @@
             </div>
             <div class="stop-container flex items-center">
                 <div id="working-state" class="working-label mr-4 text-stone-300">ChatGPT AI</div>
-                <button id="stop-button" class="px-4 py-2 bg-gray-400 text-white font-semibold text-sm cursor-not-allowed">Stop</button>
+                <button id="stop-button"
+                    class="px-4 py-2 bg-gray-400 text-white font-semibold text-sm cursor-not-allowed">Stop</button>
             </div>
-        </div>     
+        </div>
         <div class="prompt-container">
-            <textarea class="h-24 w-full text-white bg-stone-700 p-4 text-sm resize-none" placeholder="Ask ChatGPT something...&#10;Press Ctrl-Enter to send."
-                id="prompt-input"></textarea>
+            <textarea class="h-24 w-full text-white bg-stone-700 p-4 text-sm resize-none"
+                placeholder="Ask ChatGPT something...&#10;Press Ctrl-Enter to send." id="prompt-input"></textarea>
             <div class="flex-container">
                 <div id="conversation-id" class="w-full text-gray-500 p-0 text-xs text-right">Conversation ID</div>
-                <button id="reset-button" class="px-0 py-0 text-white font-semibold text-sm"  title="Reset conversation">🔄</button>
+                <button id="reset-button" class="px-0 py-0 text-white font-semibold text-sm"
+                    title="Reset conversation">🔄</button>
             </div>
             <button style="position: absolute; bottom: 65px; right:30px; transform: translate(50%, 50%);"
                 onclick="console.log('Button clicked!')">
@@ -118,7 +120,7 @@
         const responsesDiv = document.querySelector("#responses");
 
         const markdown_examples = [
-  `
+            `
 ## Example 1
 
 Here is a simple code snippet in JavaScript:
@@ -128,7 +130,7 @@ const greeting = "Hello, World!";
 console.log(greeting);
 \`\`\`
 `,
-  `
+            `
 ## Example 2
 
 Here is a code example in Python:
@@ -143,7 +145,7 @@ def factorial(n):
 print(factorial(5))  # Output: 120
 \`\`\`
 `
-];
+        ];
 
         marked.setOptions({
             renderer: new marked.Renderer(),
@@ -159,13 +161,19 @@ print(factorial(5))  # Output: 120
             xhtml: false
         });
 
-        let html = '';
+        // let html = '';
         for (let i = 0; i < markdown_examples.length; i++) {
-        const parsedBlock = marked.parse(markdown_examples[i]);
-        const timestamp = new Date().toLocaleString();
-        html += `${parsedBlock}<small>${timestamp}</small><br><br>`;
+            const newDiv = document.createElement('div');
+            newDiv.classList.add('response', 'border', 'border-gray-700', 'rounded-lg', 'p-2', 'm-2');
+            responsesDiv.appendChild(newDiv);
+            // updatedResponseDiv = newDiv;
+
+            const parsedBlock = marked.parse(markdown_examples[i]);
+            const timestamp = new Date().toLocaleString();
+            // html += `${parsedBlock}<small>${timestamp}</small><br><br>`;
+            newDiv.innerHTML = `${parsedBlock}<small>${timestamp}</small><br><br>`;
         }
-        responsesDiv.innerHTML = html;
+        // responsesDiv.innerHTML = html;
 
         const promptInput = document.querySelector("#prompt-input");
         const stopButton = document.querySelector("#stop-button");
