@@ -28,6 +28,11 @@
   resolved "https://registry.npmjs.org/@discoveryjs/json-ext/-/json-ext-0.5.7.tgz"
   integrity sha512-dBVuXR082gk3jsFp7Rd/JI4kytwGHecnCoTtXFb7DB6CNHp4rg5k1bhg0nWdLGLnOV71lmDzGQaLMy8iPLY0pw==
 
+"@dqbd/tiktoken@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@dqbd/tiktoken/-/tiktoken-0.4.0.tgz#070e770ae3fa3fa8fccbea4f2e02ab87117f6c3a"
+  integrity sha512-iaHgmwKAOqowBFZKxelyszoeGLoNw62eOULcmyme1aA1Ymr3JgYl0V7jwpuUm7fksalycZajx3loFn9TRUaviw==
+
 "@eslint/eslintrc@^1.4.1":
   version "1.4.1"
   resolved "https://registry.npmjs.org/@eslint/eslintrc/-/eslintrc-1.4.1.tgz"
@@ -530,11 +535,6 @@ argparse@^2.0.1:
   resolved "https://registry.npmjs.org/argparse/-/argparse-2.0.1.tgz"
   integrity sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==
 
-array-keyed-map@^2.1.3:
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/array-keyed-map/-/array-keyed-map-2.1.3.tgz#0d5c06ed58ccba2755a4f5bfb7a935a31f395b18"
-  integrity sha512-JIUwuFakO+jHjxyp4YgSiKXSZeC0U+R1jR94bXWBcVlFRBycqXlb+kH9JHxBGcxnVuSqx5bnn0Qz9xtSeKOjiA==
-
 array-union@^2.1.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/array-union/-/array-union-2.1.0.tgz"
@@ -684,17 +684,17 @@ chalk@^4.0.0, chalk@^4.1.0:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
-chatgpt@^4.7.2:
-  version "4.7.2"
-  resolved "https://registry.yarnpkg.com/chatgpt/-/chatgpt-4.7.2.tgz#394f496a77534d72b5a73f50462172cd29ffea63"
-  integrity sha512-c5CNqvB98IMEz/Byopwu5FlXGS3w/3iNiZITdDlcZLue4VSjEfzMRWrOrdGidzcE+ud2My6nO8/sSnY7W04WJA==
+chatgpt@^5.0.4:
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/chatgpt/-/chatgpt-5.0.4.tgz#cc507e5deb4eb5447de916ced8370ed5df72dc7f"
+  integrity sha512-qkppO2IDYDJC1eaXfqupXdZcOPNqtBkToRcvr9CAGM1rdsKfBDpWLTx4Y6OMNH02sgWu48aJB//0lO1M17K58w==
   dependencies:
+    "@dqbd/tiktoken" "^0.4.0"
     cac "^6.7.14"
     conf "^11.0.1"
     eventsource-parser "^0.0.5"
-    gpt3-tokenizer "^1.1.5"
     keyv "^4.5.2"
-    p-timeout "^6.0.0"
+    p-timeout "^6.1.1"
     quick-lru "^6.1.1"
     read-pkg-up "^9.1.0"
     uuid "^9.0.0"
@@ -1403,13 +1403,6 @@ globby@^11.1.0:
     merge2 "^1.4.1"
     slash "^3.0.0"
 
-gpt3-tokenizer@^1.1.5:
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/gpt3-tokenizer/-/gpt3-tokenizer-1.1.5.tgz#79e5f96c435daf9c41a81117411ebce3bf475e78"
-  integrity sha512-O9iCL8MqGR0Oe9wTh0YftzIbysypNQmS5a5JG3cB3M4LMYjlAVvNnf8LUzVY9MrI7tj+YLY356uHtO2lLX2HpA==
-  dependencies:
-    array-keyed-map "^2.1.3"
-
 graceful-fs@^4.1.2, graceful-fs@^4.2.2, graceful-fs@^4.2.4, graceful-fs@^4.2.9:
   version "4.2.10"
   resolved "https://registry.npmjs.org/graceful-fs/-/graceful-fs-4.2.10.tgz"
@@ -2041,10 +2034,10 @@ p-locate@^6.0.0:
   dependencies:
     p-limit "^4.0.0"
 
-p-timeout@^6.0.0:
-  version "6.1.0"
-  resolved "https://registry.npmjs.org/p-timeout/-/p-timeout-6.1.0.tgz"
-  integrity sha512-s0y6Le9QYGELLzNpFIt6h8B2DHTVUDLStvxtvRMSKNKeuNVVWby2dZ+pIJpW4/pWr5a3s8W85wBNtc0ZA+lzCg==
+p-timeout@^6.1.1:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/p-timeout/-/p-timeout-6.1.1.tgz#bcee5e37d730f5474d973b6ff226751a1a5e6ff1"
+  integrity sha512-yqz2Wi4fiFRpMmK0L2pGAU49naSUaP23fFIQL2Y6YT+qDGPoFwpvgQM/wzc6F8JoenUkIlAFa4Ql7NguXBxI7w==
 
 p-try@^2.0.0:
   version "2.2.0"
