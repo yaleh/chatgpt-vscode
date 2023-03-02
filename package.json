@@ -189,6 +189,28 @@
           "type": "string",
           "order": 15
         },
+        "chatgpt.proxyUrl": {
+          "type": "string",
+          "order": 16,
+          "markdownDescription": "URL for the Unofficial ChatGPT proxy hosted by 3rd parties.",
+          "default": "https://chat.duti.tech/api/conversation",
+          "enum": [
+              "https://chat.duti.tech/api/conversation",
+              "https://gpt.pawan.krd/backend-api/conversation",
+              "Custom"
+          ],
+          "enumDescriptions": [
+            "https://chat.duti.tech/api/conversation",
+            "https://gpt.pawan.krd/backend-api/conversation",
+            "Set a custom API proxy URL below"
+          ]
+        },
+        "chatgpt.customProxyUrl": {
+          "type": "string",
+          "order": 17,
+          "markdownDescription": "Custom URL for an Unofficial ChatGPT proxy hosted by 3rd parties.",
+          "default": ""
+        },
         "chatgpt.pasteOnClick": {
           "type": "boolean",
           "default": true,
