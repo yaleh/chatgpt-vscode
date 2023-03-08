@@ -6,6 +6,8 @@ ChatGPT AI is a Visual Studio Code extension that enables you to automatically w
 
 Supercharge your coding with AI-powered assistance! Automatically write new code from scratch, ask questions, get explanations, refactor code, find bugs and more 🚀✨
 
+## 03/01/2023: Introducing the official ChatGTP API! Now supported with the powerful gpt-3.5-turbo-0301 model.
+
 ### Links:
 
 - **[Github Repository](https://github.com/yaleh/chatgpt-vscode)**
@@ -29,7 +31,10 @@ Supercharge your coding with AI-powered assistance! Automatically write new code
 - 📝 **Insert code snippets** from the AI's response into the active editor or **copy code snippets** by clicking on them
 
 ## Requirements
-ChatGPT AI requires Visual Studio Code version 1.73.0 or later to be installed on your system.
+To use ChatGPT AI, please ensure that the following requirements are met:
+
+* Visual Studio Code version 1.73.0 or later is installed on your system.
+* You have an OpenAI API key or ChatGPT access token.
 
 ## Installation
 
@@ -56,7 +61,7 @@ To use this extension, you will need an `API key` from OpenAI. To obtain one, fo
 
 To use the ChatGPTUnofficialProxyAPI, you need an OpenAI access token from the ChatGPT web app. You can obtain the access token in either of two ways:
 
-* Use acheong08/OpenAIAuth, which is a Python script to automatically log in and get an access token. This method works only with email and password accounts; it does not support accounts where you authenticate via Microsoft or Google.
+* Use [acheong08/OpenAIAuth](https://github.com/acheong08/OpenAIAuth), which is a Python script to automatically log in and get an access token. This method works only with email and password accounts; it does not support accounts where you authenticate via Microsoft or Google.
 * Manually get an access token by logging in to the ChatGPT web app and opening https://chat.openai.com/api/auth/session, which will return a JSON object containing your access token string.
 
 Access tokens last for approximately eight hours.
@@ -116,10 +121,6 @@ The following commands are available:
 
 Because ChatGPT is a conversational AI, you can ask follow-up questions to the response. The conversation context is maintained between queries, so you can ask multiple questions in a row. 
 To **reset the conversation context**, click `ctrl+shift+p` and select `ChatGPT: Reset Conversation`.
-
----
-
-Please note that this extension is currently a proof of concept and may have some limitations or bugs. We welcome feedback and contributions to improve the extension. Also check out [CodeGPT](https://github.com/timkmecl/codegpt) extension that uses official OpenAI API and also supports other GPT3 models.
 
 ## License
 

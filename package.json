@@ -2,7 +2,7 @@
   "name": "chatgpt-ai",
   "displayName": "ChatGPT AI",
   "description": "Automatically write new code, ask questions, find bugs, and more with ChatGPT AI",
-  "version": "0.7.5",
+  "version": "0.7.7",
   "publisher": "YaleHuang",
   "icon": "resources/extensionIcon.png",
   "license": "MIT",
@@ -195,9 +195,9 @@
           "markdownDescription": "URL for the Unofficial ChatGPT proxy hosted by 3rd parties.",
           "default": "https://chat.duti.tech/api/conversation",
           "enum": [
-              "https://chat.duti.tech/api/conversation",
-              "https://gpt.pawan.krd/backend-api/conversation",
-              "Custom"
+            "https://chat.duti.tech/api/conversation",
+            "https://gpt.pawan.krd/backend-api/conversation",
+            "Custom"
           ],
           "enumDescriptions": [
             "https://chat.duti.tech/api/conversation",
@@ -298,7 +298,7 @@
     "webpack-cli": "^5.0.0"
   },
   "dependencies": {
-    "chatgpt": "^4.7.2",
+    "chatgpt": "^5.0.4",
     "cheerio": "^1.0.0-rc.12",
     "fetch": "^1.1.0",
     "highlight.js": "^11.7.0",

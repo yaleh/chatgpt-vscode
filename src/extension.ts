@@ -84,6 +84,9 @@ export function activate(context: vscode.ExtensionContext) {
 				accessToken: config.get('accessToken'),
 				proxyUrl: config.get('proxyUrl') === "Custom" ? config.get('customProxyUrl') : config.get('proxyUrl')
 			});
+
+			// clear conversation
+			provider.resetConversation();
 		} else if (event.affectsConfiguration('chatgpt.selectedInsideCodeblock')) {
 			const config = vscode.workspace.getConfiguration('chatgpt');
 			provider.setSettings({ selectedInsideCodeblock: config.get('selectedInsideCodeblock') || false });
@@ -153,6 +156,9 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 	private _newAPI() {
 		console.log("New API");
 
+		this._conversation = null;
+		this._currentMessageNumber = 0;
+
 		if (!this._authInfo) {
 			console.warn("Invalid auth info, please set working mode and related auth info.");
 			return;
@@ -162,7 +168,8 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 				console.warn("API key not set, please go to extension settings (read README.md for more info)");
 			}else{
 				this._chatGPTAPI = new ChatGPTAPI({
-					apiKey: this._authInfo.apiKey
+					apiKey: this._authInfo.apiKey,
+					debug: false
 				});
 			}
 		} else if (this._authInfo?.mode === "ChatGPTUnofficialProxyAPI") {
@@ -240,6 +247,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 			if (this._conversation) {
 				this._conversation = null;
 			}
+			this._currentMessageNumber = 0;
 			this._prompt = '';
 			this._response = '';
 			this._fullPrompt = '';
@@ -307,14 +315,12 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 			// Increment the message number
 			this._currentMessageNumber++;
 
-			const agent = this._chatGPTAPI;
-
 			this._setWorkingState('asking');
 
 			try {
 				// Send the search prompt to the ChatGPTAPI instance and store the response
 				let currentMessageNumber = this._currentMessageNumber;
-				const res = await agent.sendMessage(searchPrompt, {
+				const res = await this._chatGPTAPI.sendMessage(searchPrompt, {
 					onProgress: (partialResponse) => {
 						// If the message number has changed, don't show the partial response
 						if (this._currentMessageNumber !== currentMessageNumber) {
