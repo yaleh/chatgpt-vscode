@@ -4,6 +4,8 @@ import { ChatGPTAPI, ChatGPTUnofficialProxyAPI } from 'chatgpt';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as cheerio from 'cheerio';
+import {parse} from "csv";
+import fetch from 'node-fetch';
 
 type AuthInfo = {
 	mode?: string,
@@ -210,10 +212,10 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 		webviewView.webview.onDidReceiveMessage(data => {
 			switch (data.type) {
 				case 'webviewLoaded':
-				{
-					this._view?.webview.postMessage({ type: 'setWorkingState', value: this._workingState});
-					break;
-				}
+					{
+						this._view?.webview.postMessage({ type: 'setWorkingState', value: this._workingState });
+						break;
+					}
 				case 'codeSelected':
 					{
 						let code = data.value;
@@ -223,7 +225,17 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 						vscode.window.activeTextEditor?.insertSnippet(snippet);
 						break;
 					}
-				case 'prompt':
+				case 'promptUpdated':
+					{
+						// find prompt suggestions with searchPrompts()
+						// and send them back to webview with message "showSuggestion" 
+						const userInput = data.value as string;
+						this.searchPrompts(userInput).then(prompts => {
+							this._view?.webview.postMessage({ type: 'showSuggestions', value: prompts });
+						}).catch(err => console.error(err));
+						break;
+					}
+				case 'sendPrompt':
 					{
 						this.searchSelection(data.value);
 						break;
@@ -237,6 +249,32 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 		});
 	}
 
+	private _prompts: String[] = [];
+
+	/**
+ 	 * Search for matched prompts in the prompts.csv file
+ 	 */
+	private async searchPrompts(userInput: string): Promise<string[]> {
+		// If the prompts haven't been loaded yet, fetch them from GitHub
+		if (this._prompts?.length === 0) {
+			const response = await fetch('https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/prompts.csv');
+			const data = await response.text();
+			// Parse the CSV data and store it in the prompts array with npm csv
+			parse(data, { columns: true, relax_quotes: true, ltrim: true, rtrim: true }, (err, output) => {
+				this._prompts = output.map((row: any) => row.prompt);
+			});
+		}
+
+		const matchedPrompts: string[] = [];
+		// Search the prompts array for matches based on the user input
+		this._prompts.forEach(prompt => {
+			if (typeof prompt === 'string' && prompt.toLowerCase().includes(userInput.toLowerCase())) {
+				matchedPrompts.push(prompt as string);
+			}
+		});
+	
+		return matchedPrompts;
+	}
 
 	public async resetConversation() {
 		console.log(this, this._conversation);

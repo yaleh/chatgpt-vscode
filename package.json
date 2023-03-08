@@ -300,6 +300,7 @@
   "dependencies": {
     "chatgpt": "^5.0.4",
     "cheerio": "^1.0.0-rc.12",
+    "csv": "^6.2.8",
     "fetch": "^1.1.0",
     "highlight.js": "^11.7.0",
     "marked": "^4.2.12",
