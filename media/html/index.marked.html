@@ -8,6 +8,9 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/a11y-dark.min.css"> -->
     <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/highlight.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="../styles/highlight-vscode.min.css">
     <link rel="stylesheet" href="../styles/vscode-simulation.css">
     <style>
@@ -172,6 +175,14 @@ print(factorial(5))  # Output: 120
         stopButton.addEventListener("click", (event) => {
             console.log("stop-button was clicked.");
         });
+
+        $(document).ready(function () {
+            $('#prompt-input').autocomplete({
+                position: { my : "left bottom", at: "left top" },
+                source: ['option1', 'option2', 'option3'] // Replace with your own array of options
+            });
+        });
+
 
     </script>
 
