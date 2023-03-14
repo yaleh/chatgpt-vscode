@@ -95,12 +95,16 @@ interface ChatEvent {
       updatedResponseDiv = responsesDiv.children().last() as JQuery<HTMLElement>;
     } else {
       // Create a new div and append it to the "response" div
-      const newDiv = $('<div>').addClass('response');
+      const newDiv = $('<div>').addClass('response m-1 p-1 bg-slate-800');
       responsesDiv.append(newDiv);
       updatedResponseDiv = newDiv;
     }
 
     updateResponseDiv(updatedResponseDiv, response);
+
+    const timestamp = new Date().toLocaleString();
+    updatedResponseDiv.append($('<div>').text(timestamp).addClass('timestamp text-xs text-gray-500'));
+
     lastResponse = response;
   }
 
@@ -151,7 +155,8 @@ interface ChatEvent {
         });
       });
 
-      $(codeBlock).parent().parent().prepend(insertButton, copyButton);
+      insertButton.insertBefore($(codeBlock).parent());
+      copyButton.insertBefore($(codeBlock).parent());
 
       $(codeBlock).addClass('hljs');
     });

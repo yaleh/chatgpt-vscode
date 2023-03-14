@@ -322,10 +322,16 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 				let currentMessageNumber = this._currentMessageNumber;
 				const res = await this._chatGPTAPI.sendMessage(searchPrompt, {
 					onProgress: (partialResponse) => {
+						if (partialResponse.id === partialResponse.parentMessageId) {
+							// A bug of ChatGPT JS lib. It's the first user request.
+							return;
+						}
+
 						// If the message number has changed, don't show the partial response
 						if (this._currentMessageNumber !== currentMessageNumber) {
 							return;
 						}
+						
 						console.log("onProgress");
 						if (this._view && this._view.visible) {
 							// response = partialResponse.text;
@@ -384,10 +390,12 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 		const scriptUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'dist', 'main.js'));
 		const tailwindUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'scripts', 'tailwind.min.js'));
 		const highlightcssUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'styles', 'highlight-vscode.min.css'));
+		const jqueryuicssUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'styles', 'jquery-ui.css'));
 
 		return $.html()
 			.replace('{{tailwindUri}}', tailwindUri.toString())
 			.replace('{{highlightcssUri}}', highlightcssUri.toString())
+			.replace('{{jqueryuicssUri}}', jqueryuicssUri.toString())
 			.replace('{{scriptUri}}', scriptUri.toString());
 	}
 }

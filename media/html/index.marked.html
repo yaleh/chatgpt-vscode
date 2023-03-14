@@ -22,7 +22,7 @@
             <div id="responses" class="pt-4 text-sm scroll">
                 <div class="response">
                     <p>Following content is a example of reponse. It will be deleted from the working page.</p>
-                    <div class="timestamp">Timestamp: [INSERT TIMESTAMP HERE]</div>
+                    <div class="timestamp text-xs text-gray-500">Timestamp: [INSERT TIMESTAMP HERE]</div>
                 </div>
             </div>
         </div>
@@ -111,7 +111,8 @@ print(factorial(5))  # Output: 120
 
             const parsedBlock = marked.parse(markdown_examples[i]);
             const timestamp = new Date().toLocaleString();
-            newDiv.html(`${parsedBlock}<small>${timestamp}</small><br><br>`);
+            newDiv.html(parsedBlock)
+                .append($('<div>').text(timestamp).addClass('timestamp text-xs text-gray-500'));
         }
 
         $("#prompt-input").on("keydown", (event) => {

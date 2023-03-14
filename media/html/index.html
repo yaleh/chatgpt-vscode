@@ -6,96 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="{{tailwindUri}}"></script>
     <link rel="stylesheet" href="{{highlightcssUri}}">
+    <link rel="stylesheet" href="{{jqueryuicssUri}}">
     <style>
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-        }
-
-        .code {
-            white-space: pre;
-        }
-
-        p {
-            padding-top: 0.3rem;
-            padding-bottom: 0.3rem;
-        }
-
-        /* overrides vscodes style reset, displays as if inside web browser */
-        ul,
-        ol {
-            list-style: initial !important;
-            margin-left: 10px !important;
-        }
-
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6 {
-            font-weight: bold !important;
-        }
-
-        .prompt-container {
-            /* display: flex; */
-            align-items: center;
-            padding-top: 10px;
-            padding-bottom: 10px;
-            padding-left: 0px;
-            padding-right: 0px;
-            /* background-color: grey; */
-        }
-
-        .flex-container {
-            display: flex;
-            align-items: center;
-            padding: 0px;
-        }
-
-        #responses {
-            padding-bottom: 60px;
-            /* background-color: blue; */
-        }
-
-        .conversation {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
-        .messages-container {
-            flex-shrink: 10;
-            height: 100%;
-            overflow: auto;
-        }
     </style>
 </head>
 
-<body>
-    <div class="conversation">
-        <div class="messages-container">
-            <div id="responses" class="pt-4 text-sm scroll">
+<body class="p-0">
+    <div class="conversation flex flex-col h-screen">
+        <div class="messages-container p-2 pt-0 flex-1 overflow-y-auto">
+            <div id="responses" class="text-sm scroll">
                 <div class="response">
-                    <p>Following content is a example of reponse. It will be deleted from the working page.</p>
-                    <p>Here's a refactored version of the code with an explanation of the changes made:</p>
-                    <pre><button class="text-xs font-medium leading-5 text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 focus:ring-opacity-50 px-2 py-1 rounded-sm" style="display: block;">Insert</button><code class="p-2 my-2 block overflow-x-scroll inline-flex max-w-full overflow-hidden rounded-sm cursor-pointer" style="display: block;"><div class="code"><span style="text-shadow: 0px 0px 9px rgba(215, 186, 125,0.7), 0px 0px 2px rgba(215, 186, 125,0.4)">for</span><span style=""> </span><span style="opacity:.6;text-shadow: 0px 0px 7px rgba(215, 186, 125,0.25), 0px 0px 3px rgba(215, 186, 125,0.25)">(</span><span style="text-shadow: 0px 0px 9px rgba(215, 186, 125,0.7), 0px 0px 2px rgba(215, 186, 125,0.4)">let</span><span style=""> </span><span style="">contour</span><span style=""> </span><span style="">of</span><span style=""> </span><span style="text-shadow: 0px 0px 9px rgba(215, 186, 125,0.7), 0px 0px 2px rgba(215, 186, 125,0.4)">this</span><span style="opacity:.6;text-shadow: 0px 0px 7px rgba(215, 186, 125,0.25), 0px 0px 3px rgba(215, 186, 125,0.25)">.</span><span style="">contours</span><span style="opacity:.6;text-shadow: 0px 0px 7px rgba(215, 186, 125,0.25), 0px 0px 3px rgba(215, 186, 125,0.25)">)</span><span style=""> </span><span style="opacity:.6;text-shadow: 0px 0px 7px rgba(215, 186, 125,0.25), 0px 0px 3px rgba(215, 186, 125,0.25)">{</span><span style="">
-                      </span><span style="text-shadow: 0px 0px 9px rgba(215, 186, 125,0.7), 0px 0px 2px rgba(215, 186, 125,0.4)">const</span><span style=""> </span><span style="">area</span><span style=""> </span><span style="opacity:.6;text-shadow: 0px 0px 7px rgba(215, 186, 125,0.25), 0px 0px 3px rgba(215, 186, 125,0.25)">=</span><span style=""> </span><span style="">cv</span><span style="opacity:.6;text-shadow: 0px 0px 7px rgba(215, 186, 125,0.25), 0px 0px 3px rgba(215, 186, 125,0.25)">.</span><span style="">contourArea</span><span style="opacity:.6;text-shadow: 0px 0px 7px rgba(215, 186, 125,0.25), 0px 0px 3px rgba(215, 186, 125,0.25)">(</span><span style="">contour</span><span style="opacity:.6;text-shadow: 0px 0px 7px rgba(215, 186, 125,0.25), 0px 0px 3px rgba(215, 186, 125,0.25)">)</span><span style="opacity:.6;text-shadow: 0px 0px 7px rgba(215, 186, 125,0.25), 0px 0px 3px rgba(215, 186, 125,0.25)">;</span><span style="">
-                      </span><span style="text-shadow: 0px 0px 9px rgba(215, 186, 125,0.7), 0px 0px 2px rgba(215, 186, 125,0.4)">const</span><span style=""> </span><span style="">areaRatio</span><span style=""> </span><span style="opacity:.6;text-shadow: 0px 0px 7px rgba(215, 186, 125,0.25), 0px 0px 3px rgba(215, 186, 125,0.25)">=</span><span style=""> </span><span style="">area</span><span style=""> </span><span style="opacity:.6;text-shadow: 0px 0px 7px rgba(215, 186, 125,0.25), 0px 0px 3px rgba(215, 186, 125,0.25)">/</span><span style=""> </span><span style="">srcArea</span><span style="opacity:.6;text-shadow: 0px 0px 7px rgba(215, 186, 125,0.25), 0px 0px 3px rgba(215, 186, 125,0.25)">;</span><span style="">
-                    </span><span style="opacity:.6;text-shadow: 0px 0px 7px rgba(215, 186, 125,0.25), 0px 0px 3px rgba(215, 186, 125,0.25)">}</span></div></code></pre>
-                    <ol>
-                        <li>
-                            <p>The <code>size()</code> method is replaced with a <code>for...of</code> loop that
-                                iterates over the <code>this.contours</code> collection directly.</p>
-                        </li>
-                        <li>
-                            <p>The <code>get()</code> method is removed and the current element is assigned to the
-                                <code>contour</code> variable during each iteration of the loop.
-                            </p>
-                        </li>
-                    </ol>
-                    <div class="timestamp">Timestamp: [INSERT TIMESTAMP HERE]</div>
                 </div>
             </div>
         </div>
@@ -113,15 +33,15 @@
                     class="px-4 py-2 bg-gray-400 text-white font-semibold text-sm cursor-not-allowed">Stop</button>
             </div>
         </div>
-        <div class="prompt-container">
-            <textarea class="h-24 w-full text-white bg-stone-700 p-4 text-sm resize-none"
+        <div class="prompt-container relative">
+            <textarea class="h-24 w-full text-white bg-stone-700 p-2 text-sm resize-none"
                 placeholder="Ask ChatGPT something...&#10;Press Ctrl-Enter to send." id="prompt-input"></textarea>
-            <div class="flex-container">
+            <div class="flex-container flex items-center py-0">
                 <div id="conversation-id" class="w-full text-gray-500 p-0 text-xs text-right" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; ">Conversation ID</div>
                 <button id="reset-button" class="px-0 py-0 text-white font-semibold text-sm" title="Reset conversation">🔄</button>
             </div>
             <button id="send-request"
-                style="position: absolute; bottom: 48px; right:33px; transform: translate(50%, 50%);" title="Send">
+                style="position: absolute; bottom: 40px; right:15px; transform: translate(50%, 50%);" title="Send">
                 📤
             </button>
         </div>
