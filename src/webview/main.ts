@@ -70,10 +70,7 @@ interface ChatEvent {
   });
 
   function updateConversationId(id: string): void {
-    const conversationId = id || "/";
-    const conversationIdText = `Conversation ID: ${conversationId}`;
-    const conversationIdElement = $('#conversation-id');
-    conversationIdElement.text(conversationIdText);
+    $('#conversation-id').text(`Conversation ID: ${id || '/'}`);
   }
 
   function fixCodeBlocks(response: string) {
@@ -203,12 +200,7 @@ interface ChatEvent {
   function setWorkingState(state: string): void {
     workingState = state;
     toggleStopButton(workingState === 'asking');
-    const workingStateElement = $('#working-state');
-    if (workingState === 'asking') {
-      workingStateElement.text('Thinking...');
-    } else {
-      workingStateElement.text('');
-    }
+    $('#working-state').text(workingState === 'asking' ? 'Thinking...' : '');
   }
 
   function toggleStopButton(enabled: boolean): void {
