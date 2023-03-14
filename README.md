@@ -71,7 +71,7 @@ Access tokens last for approximately eight hours.
 To build the extension from source, clone the repository and run `npm install` to install the dependencies. You have to change some code in `chatgpt` module because VSCode runtime does not support `fetch`. Open `node_modules/chatgpt/dist/index.js` and add the following code at the top of the file:
 
 ```js
-import fetch from 'node-fetch'
+import fetch from 'node-fetch';
 ```
 
 Then remove the following lines (around line 15):

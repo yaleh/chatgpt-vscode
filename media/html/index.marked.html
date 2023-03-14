@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.1.2/dist/tailwind.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/a11y-dark.min.css"> -->
     <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/highlight.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
@@ -105,8 +104,6 @@
 
     </div>
     <script>
-        const responsesDiv = document.querySelector("#responses");
-
         const markdown_examples = [
             `
 ## Example 1
@@ -149,37 +146,38 @@ print(factorial(5))  # Output: 120
             xhtml: false
         });
 
-        // let html = '';
+        const responsesDiv = $("#responses");
+        const cachedPrompts = ["Refactor the code: ", "Optimize the code: ", "Explain the code: "];
+
         for (let i = 0; i < markdown_examples.length; i++) {
-            const newDiv = document.createElement('div');
-            newDiv.classList.add('response', 'border', 'border-gray-700', 'rounded-lg', 'p-2', 'm-2');
-            responsesDiv.appendChild(newDiv);
-            // updatedResponseDiv = newDiv;
+            const newDiv = $("<div>", { class: "response border border-gray-700 rounded-lg p-2 m-2" });
+            responsesDiv.append(newDiv);
 
             const parsedBlock = marked.parse(markdown_examples[i]);
             const timestamp = new Date().toLocaleString();
-            // html += `${parsedBlock}<small>${timestamp}</small><br><br>`;
-            newDiv.innerHTML = `${parsedBlock}<small>${timestamp}</small><br><br>`;
+            newDiv.html(`${parsedBlock}<small>${timestamp}</small><br><br>`);
         }
-        // responsesDiv.innerHTML = html;
 
-        const promptInput = document.querySelector("#prompt-input");
-        const stopButton = document.querySelector("#stop-button");
-
-        promptInput.addEventListener("keydown", (event) => {
+        $("#prompt-input").on("keydown", (event) => {
             if (event.key === "Enter") {
                 console.log("Enter key was pressed on prompt-input.");
             }
         });
 
-        stopButton.addEventListener("click", (event) => {
+        $("#stop-button").on("click", (event) => {
             console.log("stop-button was clicked.");
         });
 
         $(document).ready(function () {
             $('#prompt-input').autocomplete({
-                position: { my : "left bottom", at: "left top" },
-                source: ['option1', 'option2', 'option3'] // Replace with your own array of options
+                position: { my: "left bottom", at: "left top" },
+                source: function (request, response) {
+                    const searchTerm = request.term.toLowerCase(); // convert search term to lowercase
+                    const matches = $.grep(cachedPrompts, function (item) {
+                        return item.toLowerCase().indexOf(searchTerm) >= 0; // convert item to lowercase before comparing
+                    });
+                    response(matches);
+                }
             });
         });
 
