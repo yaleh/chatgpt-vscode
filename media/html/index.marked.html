@@ -13,60 +13,12 @@
     <link rel="stylesheet" href="../styles/highlight-vscode.min.css">
     <link rel="stylesheet" href="../styles/vscode-simulation.css">
     <style>
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-        }
-
-        p {
-            py-1;
-        }
-
-        ul,
-        ol {
-            list-disc;
-            ml-4;
-        }
-
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6 {
-            font-bold;
-        }
-
-        .prompt-container {
-            items-center;
-            pt-10;
-            pb-10;
-            pl-0;
-            pr-0;
-        }
-
-        .flex-container {
-            flex;
-            items-center;
-            p-0;
-        }
-
-        #responses {
-            pb-60;
-        }
-
-        .conversation {
-            flex;
-            flex-col;
-            h-screen;
-        }
     </style>
 </head>
 
 <body>
-    <div class="conversation">
-        <div class="messages-container">
+    <div class="conversation flex flex-col h-screen">
+        <div class="messages-container flex-1 overflow-y-auto">
             <div id="responses" class="pt-4 text-sm scroll">
                 <div class="response">
                     <p>Following content is a example of reponse. It will be deleted from the working page.</p>
@@ -88,21 +40,25 @@
                     class="px-4 py-2 bg-gray-400 text-white font-semibold text-sm cursor-not-allowed">Stop</button>
             </div>
         </div>
-        <div class="prompt-container">
+        <div class="prompt-container relative">
             <textarea class="h-24 w-full text-white bg-stone-700 p-4 text-sm resize-none"
                 placeholder="Ask ChatGPT something...&#10;Press Ctrl-Enter to send." id="prompt-input"></textarea>
-            <div class="flex-container">
-                <div id="conversation-id" class="w-full text-gray-500 p-0 text-xs text-right">Conversation ID</div>
+            <div class="flex-container flex items-center py-0">
+                <div id="conversation-id" class="w-full text-gray-500 p-0 text-xs text-right"
+                    style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; ">Conversation ID</div>
                 <button id="reset-button" class="px-0 py-0 text-white font-semibold text-sm"
                     title="Reset conversation">🔄</button>
             </div>
-            <button style="position: absolute; bottom: 65px; right:30px; transform: translate(50%, 50%);"
-                onclick="console.log('Button clicked!')">
+            <button id="send-request"
+                class="absolute transform translate-x-1/2 translate-y-1/2"
+                style="bottom: 48px; right:33px;" title="Send">
                 📤
             </button>
         </div>
 
+
     </div>
+
     <script>
         const markdown_examples = [
             `
