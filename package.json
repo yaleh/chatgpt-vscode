@@ -2,7 +2,7 @@
   "name": "chatgpt-ai",
   "displayName": "ChatGPT AI",
   "description": "Automatically write new code, ask questions, find bugs, and more with ChatGPT AI",
-  "version": "0.7.7",
+  "version": "0.7.8",
   "publisher": "YaleHuang",
   "icon": "resources/extensionIcon.png",
   "license": "MIT",
@@ -27,119 +27,120 @@
     "refactor"
   ],
   "activationEvents": [
-    "onView:chatgpt.chatView",
-    "onCommand:chatgpt.ask",
-    "onCommand:chatgpt.explain",
-    "onCommand:chatgpt.refactor",
-    "onCommand:chatgpt.optimize",
-    "onCommand:chatgpt.findProblems",
-    "onCommand:chatgpt.documentation",
-    "onCommand:chatgpt.complete"
+    "onView:chatgpt-ai.chatView",
+    "onCommand:chatgpt-ai.ask",
+    "onCommand:chatgpt-ai.explain",
+    "onCommand:chatgpt-ai.refactor",
+    "onCommand:chatgpt-ai.optimize",
+    "onCommand:chatgpt-ai.findProblems",
+    "onCommand:chatgpt-ai.documentation",
+    "onCommand:chatgpt-ai.complete",
+    "onCommand:chatgpt-ai.resetConversation"
   ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "chatgpt.ask",
+        "command": "chatgpt-ai.ask",
         "title": "Ask ChatGPT"
       },
       {
-        "command": "chatgpt.explain",
+        "command": "chatgpt-ai.explain",
         "title": "ChatGPT: Explain selection"
       },
       {
-        "command": "chatgpt.refactor",
+        "command": "chatgpt-ai.refactor",
         "title": "ChatGPT: Refactor selection"
       },
       {
-        "command": "chatgpt.findProblems",
+        "command": "chatgpt-ai.findProblems",
         "title": "ChatGPT: Find problems"
       },
       {
-        "command": "chatgpt.optimize",
+        "command": "chatgpt-ai.optimize",
         "title": "ChatGPT: Optimize selection"
       },
       {
-        "command": "chatgpt.documentation",
+        "command": "chatgpt-ai.documentation",
         "title": "ChatGPT: Write documentation"
       },
       {
-        "command": "chatgpt.complete",
+        "command": "chatgpt-ai.complete",
         "title": "ChatGPT: Complete code"
       },
       {
-        "command": "chatgpt.resetConversation",
+        "command": "chatgpt-ai.resetConversation",
         "title": "Reset ChatGPT conversation"
       }
     ],
     "menus": {
       "editor/context": [
         {
-          "command": "chatgpt.ask",
+          "command": "chatgpt-ai.ask",
           "when": "editorTextFocus",
           "group": "chatgpt-menu-group@1"
         },
         {
-          "command": "chatgpt.explain",
+          "command": "chatgpt-ai.explain",
           "when": "editorHasSelection",
           "group": "chatgpt-menu-group@2"
         },
         {
-          "command": "chatgpt.refactor",
+          "command": "chatgpt-ai.refactor",
           "when": "editorHasSelection",
           "group": "chatgpt-menu-group@3"
         },
         {
-          "command": "chatgpt.findProblems",
+          "command": "chatgpt-ai.findProblems",
           "when": "editorHasSelection",
           "group": "chatgpt-menu-group@4"
         },
         {
-          "command": "chatgpt.optimize",
+          "command": "chatgpt-ai.optimize",
           "when": "editorHasSelection",
           "group": "chatgpt-menu-group@5"
         },
         {
-          "command": "chatgpt.documentation",
+          "command": "chatgpt-ai.documentation",
           "when": "editorHasSelection",
           "group": "chatgpt-menu-group@6"
         },
         {
-          "command": "chatgpt.complete",
+          "command": "chatgpt-ai.complete",
           "when": "editorHasSelection",
           "group": "chatgpt-menu-group@7"
         }
       ],
       "commandPalette": [
         {
-          "command": "chatgpt.ask"
+          "command": "chatgpt-ai.ask"
         },
         {
-          "command": "chatgpt.explain",
+          "command": "chatgpt-ai.explain",
           "when": "editorHasSelection"
         },
         {
-          "command": "chatgpt.refactor",
+          "command": "chatgpt-ai.refactor",
           "when": "editorHasSelection"
         },
         {
-          "command": "chatgpt.findProblems",
+          "command": "chatgpt-ai.findProblems",
           "when": "editorHasSelection"
         },
         {
-          "command": "chatgpt.optimize",
+          "command": "chatgpt-ai.optimize",
           "when": "editorHasSelection"
         },
         {
-          "command": "chatgpt.documentation",
+          "command": "chatgpt-ai.documentation",
           "when": "editorHasSelection"
         },
         {
-          "command": "chatgpt.complete",
+          "command": "chatgpt-ai.complete",
           "when": "editorHasSelection"
         },
         {
-          "command": "chatgpt.resetConversation"
+          "command": "chatgpt-ai.resetConversation"
         }
       ]
     },
@@ -156,7 +157,7 @@
       "chatgpt": [
         {
           "type": "webview",
-          "id": "chatgpt.chatView",
+          "id": "chatgpt-ai.chatView",
           "name": "ChatGPT AI"
         }
       ]
@@ -165,7 +166,7 @@
       "title": "ChatGPT AI",
       "type": "object",
       "properties": {
-        "chatgpt.mode": {
+        "chatgpt-ai.mode": {
           "type": "string",
           "order": 0,
           "markdownDescription": "API mode",
@@ -179,17 +180,17 @@
             "Unofficial ChatGPT proxy hosted by 3rd parties."
           ]
         },
-        "chatgpt.apiKey": {
+        "chatgpt-ai.apiKey": {
           "markdownDescription": "OpenAI API key from [https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys)",
           "type": "string",
           "order": 10
         },
-        "chatgpt.accessToken": {
+        "chatgpt-ai.accessToken": {
           "markdownDescription": "ChatGPT access token from [https://chat.openai.com/api/auth/session](https://chat.openai.com/api/auth/session), lasts for ~8 hours",
           "type": "string",
           "order": 15
         },
-        "chatgpt.proxyUrl": {
+        "chatgpt-ai.proxyUrl": {
           "type": "string",
           "order": 16,
           "markdownDescription": "URL for the Unofficial ChatGPT proxy hosted by 3rd parties.",
@@ -205,61 +206,61 @@
             "Set a custom API proxy URL below"
           ]
         },
-        "chatgpt.customProxyUrl": {
+        "chatgpt-ai.customProxyUrl": {
           "type": "string",
           "order": 17,
           "markdownDescription": "Custom URL for an Unofficial ChatGPT proxy hosted by 3rd parties.",
           "default": ""
         },
-        "chatgpt.promptPrefix.explain": {
+        "chatgpt-ai.promptPrefix.explain": {
           "type": "string",
           "default": "Explain what this code does: ",
           "description": "The prompt prefix used for explaining the selected code",
           "order": 30
         },
-        "chatgpt.promptPrefix.refactor": {
+        "chatgpt-ai.promptPrefix.refactor": {
           "type": "string",
           "default": "Refactor this code and explain what's changed: ",
           "description": "The prompt prefix used for refactoring the selected code",
           "order": 40
         },
-        "chatgpt.promptPrefix.findProblems": {
+        "chatgpt-ai.promptPrefix.findProblems": {
           "type": "string",
           "default": "Find problems with the following code, fix them and explain what was wrong (Do not change anything else, if there are no problems say so): ",
           "description": "The prompt prefix used for finding problems in the selected code",
           "order": 50
         },
-        "chatgpt.promptPrefix.documentation": {
+        "chatgpt-ai.promptPrefix.documentation": {
           "type": "string",
           "default": "Write documentation for the following code: ",
           "description": "The prompt prefix used for writing documentation for the selected code",
           "order": 70
         },
-        "chatgpt.promptPrefix.complete": {
+        "chatgpt-ai.promptPrefix.complete": {
           "type": "string",
           "default": "Don't explain the following code.\n\nDon't explain the generated code.\n\nShow the updated code only, no description.\n\nGenerate code according to the last comment:\n\n* Append the code after the comment\n* Keep the comment text",
           "description": "Complete the code according to the last comment.",
           "order": 71
         },
-        "chatgpt.promptPrefix.optimize": {
+        "chatgpt-ai.promptPrefix.optimize": {
           "type": "string",
           "default": "Optimize the following code if there is anything to improve, if not say so: ",
           "description": "The prompt prefix used for optimizing the selected code",
           "order": 60
         },
-        "chatgpt.keepConversation": {
+        "chatgpt-ai.keepConversation": {
           "type": "boolean",
           "default": true,
           "description": "Keep the conversation going by using the same conversation ID for all requests (allows follow-up questions)",
           "order": 80
         },
-        "chatgpt.timeoutLength": {
+        "chatgpt-ai.timeoutLength": {
           "type": "number",
           "default": "120",
           "description": "How long should the request wait for a response before timing out (in seconds)",
           "order": 90
         },
-        "chatgpt.selectedInsideCodeblock": {
+        "chatgpt-ai.selectedInsideCodeblock": {
           "type": "boolean",
           "default": true,
           "description": "Append selected code as a codeblock (```...code...```) instead of plain text",
@@ -282,6 +283,8 @@
   },
   "devDependencies": {
     "@types/glob": "^8.0.0",
+    "@types/jquery": "^3.5.16",
+    "@types/jqueryui": "^1.12.16",
     "@types/mocha": "^10.0.1",
     "@types/node": "16.x",
     "@types/vscode": "^1.73.0",
@@ -303,6 +306,8 @@
     "csv": "^6.2.8",
     "fetch": "^1.1.0",
     "highlight.js": "^11.7.0",
+    "jquery": "^3.6.4",
+    "jquery-ui": "^1.13.2",
     "marked": "^4.2.12",
     "node-fetch": "^3.3.0"
   }

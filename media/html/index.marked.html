@@ -6,75 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.1.2/dist/tailwind.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/a11y-dark.min.css"> -->
     <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/highlight.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="../styles/highlight-vscode.min.css">
-    <link rel="stylesheet" href="../styles/vscode-simulation.css">    
+    <link rel="stylesheet" href="../styles/vscode-simulation.css">
     <style>
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-        }
-
-        .code {
-            white-space: pre;
-        }
-
-        p {
-            padding-top: 0.3rem;
-            padding-bottom: 0.3rem;
-        }
-
-        /* overrides vscodes style reset, displays as if inside web browser */
-        ul,
-        ol {
-            list-style: initial !important;
-            margin-left: 10px !important;
-        }
-
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6 {
-            font-weight: bold !important;
-        }
-
-        .flex-container {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            /* background-color: grey; */
-        }
-
-        #responses {
-            padding-bottom: 60px;
-            /* background-color: blue; */
-        }
-
-        .conversation {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
-        .messages-container {
-            flex-shrink: 10;
-            height: 100%;
-            overflow: auto;
-        }
     </style>
 </head>
 
 <body>
-    <div class="conversation">
-        <div class="messages-container">
+    <div class="conversation flex flex-col h-screen">
+        <div class="messages-container flex-1 overflow-y-auto">
             <div id="responses" class="pt-4 text-sm scroll">
                 <div class="response">
                     <p>Following content is a example of reponse. It will be deleted from the working page.</p>
-                    <div class="timestamp">Timestamp: [INSERT TIMESTAMP HERE]</div>
+                    <div class="timestamp text-xs text-gray-500">Timestamp: [INSERT TIMESTAMP HERE]</div>
                 </div>
             </div>
         </div>
@@ -87,25 +35,42 @@
                 </select>
             </div>
             <div class="stop-container flex items-center">
-                <div id="working-state" class="working-label mr-4 text-stone-300">ChatGPT AI</div>
-                <button id="stop-button" class="px-4 py-2 bg-gray-400 text-white font-semibold text-sm cursor-not-allowed">Stop</button>
+                <div id="working-state" class="working-label mr-4 text-stone-300 text-xs">ChatGPT AI</div>
+                <button id="stop-button"
+                    class="px-4 py-2 bg-gray-400 text-white font-semibold text-sm cursor-not-allowed">Stop</button>
             </div>
-        </div>     
-        <div class="flex-container">
-            <textarea class="h-24 w-full text-white bg-stone-700 p-4 text-sm resize-none" placeholder="Ask ChatGPT something...&#10;Press Ctrl-Enter to send."
-                id="prompt-input"></textarea>
-            <button style="position: absolute; bottom: 31px; right:30px; transform: translate(50%, 50%);"
-                onclick="console.log('Button clicked!')">
-                📤
+        </div>
+        <div class="prompt-container relative">
+            <textarea class="h-24 w-full text-white bg-stone-700 p-4 text-sm resize-none"
+                placeholder="Ask ChatGPT something...&#10;Press Ctrl-Enter to send." id="prompt-input"></textarea>
+            <div class="flex-container flex items-center py-0">
+                <div id="conversation-id" class="w-full text-gray-500 p-0 text-xs text-right"
+                    style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; ">Conversation ID</div>
+                <button id="reset-button" class="mx-2 px-0 py-0 text-white font-semibold text-sm"
+                    title="Reset conversation">
+                    <svg fill="#ffffff" width="12px" height="12px" viewBox="0 0 512 512" data-name="Layer 1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M64,256H34A222,222,0,0,1,430,118.15V85h30V190H355V160h67.27A192.21,192.21,0,0,0,256,64C150.13,64,64,150.13,64,256Zm384,0c0,105.87-86.13,192-192,192A192.21,192.21,0,0,1,89.73,352H157V322H52V427H82V393.85A222,222,0,0,0,478,256Z"></path></g></svg>
+                </button>
+            </div>
+            <button id="send-request" class="absolute transform translate-x-1/2 translate-y-1/2" style="bottom: 48px; right:33px;"
+                title="Send">
+                <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                    <g id="SVGRepo_iconCarrier">
+                        <path
+                            d="M20.33 3.66996C20.1408 3.48213 19.9035 3.35008 19.6442 3.28833C19.3849 3.22659 19.1135 3.23753 18.86 3.31996L4.23 8.19996C3.95867 8.28593 3.71891 8.45039 3.54099 8.67255C3.36307 8.89471 3.25498 9.16462 3.23037 9.44818C3.20576 9.73174 3.26573 10.0162 3.40271 10.2657C3.5397 10.5152 3.74754 10.7185 4 10.85L10.07 13.85L13.07 19.94C13.1906 20.1783 13.3751 20.3785 13.6029 20.518C13.8307 20.6575 14.0929 20.7309 14.36 20.73H14.46C14.7461 20.7089 15.0192 20.6023 15.2439 20.4239C15.4686 20.2456 15.6345 20.0038 15.72 19.73L20.67 5.13996C20.7584 4.88789 20.7734 4.6159 20.7132 4.35565C20.653 4.09541 20.5201 3.85762 20.33 3.66996ZM4.85 9.57996L17.62 5.31996L10.53 12.41L4.85 9.57996ZM14.43 19.15L11.59 13.47L18.68 6.37996L14.43 19.15Z"
+                            fill="#FFFFFF"></path>
+                    </g>
+                </svg>
             </button>
         </div>
 
-    </div>
-    <script>
-        const responsesDiv = document.querySelector("#responses");
 
+    </div>
+
+    <script>
         const markdown_examples = [
-  `
+            `
 ## Example 1
 
 Here is a simple code snippet in JavaScript:
@@ -115,7 +80,7 @@ const greeting = "Hello, World!";
 console.log(greeting);
 \`\`\`
 `,
-  `
+            `
 ## Example 2
 
 Here is a code example in Python:
@@ -130,7 +95,7 @@ def factorial(n):
 print(factorial(5))  # Output: 120
 \`\`\`
 `
-];
+        ];
 
         marked.setOptions({
             renderer: new marked.Renderer(),
@@ -146,26 +111,42 @@ print(factorial(5))  # Output: 120
             xhtml: false
         });
 
-        let html = '';
+        const responsesDiv = $("#responses");
+        const cachedPrompts = ["Refactor the code: ", "Optimize the code: ", "Explain the code: "];
+
         for (let i = 0; i < markdown_examples.length; i++) {
-        const parsedBlock = marked.parse(markdown_examples[i]);
-        const timestamp = new Date().toLocaleString();
-        html += `${parsedBlock}<small>${timestamp}</small><br><br>`;
+            const newDiv = $("<div>", { class: "response border border-gray-700 rounded-lg p-2 m-2" });
+            responsesDiv.append(newDiv);
+
+            const parsedBlock = marked.parse(markdown_examples[i]);
+            const timestamp = new Date().toLocaleString();
+            newDiv.html(parsedBlock)
+                .append($('<div>').text(timestamp).addClass('timestamp text-xs text-gray-500'));
         }
-        responsesDiv.innerHTML = html;
 
-        const promptInput = document.querySelector("#prompt-input");
-        const stopButton = document.querySelector("#stop-button");
-
-        promptInput.addEventListener("keydown", (event) => {
+        $("#prompt-input").on("keydown", (event) => {
             if (event.key === "Enter") {
                 console.log("Enter key was pressed on prompt-input.");
             }
         });
 
-        stopButton.addEventListener("click", (event) => {
+        $("#stop-button").on("click", (event) => {
             console.log("stop-button was clicked.");
         });
+
+        $(document).ready(function () {
+            $('#prompt-input').autocomplete({
+                position: { my: "left bottom", at: "left top" },
+                source: function (request, response) {
+                    const searchTerm = request.term.toLowerCase(); // convert search term to lowercase
+                    const matches = $.grep(cachedPrompts, function (item) {
+                        return item.toLowerCase().indexOf(searchTerm) >= 0; // convert item to lowercase before comparing
+                    });
+                    response(matches);
+                }
+            });
+        });
+
 
     </script>
 

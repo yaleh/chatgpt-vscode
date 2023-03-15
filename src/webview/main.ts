@@ -2,8 +2,29 @@
 
 import * as marked from 'marked';
 import hljs from 'highlight.js';
+import * as $ from 'jquery';
+// import * as jQueryUI from 'jquery-ui';
+import 'jquery-ui/ui/widgets/autocomplete';
 
 declare const acquireVsCodeApi: () => any;
+
+interface ChatResponse {
+  id: string;
+  text: string;
+  parentMessageId?: string;
+  conversationId?: string;
+}
+
+interface ChatRequest {
+  id?: string;
+  text: string;
+  parentMessageId?: string;
+  conversationId?: string;
+}
+
+interface ChatEvent {
+  text: string;
+}
 
 // This script will be run within the webview itself
 // It cannot access the main VS Code APIs directly.
@@ -12,47 +33,87 @@ declare const acquireVsCodeApi: () => any;
 
   let response = '';
   let workingState = 'idle';
+  let cachedPrompts: string[] = [];
+
 
   // Handle messages sent from the extension to the webview
   window.addEventListener("message", (event: MessageEvent) => {
     const message = event.data;
     switch (message.type) {
       case "addResponse": {
-        response = message.value;
-        setResponse();
+        // const chatResponse: ChatResponse = message.value;
+        // response = message.value;
+        updateResponse(message.value as ChatResponse);
         break;
       }
-      case "clearResponse": {
-        response = '';
+      case "addReqeust": {
+        updateRequest(message.values as ChatRequest);
+        break;
+      }
+      case "addEvent": {
+        updateEvent(message.values as ChatEvent);
+        break;
+      }
+      case "clearResponses": {
+        clearResponses();
         break;
       }
       case "setPrompt": {
-        const promptInput = document.getElementById("prompt-input") as HTMLInputElement;
-        promptInput.value = message.value;
+        $('#prompt-input').val(message.value);
         break;
       }
       case "setWorkingState": {
         setWorkingState(message.value);
         break;
       }
+      case "setConversationId": {
+        updateConversationId(message.value);
+        break;
+      }
+      case "promptsLoaded": {
+        cachedPrompts = message.value;
+        break;
+      }
     }
   });
+
+  function updateConversationId(id: string): void {
+    $('#conversation-id').text(`Conversation ID: ${id || '/'}`);
+  }
 
   function fixCodeBlocks(response: string) {
     const REGEX_CODEBLOCK = new RegExp('\`\`\`', 'g');
     const matches = response.match(REGEX_CODEBLOCK);
 
     const count = matches ? matches.length : 0;
-    if (count % 2 === 0) {
-      return response;
-    } else {
-      return response.concat('\n\`\`\`');
-    }
+    return count % 2 === 0 ? response : response.concat('\n\`\`\`');
   }
 
-  let lastMessageId: number | null = null;
+  let lastResponse: ChatResponse | null = null;
 
-  function setResponse(messageId: number | null = null) {
+  function updateResponse(response: ChatResponse): void {
+    const responsesDiv = $('#responses');
+    let updatedResponseDiv: JQuery<HTMLElement> | null = null;
+
+    if (responsesDiv.children().length > 0 && (response.id === null || response?.id === lastResponse?.id)) {
+      // Update the existing response
+      updatedResponseDiv = responsesDiv.children().last() as JQuery<HTMLElement>;
+    } else {
+      // Create a new div and append it to the "response" div
+      const newDiv = $('<div>').addClass('response m-1 p-1 bg-slate-800');
+      responsesDiv.append(newDiv);
+      updatedResponseDiv = newDiv;
+    }
+
+    updateResponseDiv(updatedResponseDiv, response);
+
+    const timestamp = new Date().toLocaleString();
+    updatedResponseDiv.append($('<div>').text(timestamp).addClass('timestamp text-xs text-gray-500'));
+
+    lastResponse = response;
+  }
+
+  function updateResponseDiv(div: JQuery<HTMLElement>, response: ChatResponse) {
     const markedOptions: marked.MarkedOptions = {
       renderer: new marked.Renderer(),
       highlight: (code: string, lang: string) => {
@@ -69,35 +130,16 @@ declare const acquireVsCodeApi: () => any;
 
     marked.setOptions(markedOptions);
 
-    response = fixCodeBlocks(response);
-    const html = marked.parse(response);
+    var fixedResponseText = fixCodeBlocks(response.text);
+    const html = marked.parse(fixedResponseText);
 
-    const responsesDiv = document.getElementById("responses") as HTMLDivElement;
+    div.html(html);
 
-    let updatedResponseDiv: HTMLElement | null = null;
+    div.find('pre > code').each((i, codeBlock) => {
+      const code = $(codeBlock)?.text();
 
-    if (responsesDiv.childElementCount > 0 && responsesDiv.lastChild !== null && (messageId === null || messageId === lastMessageId)) {
-      // Update the existing response
-      updatedResponseDiv = responsesDiv.lastChild as HTMLElement;
-      updatedResponseDiv.innerHTML = html;
-    } else {
-      // Create a new div and append it to the "response" div
-      const newDiv = document.createElement('div');
-      newDiv.classList.add('response');
-      newDiv.innerHTML = html;
-      responsesDiv.appendChild(newDiv);
-      updatedResponseDiv = newDiv;
-    }
-
-    const codeBlocks = updatedResponseDiv.querySelectorAll('pre > code');
-
-    for (let i = 0; i < codeBlocks.length; i++) {
-      const codeBlock = codeBlocks[i] as HTMLElement;
-      const innerText = codeBlock.innerText;
-    
-      const insertButton = createCodeSnippetButton('Insert', 'bg-indigo-600', (e) => {
+      const insertButton = createCodeSnippetButton('Insert', 'bg-indigo-600', (e: JQuery.ClickEvent) => {
         e.preventDefault();
-        const code = codeBlock?.innerText;
         if (code) {
           vscode.postMessage({
             type: 'codeSelected',
@@ -105,32 +147,29 @@ declare const acquireVsCodeApi: () => any;
           });
         }
       });
-    
+
       const copyButton = createCodeSnippetButton('Copy', 'bg-blue-400', (e) => {
         e.preventDefault();
-        const code = codeBlock.innerText;
         navigator.clipboard.writeText(code).then(() => {
           console.log('Code copied to clipboard');
           const popup = createCodeSnippetPopup('Code copied to clipboard');
-          document.body.appendChild(popup);
+          $('body').append(popup);
           setTimeout(() => {
             popup.remove();
           }, 2000);
         });
       });
-    
-      codeBlock.parentNode?.parentNode?.insertBefore(insertButton, codeBlock.parentNode);
-      codeBlock.parentNode?.parentNode?.insertBefore(copyButton, codeBlock.parentNode);
-    
-      codeBlock.classList.add('hljs');
-    }
+
+      insertButton.insertBefore($(codeBlock).parent());
+      copyButton.insertBefore($(codeBlock).parent());
+
+      $(codeBlock).addClass('hljs');
+    });
 
   }
 
-  function createCodeSnippetButton(text: string, color: string, clickHandler: (e: MouseEvent) => void) {
-    const button = document.createElement('button');
-    button.textContent = text;
-    button.classList.add(
+  function createCodeSnippetButton(text: string, color: string, clickHandler: (e: JQuery.ClickEvent) => void): JQuery<HTMLElement> {
+    const button = $('<button>').text(text).addClass([
       'text-xs',
       'font-medium',
       'leading-5',
@@ -143,86 +182,105 @@ declare const acquireVsCodeApi: () => any;
       'py-1',
       'rounded-sm',
       color
-    );
-    button.addEventListener('click', clickHandler);
+    ].join(' '));
+    button.on('click', clickHandler);
     return button;
   }
-  
-  function createCodeSnippetPopup(text: string) {
-    const popup = document.createElement('div');
-    popup.textContent = text;
-    popup.classList.add(
-      'text-xs',
-      'font-medium',
-      'leading-5',
-      'text-white',
-      'bg-green-500',
-      'p-2',
-      'rounded-sm',
-      'absolute',
-      'top-0',
-      'right-0',
-      'mt-2',
-      'mr-2'
-    );
+
+  function createCodeSnippetPopup(text: string): JQuery<HTMLElement> {
+    const popup = $('<div>').text(text).addClass('text-xs font-medium leading-5 text-white bg-green-500 p-2 rounded-sm absolute top-0 right-0 mt-2 mr-2');
     return popup;
   }
 
-  function setWorkingState(state: string) {
-    workingState = state;
-    toggleStopButton(workingState === 'asking');
-    const workingStateElement = document.getElementById('working-state') as HTMLElement;
-    if (workingState === 'asking') {
-      workingStateElement.innerText = 'Thinking...';
-    } else {
-      workingStateElement.innerText = '';
-    }
+  function clearResponses() {
+    $("#responses").empty();
+    lastResponse = null;
   }
 
-  function toggleStopButton(enabled: boolean) {
-    const button = document.getElementById('stop-button') as HTMLButtonElement;
+  function updateRequest(request: ChatRequest) {
+    // TODO
+  }
+
+  function updateEvent(event: ChatEvent) {
+    // TODO
+  }
+
+  function setWorkingState(state: string): void {
+    workingState = state;
+    toggleStopButton(workingState === 'asking');
+    $('#working-state').text(workingState === 'asking' ? 'Thinking...' : '');
+  }
+
+  function toggleStopButton(enabled: boolean): void {
+    const button = $('#stop-button');
     if (enabled) {
-      button.disabled = false;
-      button.classList.remove('bg-gray-400', 'cursor-not-allowed');
-      button.classList.add('bg-red-600', 'hover:bg-red-700');
+      button.prop('disabled', false)
+        .removeClass('bg-gray-400 cursor-not-allowed')
+        .addClass('bg-red-600 hover:bg-red-700');
     } else {
-      button.disabled = true;
-      button.classList.remove('bg-red-600', 'hover:bg-red-700');
-      button.classList.add('bg-gray-400', 'cursor-not-allowed');
+      button.prop('disabled', true)
+        .removeClass('bg-red-600 hover:bg-red-700')
+        .addClass('bg-gray-400 cursor-not-allowed');
     }
   }
 
   // Listen for keyup events on the prompt input element
-  const promptInput = document.getElementById('prompt-input') as HTMLInputElement;
-  promptInput.addEventListener('keyup', (e: KeyboardEvent) => {
+  const promptInput = $('#prompt-input');
+  promptInput.on('keyup', (e: JQuery.KeyUpEvent) => {
     // If the key combination that was pressed was Ctrl+Enter
     if (e.keyCode === 13 && e.ctrlKey) {
-      sendMessage(promptInput.value);
+      sendMessage(promptInput.val() as string);
     }
   });
 
-  // Listen for click events on the "send-request" button
-  const sendButton = document.getElementById('send-request') as HTMLButtonElement;
-  sendButton.addEventListener('click', () => {
-    sendMessage(promptInput.value);
+  const sendButton = $('#send-request');
+  sendButton.on('click', () => {
+    sendMessage(promptInput.val() as string);
   });
 
   // Function to send a message to the extension
   function sendMessage(value: string) {
     vscode.postMessage({
-      type: 'prompt',
+      type: 'sendPrompt',
       value: value
     });
   }
 
   // Listen for click events on the stop button
-  const stopButton = document.getElementById('stop-button') as HTMLButtonElement;
-  stopButton.addEventListener('click', () => {
+  $('#stop-button').on('click', () => {
     vscode.postMessage({
       type: 'abort'
     });
   });
 
-  vscode.postMessage({type: 'webviewLoaded'});
+  // Listen for click events on the reset button and send message resetConversation
+  $('#reset-button').on('click', () => {
+    vscode.postMessage({
+      type: 'resetConversation'
+    });
+  });
+
+  // vscode.postMessage({ type: 'webviewLoaded' });
+
+  $(document).ready(function () {
+    vscode.postMessage({ type: 'webviewLoaded' });
+    $('#prompt-input').autocomplete({
+      position: { my: "left bottom", at: "left top" },
+      source: function (request: any, response: Function) {
+        // if cachedPrompts is empty, postMessage 'loadPrompts'
+        if(cachedPrompts.length === 0) {
+          vscode.postMessage({ type: 'loadPrompts'});
+          return;
+        }
+
+        const searchTerm = request.term.toLowerCase(); // convert search term to lowercase
+        const matches = $.grep(cachedPrompts, function (item) {
+          return item.toLowerCase().indexOf(searchTerm) >= 0; // convert item to lowercase before comparing
+        });
+        response(matches);
+      }
+    });
+  });
+
 })();
 
