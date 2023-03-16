@@ -111,6 +111,10 @@ interface ChatEvent {
     updatedResponseDiv.append($('<div>').text(timestamp).addClass('timestamp text-xs text-gray-500'));
 
     lastResponse = response;
+
+    // Scroll to the bottom of the messages container
+    const messagesContainer = $('#messages-container');
+    messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
   }
 
   function updateResponseDiv(div: JQuery<HTMLElement>, response: ChatResponse) {

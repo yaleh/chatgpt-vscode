@@ -156,7 +156,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 
 	// This private method initializes a new ChatGPTAPI instance
 	private _newAPI() {
-		console.log("New API");
+		// console.log("New API");
 
 		this._conversation = null;
 		this._currentMessageNumber = 0;
@@ -365,7 +365,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 			this._view?.webview.postMessage({type: 'addEvent', value: {text: '[ERROR] "API key not set or wrong, please go to extension settings to set it (read README.md for more info)"'}});			
 		} else {
 			// If successfully signed in
-			console.log("sendMessage");
+			// console.log("sendMessage");
 
 			// Make sure the prompt is shown
 			this._view?.webview.postMessage({ type: 'setPrompt', value: this._prompt });
@@ -390,7 +390,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 							return;
 						}
 						
-						console.log("onProgress");
+						// console.log("onProgress");
 						if (this._view && this._view.visible) {
 							// response = partialResponse.text;
 							this._view.webview.postMessage({ type: 'addResponse', value: partialResponse });
