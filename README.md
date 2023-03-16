@@ -6,7 +6,14 @@ ChatGPT AI is a Visual Studio Code extension that enables you to automatically w
 
 Supercharge your coding with AI-powered assistance! Automatically write new code from scratch, ask questions, get explanations, refactor code, find bugs and more 🚀✨
 
-## 03/01/2023: Introducing the official ChatGTP API! Now supported with the powerful gpt-3.5-turbo-0301 model.
+## Configuration Changes in v0.7.8 - March 16, 2023
+
+Attention users, a new version v0.7.8 of our software has been released. Please note that this version contains configuration changes that may require you to reconfigure your settings. 
+
+We apologize for any inconvenience this may cause and we appreciate your patience as we strive to improve our software. Please refer to the release notes or documentation for more information on the configuration changes in this version. 
+
+Thank you for using our software.
+
 
 ### Links:
 

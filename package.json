@@ -46,27 +46,27 @@
       },
       {
         "command": "chatgpt-ai.explain",
-        "title": "ChatGPT: Explain selection"
+        "title": "ChatGPT-AI: Explain selection"
       },
       {
         "command": "chatgpt-ai.refactor",
-        "title": "ChatGPT: Refactor selection"
+        "title": "ChatGPT-AI: Refactor selection"
       },
       {
         "command": "chatgpt-ai.findProblems",
-        "title": "ChatGPT: Find problems"
+        "title": "ChatGPT-AI: Find problems"
       },
       {
         "command": "chatgpt-ai.optimize",
-        "title": "ChatGPT: Optimize selection"
+        "title": "ChatGPT-AI: Optimize selection"
       },
       {
         "command": "chatgpt-ai.documentation",
-        "title": "ChatGPT: Write documentation"
+        "title": "ChatGPT-AI: Write documentation"
       },
       {
         "command": "chatgpt-ai.complete",
-        "title": "ChatGPT: Complete code"
+        "title": "ChatGPT-AI: Complete code"
       },
       {
         "command": "chatgpt-ai.resetConversation",
@@ -149,7 +149,7 @@
         {
           "id": "chatgpt",
           "title": "ChatGPT AI",
-          "icon": "resources/icon.png"
+          "icon": "resources/icon-48.png"
         }
       ]
     },
@@ -194,14 +194,14 @@
           "type": "string",
           "order": 16,
           "markdownDescription": "URL for the Unofficial ChatGPT proxy hosted by 3rd parties.",
-          "default": "https://chat.duti.tech/api/conversation",
+          "default": "https://bypass.duti.tech/api/conversation",
           "enum": [
-            "https://chat.duti.tech/api/conversation",
+            "https://bypass.duti.tech/api/conversation",
             "https://gpt.pawan.krd/backend-api/conversation",
             "Custom"
           ],
           "enumDescriptions": [
-            "https://chat.duti.tech/api/conversation",
+            "https://bypass.duti.tech/api/conversation",
             "https://gpt.pawan.krd/backend-api/conversation",
             "Set a custom API proxy URL below"
           ]

@@ -214,13 +214,13 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 				case 'webviewLoaded':
 					{
 						this._view?.webview.postMessage({ type: 'setWorkingState', value: this._workingState });
-						this.loadAwesomePrompts();
+						// this.loadAwesomePrompts();
 						break;
 					}
 				case 'loadPrompts':
 					{
 						// force prompts updating
-						this.loadAwesomePrompts();
+						// this.loadAwesomePrompts();
 						break;
 					}
 				case 'codeSelected':
