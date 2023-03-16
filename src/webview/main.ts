@@ -46,12 +46,12 @@ interface ChatEvent {
         updateResponse(message.value as ChatResponse);
         break;
       }
-      case "addReqeust": {
-        updateRequest(message.values as ChatRequest);
+      case "addRequest": {
+        updateRequest(message.value as ChatRequest);
         break;
       }
       case "addEvent": {
-        updateEvent(message.values as ChatEvent);
+        updateEvent(message.value as ChatEvent);
         break;
       }
       case "clearResponses": {
@@ -105,7 +105,7 @@ interface ChatEvent {
       updatedResponseDiv = newDiv;
     }
 
-    updateResponseDiv(updatedResponseDiv, response);
+    updateMessageDiv(updatedResponseDiv, response.text);
 
     const timestamp = new Date().toLocaleString();
     updatedResponseDiv.append($('<div>').text(timestamp).addClass('timestamp text-xs text-gray-500'));
@@ -117,7 +117,7 @@ interface ChatEvent {
     messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
   }
 
-  function updateResponseDiv(div: JQuery<HTMLElement>, response: ChatResponse) {
+  function updateMessageDiv(div: JQuery<HTMLElement>, text: string) {
     const markedOptions: marked.MarkedOptions = {
       renderer: new marked.Renderer(),
       highlight: (code: string, lang: string) => {
@@ -134,7 +134,7 @@ interface ChatEvent {
 
     marked.setOptions(markedOptions);
 
-    var fixedResponseText = fixCodeBlocks(response.text);
+    var fixedResponseText = fixCodeBlocks(text);
     const html = marked.parse(fixedResponseText);
 
     div.html(html);
@@ -202,11 +202,33 @@ interface ChatEvent {
   }
 
   function updateRequest(request: ChatRequest) {
-    // TODO
+    const responsesDiv = $('#responses');
+    let updatedRequestDiv = $('<div>').addClass('request m-1 p-1');
+    responsesDiv.append(updatedRequestDiv);
+
+    updateMessageDiv(updatedRequestDiv, request.text);
+
+    const timestamp = new Date().toLocaleString();
+    updatedRequestDiv.append($('<div>').text(timestamp).addClass('timestamp text-xs text-gray-500'));
+
+    // Scroll to the bottom of the messages container
+    const messagesContainer = $('#messages-container');
+    messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
   }
 
   function updateEvent(event: ChatEvent) {
-    // TODO
+    const responsesDiv = $('#responses');
+    let updatedRequestDiv = $('<div>').addClass('event m-1 p-1 text-gray-500');
+    responsesDiv.append(updatedRequestDiv);
+
+    updateMessageDiv(updatedRequestDiv, event.text);
+
+    const timestamp = new Date().toLocaleString();
+    updatedRequestDiv.append($('<div>').text(timestamp).addClass('timestamp text-xs text-gray-500'));
+
+    // Scroll to the bottom of the messages container
+    const messagesContainer = $('#messages-container');
+    messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
   }
 
   function setWorkingState(state: string): void {

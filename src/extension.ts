@@ -370,13 +370,19 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 		this._view?.show?.(true);
 
 		if (!this._chatGPTAPI) {
-			this._view?.webview.postMessage({type: 'addEvent', value: {text: '[ERROR] "API key not set or wrong, please go to extension settings to set it (read README.md for more info)"'}});			
+			this._view?.webview.postMessage({type: 'addEvent', value: {text: '[ERROR] API key not set or wrong, please go to extension settings to set it (read README.md for more info).'}});			
 		} else {
 			// If successfully signed in
 			// console.log("sendMessage");
 
 			// Make sure the prompt is shown
 			this._view?.webview.postMessage({ type: 'setPrompt', value: this._prompt });
+
+			// Show request history div
+			this._view?.webview.postMessage({
+				type: 'addRequest',
+				value: { text: searchPrompt, parentMessageId: this._conversation?.parentMessageId }
+			});
 
 			// Increment the message number
 			this._currentMessageNumber++;
@@ -418,14 +424,14 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 						conversationId: res.conversationId,
 						parentMessageId: res.id
 					};
-					this._view?.webview?.postMessage({type: 'setConversationId', value: res.parentMessageId});
+					this._view?.webview?.postMessage({type: 'setConversationId', value: res.conversationId});
 				}
 			} catch (e) {
 
 				console.error(e);
 				// response += `\n\n---\n[ERROR] ${e}`;
 				this._view?.show?.(true);
-				this._view?.webview.postMessage({type: 'addEvent', value: {text: `\n\n---\n[ERROR] ${e}`}});
+				this._view?.webview.postMessage({type: 'addEvent', value: {text: `[ERROR] ${e}`}});
 			}
 		}
 
@@ -441,6 +447,8 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 	public abort(){
 		this._abortController?.abort();
 		this._setWorkingState("idle");
+
+		this._view?.webview.postMessage({type: 'addEvent', value: {text: '[EVENT] Aborted by user.'}});			
 
 		// reset the controller
 		this._abortController = new AbortController();
