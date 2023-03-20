@@ -26,16 +26,23 @@ Thank you for using our software.
 
 ## Features
 - 💡 **Ask general questions** or use code snippets from the editor to query ChatGPT via an input box in the sidebar
-- 🖱️ Right click on a code selection and run one of the context menu **shortcuts**
-	- automatically write documentation for your code
-	- explain the selected code
-	- refactor or optimize it
-	- find problems with it
-	- complete the code according to the comments
+- 💬 **View chat history** with requests and responses
+- 📚 **Multiple types of context** available
+  - ❌ No context
+  - 📝 Selected text
+  - 📂 Whole file
+  - 📂🔍 All opened files
+- 🖱️ Right click on a code selection and run one of the context menu **shortcuts** for your code:
+  - 📖 Automatically generate documentation
+  - 🤔 Explain the selected code
+  - ♻️ Refactor or optimize the code
+  - 🐛 Find problems with the code
+  - 💻 Complete the code according to the comments
 - 💻 View ChatGPT's responses in a panel next to the editor
 - 🚀 See the response as it is being generated **in real time**
-- 💬 Ask **follow-up questions** to the response (conversation context is maintained)
-- 📝 **Insert code snippets** from the AI's response into the active editor or **copy code snippets** by clicking on them
+- 💬 Ask **follow-up questions** to the response and maintain conversation context
+- 📝 **Insert code snippets** from the AI's response into the active editor with corrected indentation
+- 📋 **Copy code snippets** to the clipboard.
 
 ## Requirements
 To use ChatGPT AI, please ensure that the following requirements are met:

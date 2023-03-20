@@ -250,16 +250,6 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 					vscode.window.activeTextEditor?.insertSnippet(snippet);
 					break;
 				}
-				// case 'promptUpdated':
-				// 	{
-				// 		// find prompt suggestions with searchPrompts()
-				// 		// and send them back to webview with message "showSuggestion" 
-				// 		const userInput = data.value as string;
-				// 		this.searchPrompts(userInput).then(prompts => {
-				// 			this._view?.webview.postMessage({ type: 'showSuggestions', value: prompts });
-				// 		}).catch(err => console.error(err));
-				// 		break;
-				// 	}
 				case 'sendPrompt':
 					{
 						this.askWithContext(data.value.task, data.value.context);
