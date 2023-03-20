@@ -268,7 +268,10 @@ interface ChatEvent {
   function sendMessage(value: string) {
     vscode.postMessage({
       type: 'sendPrompt',
-      value: value
+      value: {
+        task: value,
+        context: $('#context-select').val()
+      }
     });
   }
 

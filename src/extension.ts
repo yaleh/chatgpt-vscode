@@ -50,7 +50,7 @@ export function activate(context: vscode.ExtensionContext) {
 	const commandHandler = (command:string) => {
 		const config = vscode.workspace.getConfiguration('chatgpt-ai');
 		const prompt = config.get(command) as string;
-		provider.askSelection(prompt);
+		provider.askWithContext(prompt, "selection");
 	};
 
 	// Register the commands that can be called from the extension's package.json
@@ -59,7 +59,7 @@ export function activate(context: vscode.ExtensionContext) {
 			vscode.window.showInputBox({ prompt: 'What do you want to do?' })
 				.then((value) => {
 					if (value !== undefined && value !== null) {
-						provider.askSelection(value);
+						provider.askWithContext(value, "selection");
 					}
 				})
 		),
@@ -242,7 +242,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 				// 	}
 				case 'sendPrompt':
 					{
-						this.askSelection(data.value);
+						this.askWithContext(data.value.task, data.value.context);
 						break;
 					}
 				case 'abort':
@@ -315,7 +315,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 		}
 	}
 
-	public async askSelection(task: string): Promise<void> {
+	public async askWithContext(task: string, context: string): Promise<void> {
 		this._task = task || "";
 
 		if (!this._chatGPTAPI) {
@@ -325,13 +325,19 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 		// show chat view
 		this._view?.show?.(!this._view);
 
-		const selection = vscode.window.activeTextEditor?.selection;
-		const selectedText = selection && vscode.window.activeTextEditor?.document.getText(selection);
-		const languageId = this._settings.codeblockWithLanguageId
-			? vscode.window.activeTextEditor?.document?.languageId || ""
-			: "";
+		let searchPrompt: string;
 
-		let searchPrompt = selectedText ? `${task}\n${"```"}${languageId}\n${selectedText}\n${"```"}\n` : task;
+		if (context === 'selection') {
+			const selection = vscode.window.activeTextEditor?.selection;
+			const selectedText = selection && vscode.window.activeTextEditor?.document.getText(selection);
+			const languageId = this._settings.codeblockWithLanguageId
+				? vscode.window.activeTextEditor?.document?.languageId || ""
+				: "";
+			searchPrompt = selectedText ? `${task}\n${"```"}${languageId}\n${selectedText}\n${"```"}\n` : task;
+		} else { // context is 'none'
+			searchPrompt = task;
+		}
+
 		this._fullPrompt = searchPrompt;
 
 		this._askChatGPT(searchPrompt);
