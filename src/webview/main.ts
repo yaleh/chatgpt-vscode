@@ -247,12 +247,12 @@ interface ChatEvent {
     const button = $('#stop-button');
     if (enabled) {
       button.prop('disabled', false)
-        .removeClass('bg-gray-400 cursor-not-allowed')
+        .removeClass('cursor-not-allowed')
         .addClass('bg-red-600 hover:bg-red-700');
     } else {
       button.prop('disabled', true)
         .removeClass('bg-red-600 hover:bg-red-700')
-        .addClass('bg-gray-400 cursor-not-allowed');
+        .addClass('cursor-not-allowed');
     }
   }
 

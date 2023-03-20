@@ -28,15 +28,17 @@
         </div>
         <div class="flex items-center justify-between">
             <div class="flex items-center">
-                <div class="m-2 text-stone-300 text-sm">Context</div>
+                <div class="mx-1 text-stone-300 text-sm">Context</div>
                 <select id="context-select" class="bg-stone-700 text-sm">
                     <option value="none" selected>None</option>
                     <option value="selection">Selection</option>
+                    <option value="whole_file">Whole File</option>
+                    <option value="all_opened_files">All Opened Files</option>
                 </select>
             </div>
             <div class="stop-container flex items-center">
                 <div id="working-state" class="working-label mr-4 text-stone-300 text-xs">ChatGPT AI</div>
-                <button id="stop-button" class="px-4 py-2 bg-gray-400 text-white font-semibold text-sm cursor-not-allowed">
+                <button id="stop-button" class="p-1 cursor-not-allowed" title="Stop">
                     <svg width="20px" height="20px" viewBox="0 0 24 24" role="img" xmlns="http://www.w3.org/2000/svg"
                         aria-labelledby="cancelIconTitle" stroke="#ffffff" stroke-width="1" stroke-linecap="square"
                         stroke-linejoin="miter" fill="none" color="#000000">
@@ -51,7 +53,7 @@
                             </path>
                         </g>
                     </svg>
-                </button>            
+                </button>          
             </div>
         </div>
         <div class="prompt-container relative">
