@@ -326,17 +326,49 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 		this._view?.show?.(!this._view);
 
 		let searchPrompt: string;
+		let languageId: string;
 
-		if (context === 'selection') {
+		switch (context) {
+		  case 'selection':
 			const selection = vscode.window.activeTextEditor?.selection;
 			const selectedText = selection && vscode.window.activeTextEditor?.document.getText(selection);
-			const languageId = this._settings.codeblockWithLanguageId
-				? vscode.window.activeTextEditor?.document?.languageId || ""
-				: "";
+			languageId = this._settings.codeblockWithLanguageId
+			  ? vscode.window.activeTextEditor?.document?.languageId || ""
+			  : "";
 			searchPrompt = selectedText ? `${task}\n${"```"}${languageId}\n${selectedText}\n${"```"}\n` : task;
-		} else { // context is 'none'
+			break;
+		  case 'whole_file':
+			const activeDoc = vscode.window.activeTextEditor?.document;
+			languageId = this._settings.codeblockWithLanguageId ? activeDoc?.languageId || "" : "";
+			const fileContent = activeDoc ? activeDoc.getText() : "";
+			searchPrompt = `${task}\n${"```"}${languageId}\n${fileContent}\n${"```"}\n`;
+			break;
+		  case 'all_opened_files':
+			const activeTabGroup = vscode.window.tabGroups.activeTabGroup;
+			const tabs = activeTabGroup.tabs;
+		
+			if (tabs.length > 0) {
+			  let mergedContent = '';
+			  const copiedFiles: string[] = [];
+		
+			  for (const tab of tabs) {
+				const uri = (tab.input as vscode.TabInputText).uri;
+				if (uri && uri.scheme === 'file') {
+				  const filename = uri.fsPath;
+				  const content = await vscode.workspace.fs.readFile(uri);
+				  mergedContent += `## ${filename}\n\n\`\`\`\n${content}\n\`\`\`\n\n`;
+				  copiedFiles.push(filename);
+				}
+			  }
+			  searchPrompt = `${task}\n${mergedContent}`;
+			} else {
+			  searchPrompt = task;
+			}
+			break;
+		  default:
 			searchPrompt = task;
 		}
+		
 
 		this._fullPrompt = searchPrompt;
 
