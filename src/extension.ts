@@ -13,7 +13,13 @@ type AuthInfo = {
 	accessToken?: string,
 	proxyUrl?: string
 };
-type Settings = {selectedInsideCodeblock?: boolean, codeblockWithLanguageId?: boolean, keepConversation?: boolean, timeoutLength?: number};
+interface Settings {
+  selectedInsideCodeblock?: boolean;
+  codeblockWithLanguageId?: boolean;
+  keepConversation?: boolean;
+  timeoutLength?: number;
+  indentOnInserting?: boolean;
+}
 type WorkingState = 'idle' | 'asking';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -46,6 +52,9 @@ export function activate(context: vscode.ExtensionContext) {
 		})
 	);
 
+	vscode.window.onDidChangeTextEditorSelection((event) => provider.setContextSelection(
+	  event.textEditor.selection.isEmpty ? 'none' : 'selection'
+	));
 
 	const commandHandler = (command:string) => {
 		const config = vscode.workspace.getConfiguration('chatgpt-ai');
@@ -102,13 +111,12 @@ export function activate(context: vscode.ExtensionContext) {
 		} else if (event.affectsConfiguration('chatgpt-ai.timeoutLength')) {
 			const config = vscode.workspace.getConfiguration('chatgpt-ai');
 			provider.setSettings({ timeoutLength: config.get('timeoutLength') || 60 });
+		} else if (event.affectsConfiguration('chatgpt-ai.indentOnInserting')) {
+			const config = vscode.workspace.getConfiguration('chatgpt-ai');
+			provider.setSettings({ indentOnInserting: config.get('indentOnInserting') || false });
 		}
 	});
 }
-
-
-
-
 
 class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 	public static readonly viewType = 'chatgpt-ai.chatView';
@@ -131,7 +139,8 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 		selectedInsideCodeblock: false,
 		codeblockWithLanguageId: false,
 		keepConversation: true,
-		timeoutLength: 60
+		timeoutLength: 60,
+		indentOnInserting: true
 	};
 	private _authInfo?: AuthInfo;
 
@@ -221,15 +230,26 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 						// this.loadAwesomePrompts();
 						break;
 					}
-				case 'codeSelected':
-					{
-						let code = data.value;
-						const snippet = new vscode.SnippetString();
-						snippet.appendText(code);
-						// insert the code as a snippet into the active text editor
-						vscode.window.activeTextEditor?.insertSnippet(snippet);
-						break;
+				case 'codeSelected': {
+					let code = data.value;
+					const editor = vscode.window.activeTextEditor;
+					if (this._settings.indentOnInserting && editor && !editor.selection.isEmpty) {
+						const selection = editor.selection;
+						const startLine = selection.start.line;
+						const endLine = selection.end.line;
+						const startLineText = editor.document.lineAt(startLine).text;
+						const startIndent = startLineText.match(/^\s*/)?.[0] || '';
+						const endLineText = editor.document.lineAt(endLine).text;
+						const endIndent = endLineText.match(/^\s*/)?.[0] || '';
+						const indentOffset = startIndent.length - endIndent.length;
+						code = code.trim().replace(/\r?\n/g, `\n${endIndent}`).replace(/^/g, startIndent);
 					}
+					const snippet = new vscode.SnippetString();
+					snippet.appendText(code);
+					// insert the code as a snippet into the active text editor
+					vscode.window.activeTextEditor?.insertSnippet(snippet);
+					break;
+				}
 				// case 'promptUpdated':
 				// 	{
 				// 		// find prompt suggestions with searchPrompts()
@@ -441,6 +461,10 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 
 		// reset the controller
 		this._abortController = new AbortController();
+	}
+
+	public setContextSelection(context: string) {
+		this._view?.webview.postMessage({type: 'setContextSelection', value: context}); 
 	}
 
 	private _getHtmlForWebview(webview: vscode.Webview) {

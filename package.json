@@ -2,7 +2,7 @@
   "name": "chatgpt-ai",
   "displayName": "ChatGPT AI",
   "description": "Automatically write new code, ask questions, find bugs, and more with ChatGPT AI",
-  "version": "0.7.9",
+  "version": "0.7.10",
   "publisher": "YaleHuang",
   "icon": "resources/extensionIcon.png",
   "license": "MIT",
@@ -35,7 +35,8 @@
     "onCommand:chatgpt-ai.findProblems",
     "onCommand:chatgpt-ai.documentation",
     "onCommand:chatgpt-ai.complete",
-    "onCommand:chatgpt-ai.resetConversation"
+    "onCommand:chatgpt-ai.resetConversation",
+    "onStartupFinished"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -212,41 +213,47 @@
           "markdownDescription": "Custom URL for an Unofficial ChatGPT proxy hosted by 3rd parties.",
           "default": ""
         },
+        "chatgpt-ai.indentOnInserting": {
+          "type": "boolean",
+          "order": 18,
+          "markdownDescription": "Indent the code snippet on inserting it to the source code.",
+          "default": true
+        },
         "chatgpt-ai.promptPrefix.explain": {
           "type": "string",
           "default": "Explain what this code does: ",
           "description": "The prompt prefix used for explaining the selected code",
-          "order": 30
+          "order": 1000
         },
         "chatgpt-ai.promptPrefix.refactor": {
           "type": "string",
           "default": "Refactor this code and explain what's changed: ",
           "description": "The prompt prefix used for refactoring the selected code",
-          "order": 40
+          "order": 1010
         },
         "chatgpt-ai.promptPrefix.findProblems": {
           "type": "string",
           "default": "Find problems with the following code, fix them and explain what was wrong (Do not change anything else, if there are no problems say so): ",
           "description": "The prompt prefix used for finding problems in the selected code",
-          "order": 50
+          "order": 1020
         },
         "chatgpt-ai.promptPrefix.documentation": {
           "type": "string",
           "default": "Write documentation for the following code: ",
           "description": "The prompt prefix used for writing documentation for the selected code",
-          "order": 70
+          "order": 1030
         },
         "chatgpt-ai.promptPrefix.complete": {
           "type": "string",
           "default": "Don't explain the following code.\n\nDon't explain the generated code.\n\nShow the updated code only, no description.\n\nGenerate code according to the last comment:\n\n* Append the code after the comment\n* Keep the comment text",
           "description": "Complete the code according to the last comment.",
-          "order": 71
+          "order": 1040
         },
         "chatgpt-ai.promptPrefix.optimize": {
           "type": "string",
           "default": "Optimize the following code if there is anything to improve, if not say so: ",
           "description": "The prompt prefix used for optimizing the selected code",
-          "order": 60
+          "order": 1050
         },
         "chatgpt-ai.keepConversation": {
           "type": "boolean",

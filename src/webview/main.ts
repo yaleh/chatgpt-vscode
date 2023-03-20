@@ -74,6 +74,12 @@ interface ChatEvent {
         cachedPrompts = message.value;
         break;
       }
+      case 'setContextSelection': {
+        const selection = message.value;
+        $('#context-select').val(selection);
+        // set the value of html selection context-select to message.value with jQuery
+        break;
+      }
     }
   });
 
