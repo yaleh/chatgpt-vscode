@@ -50,7 +50,7 @@ export function activate(context: vscode.ExtensionContext) {
 	const commandHandler = (command:string) => {
 		const config = vscode.workspace.getConfiguration('chatgpt-ai');
 		const prompt = config.get(command) as string;
-		provider.searchSelection(prompt);
+		provider.askSelection(prompt);
 	};
 
 	// Register the commands that can be called from the extension's package.json
@@ -59,7 +59,7 @@ export function activate(context: vscode.ExtensionContext) {
 			vscode.window.showInputBox({ prompt: 'What do you want to do?' })
 				.then((value) => {
 					if (value !== undefined && value !== null) {
-						provider.searchSelection(value);
+						provider.askSelection(value);
 					}
 				})
 		),
@@ -121,7 +121,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 	private _abortController = new AbortController();
 
 	private _response?: string;
-	private _prompt?: string;
+	private _task?: string;
 	private _fullPrompt?: string;
 	private _currentMessageNumber = 0;
 
@@ -159,40 +159,33 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 		this._view?.webview.postMessage({ type: 'setWorkingState', value: this._workingState});
 	}
 
-	// This private method initializes a new ChatGPTAPI instance
 	private _newAPI() {
-		// console.log("New API");
+		if (!this._authInfo) {
+			console.warn("Invalid auth info, please set working mode and related auth info.");
+			return null;
+		}
+
+		const { mode, apiKey, accessToken, proxyUrl } = this._authInfo;
+
+		if (mode === "ChatGPTAPI" && apiKey) {
+			this._chatGPTAPI = new ChatGPTAPI({
+				apiKey: apiKey,
+				debug: false
+			});
+		} else if (mode === "ChatGPTUnofficialProxyAPI" && accessToken && proxyUrl) {
+			this._chatGPTAPI = new ChatGPTUnofficialProxyAPI({
+				accessToken: accessToken,
+				apiReverseProxyUrl: proxyUrl,
+				debug: false
+			});
+		} else {
+			console.warn("Invalid auth info, please set working mode and related auth info.");
+			return null;
+		}
 
 		this._conversation = null;
 		this._currentMessageNumber = 0;
-
-		if (!this._authInfo) {
-			console.warn("Invalid auth info, please set working mode and related auth info.");
-			return;
-		}
-		if (this._authInfo?.mode === "ChatGPTAPI") {
-			if (!this._authInfo?.apiKey) {
-				console.warn("API key not set, please go to extension settings (read README.md for more info)");
-			}else{
-				this._chatGPTAPI = new ChatGPTAPI({
-					apiKey: this._authInfo.apiKey,
-					debug: false
-				});
-			}
-		} else if (this._authInfo?.mode === "ChatGPTUnofficialProxyAPI") {
-			if (!this._authInfo?.accessToken) {
-				console.warn("Access token not set, please go to extension settings (read README.md for more info)");
-			}else if (!this._authInfo?.proxyUrl) {
-				console.warn("Proxy URL not set, please go to extension settings (read README.md for more info)");
-			}else{
-				this._chatGPTAPI = new ChatGPTUnofficialProxyAPI({
-					accessToken: this._authInfo.accessToken,
-					apiReverseProxyUrl: this._authInfo.proxyUrl,
-					debug: false
-				});
-			}			
-		}
-
+		return this._chatGPTAPI;
 	}
 
 	public resolveWebviewView(
@@ -249,7 +242,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 				// 	}
 				case 'sendPrompt':
 					{
-						this.searchSelection(data.value);
+						this.askSelection(data.value);
 						break;
 					}
 				case 'abort':
@@ -268,7 +261,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 
 	private _prompts: String[] = [];
 
-	private loadAwesomePrompts(){
+	private _loadAwesomePrompts(){
 		// Fetch https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/prompts.csv
 		fetch('https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/prompts.csv')
 			.then(response => response.text())
@@ -283,7 +276,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 	/**
  	 * Search for matched prompts in the prompts.csv file
  	 */
-	private async searchPrompts(userInput: string): Promise<string[]> {
+	private async _searchPrompts(userInput: string): Promise<string[]> {
 		// If the prompts haven't been loaded yet, fetch them from GitHub
 		if (this._prompts?.length === 0) {
 			const response = await fetch('https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/prompts.csv');
@@ -311,10 +304,10 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 				this._conversation = null;
 			}
 			this._currentMessageNumber = 0;
-			this._prompt = '';
+			this._task = '';
 			this._response = '';
 			this._fullPrompt = '';
-			this._view?.webview.postMessage({ type: 'setPrompt', value: '' });
+			this._view?.webview.postMessage({ type: 'setTask', value: '' });
 			this._view?.webview.postMessage({ type: 'clearResponses', value: '' });
 			this._view?.webview.postMessage({ type: 'setConversationId', value: ''});
 		} else {
@@ -322,124 +315,82 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 		}
 	}
 
-	public async searchSelection(prompt?:string) {
-		this._prompt = prompt;
-		if (!prompt) {
-			prompt = '';
-		};
+	public async askSelection(task: string): Promise<void> {
+		this._task = task || "";
 
-		// Check if the ChatGPTAPI instance is defined
 		if (!this._chatGPTAPI) {
 			this._newAPI();
 		}
 
-		// focus gpt activity from activity bar
-		if (!this._view) {
-			await vscode.commands.executeCommand('chatgpt-ai.chatView.focus');
-		} else {
-			this._view?.show?.(true);
-		}
-		
-		let response = '';
-		this._response = '';
-		// Get the selected text of the active editor
-		const selection = vscode.window.activeTextEditor?.selection;
-		const selectedText = vscode.window.activeTextEditor?.document.getText(selection);
-		// Get the language id of the selected text of the active editor
-		// If a user does not want to append this information to their prompt, leave it as an empty string
-		const languageId = (this._settings.codeblockWithLanguageId ? vscode.window.activeTextEditor?.document?.languageId : undefined) || "";
-		let searchPrompt = '';
+		// show chat view
+		this._view?.show?.(!this._view);
 
-		if (selection && selectedText) {
-			// If there is a selection, add the prompt and the selected text to the search prompt
-			if (this._settings.selectedInsideCodeblock) {
-				searchPrompt = `${prompt}\n\`\`\`${languageId}\n${selectedText}\n\`\`\``;
-			} else {
-				searchPrompt = `${prompt}\n${selectedText}\n`;
-			}
-		} else {
-			// Otherwise, just use the prompt if user typed it
-			searchPrompt = prompt;
-		}
+		const selection = vscode.window.activeTextEditor?.selection;
+		const selectedText = selection && vscode.window.activeTextEditor?.document.getText(selection);
+		const languageId = this._settings.codeblockWithLanguageId
+			? vscode.window.activeTextEditor?.document?.languageId || ""
+			: "";
+
+		let searchPrompt = selectedText ? `${task}\n${"```"}${languageId}\n${selectedText}\n${"```"}\n` : task;
 		this._fullPrompt = searchPrompt;
 
-		this.sendMessageAndGetResponse(searchPrompt);
+		this._askChatGPT(searchPrompt);
 	}
 
-	private async sendMessageAndGetResponse(searchPrompt: string) {
+	private async _askChatGPT(searchPrompt: string): Promise<void> {
 		this._view?.show?.(true);
 
 		if (!this._chatGPTAPI) {
-			this._view?.webview.postMessage({type: 'addEvent', value: {text: '[ERROR] API key not set or wrong, please go to extension settings to set it (read README.md for more info).'}});			
-		} else {
-			// If successfully signed in
-			// console.log("sendMessage");
-
-			// Make sure the prompt is shown
-			this._view?.webview.postMessage({ type: 'setPrompt', value: this._prompt });
-
-			// Show request history div
-			this._view?.webview.postMessage({
-				type: 'addRequest',
-				value: { text: searchPrompt, parentMessageId: this._conversation?.parentMessageId }
-			});
-
-			// Increment the message number
-			this._currentMessageNumber++;
-
-			this._setWorkingState('asking');
-
-			try {
-				// Send the search prompt to the ChatGPTAPI instance and store the response
-				let currentMessageNumber = this._currentMessageNumber;
-				const res = await this._chatGPTAPI.sendMessage(searchPrompt, {
-					onProgress: (partialResponse) => {
-						if (partialResponse.id === partialResponse.parentMessageId) {
-							// A bug of ChatGPT JS lib. It's the first user request.
-							return;
-						}
-
-						// If the message number has changed, don't show the partial response
-						if (this._currentMessageNumber !== currentMessageNumber) {
-							return;
-						}
-						
-						// console.log("onProgress");
-						if (this._view && this._view.visible) {
-							// response = partialResponse.text;
-							this._view.webview.postMessage({ type: 'addResponse', value: partialResponse });
-						}
-					},
-					timeoutMs: (this._settings.timeoutLength || 60) * 1000,
-					abortSignal: this._abortController.signal,
-					...this._conversation
-				});
-
-				if (this._currentMessageNumber !== currentMessageNumber) {
-					return '';
-				}
-
-				if (this._settings.keepConversation){
-					this._conversation = {
-						conversationId: res.conversationId,
-						parentMessageId: res.id
-					};
-					this._view?.webview?.postMessage({type: 'setConversationId', value: res.conversationId});
-				}
-			} catch (e) {
-
-				console.error(e);
-				// response += `\n\n---\n[ERROR] ${e}`;
-				this._view?.show?.(true);
-				this._view?.webview.postMessage({type: 'addEvent', value: {text: `[ERROR] ${e}`}});
-			}
+			const errorMessage = "[ERROR] API key not set or wrong, please go to extension settings to set it (read README.md for more info).";
+			this._view?.webview.postMessage({ type: "addEvent", value: { text: errorMessage } });
+			return;
 		}
 
-		// Show the view and send a message to the webview with the response
-		// if (this._view) {
-		// 	this._view.show?.(true);
-		// 	// this._view.webview.postMessage({ type: 'addResponse', value: response });
-		// }
+		this._view?.webview.postMessage({ type: "setTask", value: this._task });
+
+		const requestMessage = {
+			type: "addRequest",
+			value: { text: searchPrompt, parentMessageId: this._conversation?.parentMessageId },
+		};
+
+		this._view?.webview.postMessage(requestMessage);
+
+		this._currentMessageNumber++;
+
+		this._setWorkingState("asking");
+
+		try {
+			const currentMessageNumber = this._currentMessageNumber;
+
+			const res = await this._chatGPTAPI.sendMessage(searchPrompt, {
+				onProgress: (partialResponse) => {
+					if (partialResponse.id === partialResponse.parentMessageId || this._currentMessageNumber !== currentMessageNumber) {
+						return;
+					}
+
+					if (this._view?.visible) {
+						const responseMessage = { type: "addResponse", value: partialResponse };
+						this._view?.webview.postMessage(responseMessage);
+					}
+				},
+				timeoutMs: (this._settings.timeoutLength || 60) * 1000,
+				abortSignal: this._abortController.signal,
+				...this._conversation,
+			});
+
+			if (this._settings.keepConversation) {
+				this._conversation = {
+					conversationId: res.conversationId,
+					parentMessageId: res.id,
+				};
+				this._view?.webview?.postMessage({ type: "setConversationId", value: res.conversationId });
+			}
+		} catch (e) {
+			console.error(e);
+			const errorMessage = `[ERROR] ${e}`;
+			this._view?.show?.(true);
+			this._view?.webview.postMessage({ type: "addEvent", value: { text: errorMessage } });
+		}
 
 		this._setWorkingState("idle");
 	}

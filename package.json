@@ -2,7 +2,7 @@
   "name": "chatgpt-ai",
   "displayName": "ChatGPT AI",
   "description": "Automatically write new code, ask questions, find bugs, and more with ChatGPT AI",
-  "version": "0.7.8",
+  "version": "0.7.9",
   "publisher": "YaleHuang",
   "icon": "resources/extensionIcon.png",
   "license": "MIT",

@@ -58,7 +58,7 @@ interface ChatEvent {
         clearResponses();
         break;
       }
-      case "setPrompt": {
+      case "setTask": {
         $('#prompt-input').val(message.value);
         break;
       }
