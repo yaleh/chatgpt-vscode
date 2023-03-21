@@ -282,20 +282,6 @@ interface ChatEvent {
     }
   }
 
-  // Listen for keyup events on the prompt input element
-  const promptInput = $('#prompt-input');
-  promptInput.on('keyup', (e: JQuery.KeyUpEvent) => {
-    // If the key combination that was pressed was Ctrl+Enter
-    if (e.keyCode === 13 && e.ctrlKey) {
-      sendMessage(promptInput.val() as string);
-    }
-  });
-
-  const sendButton = $('#send-request');
-  sendButton.on('click', () => {
-    sendMessage(promptInput.val() as string);
-  });
-
   // Function to send a message to the extension
   function sendMessage(value: string) {
     vscode.postMessage({
@@ -307,24 +293,37 @@ interface ChatEvent {
     });
   }
 
-  // Listen for click events on the stop button
-  $('#stop-button').on('click', () => {
-    vscode.postMessage({
-      type: 'abort'
-    });
-  });
-
-  // Listen for click events on the reset button and send message resetConversation
-  $('#reset-button').on('click', () => {
-    vscode.postMessage({
-      type: 'resetConversation'
-    });
-  });
-
   // vscode.postMessage({ type: 'webviewLoaded' });
 
   $(document).ready(function () {
-    vscode.postMessage({ type: 'webviewLoaded' });
+    // Listen for keyup events on the prompt input element
+    const promptInput = $('#prompt-input');
+    promptInput.on('keyup', (e: JQuery.KeyUpEvent) => {
+      // If the key combination that was pressed was Ctrl+Enter
+      if (e.keyCode === 13 && e.ctrlKey) {
+        sendMessage(promptInput.val() as string);
+      }
+    });
+
+    const sendButton = $('#send-request');
+    sendButton.on('click', () => {
+      sendMessage(promptInput.val() as string);
+    });
+
+    // Listen for click events on the stop button
+    $('#stop-button').on('click', () => {
+      vscode.postMessage({
+        type: 'abort'
+      });
+    });
+
+    // Listen for click events on the reset button and send message resetConversation
+    $('#reset-button').on('click', () => {
+      vscode.postMessage({
+        type: 'resetConversation'
+      });
+    });
+
     $('#prompt-input').autocomplete({
       position: { my: "left bottom", at: "left top" },
       source: function (request: any, response: Function) {
@@ -341,6 +340,8 @@ interface ChatEvent {
         response(matches);
       }
     });
+
+    vscode.postMessage({ type: 'webviewLoaded' });
   });
 
 })();
