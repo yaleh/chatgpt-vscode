@@ -12,8 +12,7 @@
     <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="../styles/highlight-vscode.min.css">
     <link rel="stylesheet" href="../styles/vscode-simulation.css">
-    <style>
-    </style>
+    <link rel="stylesheet" href="../styles/index.css">
 </head>
 
 <body>
@@ -22,6 +21,21 @@
             <div id="responses" class="pt-4 text-sm scroll">
                 <div class="response">
                     <p>Following content is a example of reponse. It will be deleted from the working page.</p>
+                    <div class="toolbar flex items-center">
+                        <button title="Insert"
+                            class="toolbar-btn insert-btn bg-gray-600 hover:bg-gray-700 focus:bg-gray-700 text-white font-medium rounded-lg transition-colors">
+                            <span class="insert-icon"></span>
+                        </button>
+                        <button title="Copy"
+                            class="toolbar-btn copy-btn bg-gray-600 hover:bg-gray-700 focus:bg-gray-700 text-white font-medium rounded-lg transition-colors">
+                            <span class="copy-icon"></span>
+                        </button>
+                        <button title="Edit"
+                            class="toolbar-btn edit-btn bg-gray-600 hover:bg-gray-700 focus:bg-gray-700 text-white font-medium rounded-lg transition-colors">
+                            <span class="edit-icon"></span>
+                        </button>
+                    </div>
+                      
                     <div class="timestamp text-xs text-gray-500">Timestamp: [INSERT TIMESTAMP HERE]</div>
                 </div>
             </div>
@@ -38,22 +52,12 @@
             </div>
             <div class="stop-container flex items-center">
                 <div id="working-state" class="working-label mr-4 text-stone-300 text-xs">ChatGPT AI</div>
-                <button id="stop-button" class="p-1 cursor-not-allowed" title="Stop">
-                    <svg width="20px" height="20px" viewBox="0 0 24 24" role="img" xmlns="http://www.w3.org/2000/svg"
-                        aria-labelledby="cancelIconTitle" stroke="#ffffff" stroke-width="1" stroke-linecap="square"
-                        stroke-linejoin="miter" fill="none" color="#000000">
-                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                        <g id="SVGRepo_iconCarrier">
-                            <title id="cancelIconTitle">Cancel</title>
-                            <path d="M15.5355339 15.5355339L8.46446609 8.46446609M15.5355339 8.46446609L8.46446609 15.5355339">
-                            </path>
-                            <path
-                                d="M4.92893219,19.0710678 C1.02368927,15.1658249 1.02368927,8.83417511 4.92893219,4.92893219 C8.83417511,1.02368927 15.1658249,1.02368927 19.0710678,4.92893219 C22.9763107,8.83417511 22.9763107,15.1658249 19.0710678,19.0710678 C15.1658249,22.9763107 8.83417511,22.9763107 4.92893219,19.0710678 Z">
-                            </path>
-                        </g>
-                    </svg>
-                </button>          
+                <button id="stop-button" class="flex p-1 bg-red-600 hover:bg-red-700" title="Stop">
+                    <span class="stop-icon"></span>
+                </button> 
+                <button id="stop-button" class="flex p-1 cursor-not-allowed" title="Stop">
+                    <span class="stop-icon"></span>
+                </button> 
             </div>
         </div>
         <div class="prompt-container relative">
@@ -137,6 +141,17 @@ print(factorial(5))  # Output: 120
             newDiv.html(parsedBlock)
                 .append($('<div>').text(timestamp).addClass('timestamp text-xs text-gray-500'));
         }
+
+        // iterate over each div with class response
+        $(".response").each(function () {
+            // copy div.toolbar in front of the div.response
+            $(this).before($(this).find(".toolbar").clone().removeClass("toolbar").addClass("toolbar-copy"));
+        });
+
+        // add click event listener to toolbar buttons
+        $(".toolbar-copy button").on("click", function () {
+            console.log($(this).attr("title") + " button was clicked.");
+        });
 
         $("#prompt-input").on("keydown", (event) => {
             if (event.key === "Enter") {

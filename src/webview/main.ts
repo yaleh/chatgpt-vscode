@@ -148,7 +148,36 @@ interface ChatEvent {
     div.find('pre > code').each((i, codeBlock) => {
       const code = $(codeBlock)?.text();
 
-      const insertButton = createCodeSnippetButton('Insert', 'bg-indigo-600', (e: JQuery.ClickEvent) => {
+      // const insertButton = createCodeSnippetButton('Insert', 'bg-indigo-600', (e: JQuery.ClickEvent) => {
+      //   e.preventDefault();
+      //   if (code) {
+      //     vscode.postMessage({
+      //       type: 'codeSelected',
+      //       value: code
+      //     });
+      //   }
+      // });
+
+      // const copyButton = createCodeSnippetButton('Copy', 'bg-blue-400', (e) => {
+      //   e.preventDefault();
+      //   navigator.clipboard.writeText(code).then(() => {
+      //     console.log('Code copied to clipboard');
+      //     const popup = createCodeSnippetPopup('Code copied to clipboard');
+      //     $('body').append(popup);
+      //     setTimeout(() => {
+      //       popup.remove();
+      //     }, 2000);
+      //   });
+      // });
+
+      // insertButton.insertBefore($(codeBlock).parent());
+      // copyButton.insertBefore($(codeBlock).parent());
+
+      const toolbarCopy = $('div#response_templates > div.toolbar').clone();
+      toolbarCopy.insertBefore($(codeBlock).parent());
+
+      // Add click event listener to button element
+      toolbarCopy.find('button.insert-btn').on('click', (e: JQuery.ClickEvent) => {
         e.preventDefault();
         if (code) {
           vscode.postMessage({
@@ -158,7 +187,7 @@ interface ChatEvent {
         }
       });
 
-      const copyButton = createCodeSnippetButton('Copy', 'bg-blue-400', (e) => {
+      toolbarCopy.find('button.copy-btn').on('click', (e) => {
         e.preventDefault();
         navigator.clipboard.writeText(code).then(() => {
           console.log('Code copied to clipboard');
@@ -169,9 +198,6 @@ interface ChatEvent {
           }, 2000);
         });
       });
-
-      insertButton.insertBefore($(codeBlock).parent());
-      copyButton.insertBefore($(codeBlock).parent());
 
       $(codeBlock).addClass('hljs');
     });

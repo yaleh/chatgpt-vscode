@@ -235,19 +235,32 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 					const editor = vscode.window.activeTextEditor;
 					if (this._settings.indentOnInserting && editor && !editor.selection.isEmpty) {
 						const selection = editor.selection;
-						const startLine = selection.start.line;
 						const endLine = selection.end.line;
-						const startLineText = editor.document.lineAt(startLine).text;
-						const startIndent = startLineText.match(/^\s*/)?.[0] || '';
 						const endLineText = editor.document.lineAt(endLine).text;
 						const endIndent = endLineText.match(/^\s*/)?.[0] || '';
-						const indentOffset = startIndent.length - endIndent.length;
-						code = code.trim().replace(/\r?\n/g, `\n${endIndent}`).replace(/^/g, startIndent);
+						code = code.trim().replace(/\r?\n/g, `\n${endIndent}`);
 					}
-					const snippet = new vscode.SnippetString();
-					snippet.appendText(code);
-					// insert the code as a snippet into the active text editor
-					vscode.window.activeTextEditor?.insertSnippet(snippet);
+
+					// Get active text editor
+					const currentEditor = vscode.window.activeTextEditor;
+					if (currentEditor) {
+						// Get current selection
+						const selection = currentEditor.selection;
+
+						// Replace selection with snippet text
+						currentEditor.edit((editBuilder) => {
+							editBuilder.replace(selection, code);
+						});
+
+						// Select and format inserted code
+                        let updatedSelection = new vscode.Selection(selection.start.line, selection.start.character, selection.start.line + code.split('\n').length - 1, code.split('\n')[code.split('\n').length - 1].length);
+                        currentEditor.selection = updatedSelection;
+
+						if (this._settings.indentOnInserting) {
+							vscode.commands.executeCommand("editor.action.formatSelection");
+						}
+					}
+										
 					break;
 				}
 				case 'sendPrompt':
@@ -463,17 +476,29 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 		
 		const $ = cheerio.load(indexHtml);
 		$('#responses').empty();
+
+		// Remove all <style> tags with class 'editing'
+		$('head > link.editing').remove();
+		$('head > script.editing').remove();
+
+		// hide div.response_templates
+		$('div#response_templates').css('display', 'none');
+
+		// remove all elements of class editing in div#response_templates
+		$('div#response_templates .editing').remove();
 		
 		const scriptUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'dist', 'main.js'));
 		const tailwindUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'scripts', 'tailwind.min.js'));
 		const highlightcssUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'styles', 'highlight-vscode.min.css'));
 		const jqueryuicssUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'styles', 'jquery-ui.css'));
+		const indexcssUri = webview.asWebviewUri((vscode.Uri as any).joinPath(this._extensionUri, 'media', 'styles', 'index.css'));
 
 		return $.html()
-			.replace('{{tailwindUri}}', tailwindUri.toString())
-			.replace('{{highlightcssUri}}', highlightcssUri.toString())
-			.replace('{{jqueryuicssUri}}', jqueryuicssUri.toString())
-			.replace('{{scriptUri}}', scriptUri.toString());
+			  .replace('{{tailwindUri}}', tailwindUri.toString())
+			  .replace('{{highlightcssUri}}', highlightcssUri.toString())
+			  .replace('{{jqueryuicssUri}}', jqueryuicssUri.toString())
+			  .replace('{{indexcssUri}}', indexcssUri.toString())
+			  .replace('{{scriptUri}}', scriptUri.toString());
 	}
 }
 

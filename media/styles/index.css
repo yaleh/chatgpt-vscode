@@ -1,0 +1,90 @@
+.toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.toolbar-btn {
+    display: flex;
+    align-items: center;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: #fff;
+    background-color: #6b7280;
+    border: none;
+    border-radius: 0rem;
+    padding: 0.5rem;
+    margin-right: 0rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.toolbar-btn:hover,
+.toolbar-btn:focus {
+    background-color: #4b5563;
+}
+
+.toolbar-btn.insert-btn svg {
+    fill: currentColor;
+}
+
+.toolbar-btn.copy-btn svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.insert-icon {
+    height: 16px;
+    width: 16px;
+    background-image: url('../images/insert.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.copy-icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-image: url('../images/copy.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;        
+}
+
+.edit-icon {
+    background-image: url('../images/edit.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;             
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+}
+
+.stop-icon {
+    background-image: url('../images/stop.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;             
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+}
+
+.reset-icon {
+    background-image: url('../images/reset.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;             
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+}
+
+.send-icon {
+    background-image: url('../images/send.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;             
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+}

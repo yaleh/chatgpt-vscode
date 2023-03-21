@@ -2,12 +2,13 @@
 body {
   background-color: #1e1e1e;
   color: #d4d4d4;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Set font to monospace for all text elements */
-body, p, h1, h2, h3, h4, h5, h6, code, pre {
+/* body, p, h1, h2, h3, h4, h5, h6, code, pre {
   font-family: 'Fira Code', monospace;
-}
+} */
 
 /* Style code blocks with VS Code theme colors and padding */
 pre {
