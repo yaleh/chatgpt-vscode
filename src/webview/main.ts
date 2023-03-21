@@ -3,7 +3,6 @@
 import * as marked from 'marked';
 import hljs from 'highlight.js';
 import * as $ from 'jquery';
-// import * as jQueryUI from 'jquery-ui';
 import 'jquery-ui/ui/widgets/autocomplete';
 
 declare const acquireVsCodeApi: () => any;
@@ -148,31 +147,6 @@ interface ChatEvent {
     div.find('pre > code').each((i, codeBlock) => {
       const code = $(codeBlock)?.text();
 
-      // const insertButton = createCodeSnippetButton('Insert', 'bg-indigo-600', (e: JQuery.ClickEvent) => {
-      //   e.preventDefault();
-      //   if (code) {
-      //     vscode.postMessage({
-      //       type: 'codeSelected',
-      //       value: code
-      //     });
-      //   }
-      // });
-
-      // const copyButton = createCodeSnippetButton('Copy', 'bg-blue-400', (e) => {
-      //   e.preventDefault();
-      //   navigator.clipboard.writeText(code).then(() => {
-      //     console.log('Code copied to clipboard');
-      //     const popup = createCodeSnippetPopup('Code copied to clipboard');
-      //     $('body').append(popup);
-      //     setTimeout(() => {
-      //       popup.remove();
-      //     }, 2000);
-      //   });
-      // });
-
-      // insertButton.insertBefore($(codeBlock).parent());
-      // copyButton.insertBefore($(codeBlock).parent());
-
       const toolbarCopy = $('div#response_templates > div.toolbar').clone();
       toolbarCopy.insertBefore($(codeBlock).parent());
 
@@ -202,25 +176,6 @@ interface ChatEvent {
       $(codeBlock).addClass('hljs');
     });
 
-  }
-
-  function createCodeSnippetButton(text: string, color: string, clickHandler: (e: JQuery.ClickEvent) => void): JQuery<HTMLElement> {
-    const button = $('<button>').text(text).addClass([
-      'text-xs',
-      'font-medium',
-      'leading-5',
-      'text-white',
-      'hover:bg-gray-500',
-      'focus:outline-none',
-      'focus:ring',
-      'focus:ring-opacity-50',
-      'px-2',
-      'py-1',
-      'rounded-sm',
-      color
-    ].join(' '));
-    button.on('click', clickHandler);
-    return button;
   }
 
   function createCodeSnippetPopup(text: string): JQuery<HTMLElement> {
