@@ -37,48 +37,35 @@ interface ChatEvent {
 
   // Handle messages sent from the extension to the webview
   window.addEventListener("message", (event: MessageEvent) => {
-    const message = event.data;
-    switch (message.type) {
-      case "addResponse": {
-        // const chatResponse: ChatResponse = message.value;
-        // response = message.value;
-        updateResponse(message.value as ChatResponse);
+    const { type, value } = event.data;
+    switch (type) {
+      case "addResponse":
+        updateResponse(value);
         break;
-      }
-      case "addRequest": {
-        updateRequest(message.value as ChatRequest);
+      case "addRequest":
+        updateRequest(value);
         break;
-      }
-      case "addEvent": {
-        updateEvent(message.value as ChatEvent);
+      case "addEvent":
+        updateEvent(value);
         break;
-      }
-      case "clearResponses": {
+      case "clearResponses":
         clearResponses();
         break;
-      }
-      case "setTask": {
-        $('#prompt-input').val(message.value);
+      case "setTask":
+        $('#prompt-input').val(value);
         break;
-      }
-      case "setWorkingState": {
-        setWorkingState(message.value);
+      case "setWorkingState":
+        setWorkingState(value);
         break;
-      }
-      case "setConversationId": {
-        updateConversationId(message.value);
+      case "setConversationId":
+        updateConversationId(value);
         break;
-      }
-      case "promptsLoaded": {
-        cachedPrompts = message.value;
+      case "promptsLoaded":
+        cachedPrompts = value;
         break;
-      }
-      case 'setContextSelection': {
-        const selection = message.value;
-        $('#context-select').val(selection);
-        // set the value of html selection context-select to message.value with jQuery
+      case "setContextSelection":
+        $("#context-select").val(value);
         break;
-      }
     }
   });
 
@@ -300,8 +287,7 @@ interface ChatEvent {
       }
     });
 
-    const sendButton = $('#send-request');
-    sendButton.on('click', () => {
+    $('#send-request').on('click', () => {
       sendMessage(promptInput.val() as string);
     });
 

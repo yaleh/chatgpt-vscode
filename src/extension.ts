@@ -130,7 +130,6 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 
 	private _response?: string;
 	private _task?: string;
-	private _fullPrompt?: string;
 	private _currentMessageNumber = 0;
 
 	private _workingState: WorkingState;
@@ -329,7 +328,6 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 			this._currentMessageNumber = 0;
 			this._task = '';
 			this._response = '';
-			this._fullPrompt = '';
 			this._view?.webview.postMessage({ type: 'setTask', value: '' });
 			this._view?.webview.postMessage({ type: 'clearResponses', value: '' });
 			this._view?.webview.postMessage({ type: 'setConversationId', value: ''});
@@ -392,9 +390,6 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 			searchPrompt = task;
 		}
 		
-
-		this._fullPrompt = searchPrompt;
-
 		this._askChatGPT(searchPrompt);
 	}
 
