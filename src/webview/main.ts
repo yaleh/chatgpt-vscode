@@ -166,6 +166,18 @@ interface ChatEvent {
       rawDiv.toggle();
     });
 
+    toolbarMessageCopy.find('button.copy-btn').on('click', function(e) {
+      e.preventDefault();
+      navigator.clipboard.writeText(text).then(() => {
+        console.log('Code copied to clipboard');
+        const popup = createCodeSnippetPopup('Message copied to clipboard');
+        $('body').append(popup);
+        setTimeout(() => {
+          popup.remove();
+        }, 2000);
+      });
+    });
+
     toolbarMessageCopy.find('button.delete-btn').on('click', function() {
       toolbarMessageCopy.parent().remove();
     });

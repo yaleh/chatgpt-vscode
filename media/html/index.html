@@ -37,23 +37,27 @@
                         class="toolbar-btn toolbar-btn-message markdown-btn text-white font-medium transition-colors">
                         <span class="markdown-icon"></span>
                     </button>
+                    <button title="Copy"
+                        class="toolbar-btn toolbar-btn-message copy-btn text-white font-medium transition-colors">
+                        <span class="copy-icon"></span>
+                    </button>
                     <button title="Delete"
                         class="toolbar-btn toolbar-btn-message delete-btn text-white font-medium transition-colors">
                         <span class="delete-icon"></span>
                     </button>
                 </div>
                 <div id="toolbar-code" class="toolbar flex items-center">
-                    <button title="Insert"
-                        class="toolbar-btn toolbar-btn-code insert-btn text-white font-medium transition-colors">
-                        <span class="insert-icon"></span>
+                    <button title="Edit"
+                        class="editing toolbar-btn toolbar-btn-code edit-btn text-white font-medium transition-colors">
+                        <span class="edit-icon"></span>
                     </button>
                     <button title="Copy"
                         class="toolbar-btn toolbar-btn-code copy-btn text-white font-medium transition-colors">
                         <span class="copy-icon"></span>
                     </button>
-                    <button title="Edit"
-                        class="editing toolbar-btn toolbar-btn-code edit-btn text-white font-medium transition-colors">
-                        <span class="edit-icon"></span>
+                    <button title="Insert"
+                        class="toolbar-btn toolbar-btn-code insert-btn text-white font-medium transition-colors">
+                        <span class="insert-icon"></span>
                     </button>
                 </div>
                 <div class="response m-1 p-1 bg-slate-800">
@@ -70,22 +74,20 @@
                     <p>The code snippet provided is iterating over the <code>this.contours</code> object using a <code>for</code> loop,
                         calculating the area of each contour using <code>cv.contourArea</code>, and checking if the ratio of the area to
                         <code>srcArea</code> is greater than or equal to <code>areaRatioThreshold</code>. If it is, it pushes an object
-                        containing the contour and its area to the <code>contoursArray</code>.</p>
+                        containing the contour and its area to the <code>contoursArray</code>.
+                    </p>
                     <p>Here's a refactored version of the code:</p>
-<div class="toolbar flex items-center">
-    <button title="Insert"
-        class="toolbar-btn toolbar-btn-code insert-btn text-white font-medium transition-colors">
-        <span class="insert-icon"></span>
-    </button>
-    <button title="Copy"
-        class="toolbar-btn toolbar-btn-code opy-btn text-white font-medium transition-colors">
-        <span class="copy-icon"></span>
-    </button>
-    <button title="Edit"
-        class="toolbar-btn toolbar-btn-code edit-btn text-white font-medium transition-colors">
-        <span class="edit-icon"></span>
-    </button>
-</div>
+                    <div class="toolbar flex items-center">
+                        <button title="Edit" class="toolbar-btn toolbar-btn-code edit-btn text-white font-medium transition-colors">
+                            <span class="edit-icon"></span>
+                        </button>
+                        <button title="Copy" class="toolbar-btn toolbar-btn-code opy-btn text-white font-medium transition-colors">
+                            <span class="copy-icon"></span>
+                        </button>
+                        <button title="Insert" class="toolbar-btn toolbar-btn-code insert-btn text-white font-medium transition-colors">
+                            <span class="insert-icon"></span>
+                        </button>
+                    </div>
                     <pre><code class="hljs language-javascript">      const contoursArray = <span class="hljs-built_in">Array</span>.from({ <span class="hljs-attr">length</span>: this.contours.size() })
                                             .<span class="hljs-built_in">map</span>(<span class="hljs-function">(<span class="hljs-params">_, i</span>) =&gt;</span> this.contours.get(i))
                                             .<span class="hljs-built_in">map</span>(<span class="hljs-function">(<span class="hljs-params">contour</span>) =&gt;</span> ({
