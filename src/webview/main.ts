@@ -159,25 +159,18 @@ interface ChatEvent {
     hljs.highlightBlock(codeTag[0]);
 
     const toolbarMessageCopy = $('div#response_templates > div#toolbar-message').clone();
-    const deleteBtn = toolbarMessageCopy.find('button.delete-btn');
-    const markdownBtn = toolbarMessageCopy.find('button.markdown-btn');
 
     // Add click event listener to markdownBtn
-    markdownBtn.on('click', function () {
+    toolbarMessageCopy.find('button.markdown-btn').on('click', function() {
       renderedDiv.toggle();
       rawDiv.toggle();
     });
 
-    deleteBtn.on('click', function () {
-      toolbarMessageCopy.parent().remove();
+    toolbarMessageCopy.find('button.delete-btn').on('click', function() {
+      $(this).closest('.toolbar-message').remove();
     });
 
-    div.empty(); // Clear the content of the "div" element
-    div.prepend(toolbarMessageCopy);
-    // Add the "rendered" div to the "div" element
-    div.append(renderedDiv);
-    // Add the "raw" div to the "div" element and hide it
-    div.append(rawDiv.hide());
+    div.empty().prepend(toolbarMessageCopy).append(renderedDiv).append(rawDiv.hide());
 
     renderedDiv.find('pre > code').each((i, codeBlock) => {
       const code = $(codeBlock)?.text();

@@ -1,18 +1,11 @@
-# ChatGPT extension for VSCode
+# ChatGPT AI for VSCode
 
-[![Github stars](https://img.shields.io/github/stars/yaleh/chatgpt-vscode)](https://github.com/yaleh/chatgpt-vscode)
+![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/YaleHuang.chatgpt-ai?color=orange&label=VS%20Code%20Marketplace)
+![Visual Studio Marketplace Downloads](https://img.shields.io/visual-studio-marketplace/d/YaleHuang.chatgpt-ai?color=blueviolet&label=Downloads)
+![Github stars](https://img.shields.io/github/stars/yaleh/chatgpt-vscode?color=blue&label=Github%20Stars)
 
-ChatGPT AI is a Visual Studio Code extension that enables you to automatically write new code, ask questions, find bugs, refactor code, and more using the official OpenAI API or ChatGPT (via the [unofficial ChatGPT API](https://github.com/transitive-bullshit/chatgpt-api)). The extension provides a chat interface that you can use to interact with the AI model and get suggestions and explanations for your code.
 
-Supercharge your coding with AI-powered assistance! Automatically write new code from scratch, ask questions, get explanations, refactor code, find bugs and more 🚀✨
-
-## Configuration Changes in v0.7.8 - March 16, 2023
-
-Attention users, a new version v0.7.8 of our software has been released. Please note that this version contains configuration changes that may require you to reconfigure your settings. 
-
-We apologize for any inconvenience this may cause and we appreciate your patience as we strive to improve our software. Please refer to the release notes or documentation for more information on the configuration changes in this version. 
-
-Thank you for using our software.
+ChatGPT AI Extension integrates OpenAI's GPT-4, GPT-3.5, GPT-3 and Codex models into Visual Studio Code, providing AI-powered assistance for writing new code, asking questions, finding bugs, refactoring code, and more.
 
 
 ### Links:
@@ -25,24 +18,24 @@ Thank you for using our software.
 <img src="examples/main.png" alt="Refactoring selected code using chatGPT"/>
 
 ## Features
-- 💡 **Ask general questions** or use code snippets from the editor to query ChatGPT via an input box in the sidebar
-- 💬 **View chat history** with requests and responses
-- 📚 **Multiple types of context** available
-  - ❌ No context
-  - 📝 Selected text
-  - 📂 Whole file
-  - 📂🔍 All opened files
-- 🖱️ Right click on a code selection and run one of the context menu **shortcuts** for your code:
-  - 📖 Automatically generate documentation
-  - 🤔 Explain the selected code
-  - ♻️ Refactor or optimize the code
-  - 🐛 Find problems with the code
-  - 💻 Complete the code according to the comments
-- 💻 View ChatGPT's responses in a panel next to the editor
-- 🚀 See the response as it is being generated **in real time**
-- 💬 Ask **follow-up questions** to the response and maintain conversation context
-- 📝 **Insert code snippets** from the AI's response into the active editor with corrected indentation
-- 📋 **Copy code snippets** to the clipboard.
+- 💡 **Ask general questions** or use code snippets from the editor to query ChatGPT via an input box in the sidebar.
+- 💬 **View chat history** with requests and responses.
+  - Toggle the display of requests and responses between rendered Markdown and raw text.
+  - 📝 **Insert code snippets** from the AI's response into the active editor with corrected indentation.
+  - 📋 **Copy code snippets** to the clipboard.
+- 📚 **Multiple types of context** available:
+  - ❌ No context.
+  - 📝 Selected text.
+  - 📂 Whole file.
+  - 📂🔍 All opened files.
+- 🖱️ Right-click on a code selection and run one of the context menu **shortcuts** for your code:
+  - 📖 Automatically generate documentation.
+  - 🤔 Explain the selected code.
+  - ♻️ Refactor or optimize the code.
+  - 🐛 Find problems with the code.
+  - 💻 Complete the code according to the comments.
+- 🚀 See the response as it is being generated **in real time**.
+- 💬 Ask **follow-up questions** to the response and maintain conversation context.
 
 ## Requirements
 To use ChatGPT AI, please ensure that the following requirements are met:
