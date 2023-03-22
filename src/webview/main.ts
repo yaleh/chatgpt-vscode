@@ -144,10 +144,19 @@ interface ChatEvent {
 
     div.html(html);
 
+    const toolbarMessageCopy = $('div#response_templates > div#toolbar-message').clone();
+    const deleteBtn = toolbarMessageCopy.find('button.delete-btn');
+
+    deleteBtn.on('click', function () {
+      toolbarMessageCopy.parent().remove();
+    });
+
+    div.prepend(toolbarMessageCopy);
+
     div.find('pre > code').each((i, codeBlock) => {
       const code = $(codeBlock)?.text();
 
-      const toolbarCopy = $('div#response_templates > div.toolbar').clone();
+      const toolbarCopy = $('div#response_templates > div#toolbar-code').clone();
       toolbarCopy.insertBefore($(codeBlock).parent());
 
       // Add click event listener to button element

@@ -1,7 +1,7 @@
 .toolbar {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: flex-end;
 }
 
 .toolbar-btn {
@@ -9,19 +9,31 @@
     align-items: center;
     font-size: 0.875rem;
     line-height: 1.25rem;
-    color: #fff;
-    background-color: #6b7280;
     border: none;
     border-radius: 0rem;
-    padding: 0.5rem;
+    padding: 0.25rem;
     margin-right: 0rem;
     cursor: pointer;
     transition: background-color 0.2s ease-in-out;
 }
 
-.toolbar-btn:hover,
-.toolbar-btn:focus {
-    background-color: #4b5563;
+.toolbar-btn-code {
+    color: #fff;
+    background-color: #2b6cb0;
+}
+
+.toolbar-btn-code:hover,
+.toolbar-btn-code:focus {
+    background-color: #2c5282;
+}
+
+.toolbar-btn-message {
+    color: #fff;
+}
+
+.toolbar-btn-message:hover,
+.toolbar-btn-message:focus {
+    background-color: #111827;
 }
 
 .toolbar-btn.insert-btn svg {
@@ -64,6 +76,24 @@
 
 .stop-icon {
     background-image: url('../images/stop.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;             
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+}
+
+.markdown-icon {
+    background-image: url('../images/markdown.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;             
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+}
+
+.delete-icon {
+    background-image: url('../images/delete.png');
     background-repeat: no-repeat;
     background-size: 100% 100%;             
     display: inline-block;

@@ -32,41 +32,70 @@
     <div class="conversation flex flex-col h-screen">
         <div id="messages-container" class="messages-container p-0 flex-1 overflow-y-auto">
             <div id="response_templates" class="text-sm scroll">
-                <div class="toolbar flex items-center">
+                <div id="toolbar-message" class="toolbar flex items-center">
+                    <button title="Markdown"
+                        class="editing toolbar-btn toolbar-btn-message toggle-btn text-white font-medium transition-colors">
+                        <span class="markdown-icon"></span>
+                    </button>
+                    <button title="Delete"
+                        class="toolbar-btn toolbar-btn-message delete-btn text-white font-medium transition-colors">
+                        <span class="delete-icon"></span>
+                    </button>
+                </div>
+                <div id="toolbar-code" class="toolbar flex items-center">
                     <button title="Insert"
-                        class="toolbar-btn insert-btn bg-gray-600 hover:bg-gray-700 focus:bg-gray-700 text-white font-medium transition-colors">
+                        class="toolbar-btn toolbar-btn-code insert-btn text-white font-medium transition-colors">
                         <span class="insert-icon"></span>
                     </button>
                     <button title="Copy"
-                        class="toolbar-btn copy-btn bg-gray-600 hover:bg-gray-700 focus:bg-gray-700 text-white font-medium transition-colors">
+                        class="toolbar-btn toolbar-btn-code copy-btn text-white font-medium transition-colors">
                         <span class="copy-icon"></span>
                     </button>
                     <button title="Edit"
-                        class="editing toolbar-btn edit-btn bg-gray-600 hover:bg-gray-700 focus:bg-gray-700 text-white font-medium transition-colors">
+                        class="editing toolbar-btn toolbar-btn-code edit-btn text-white font-medium transition-colors">
                         <span class="edit-icon"></span>
                     </button>
                 </div>
-                <div class="response m-1 p-1 bg-slate-800"><p>The code snippet provided is iterating over the <code>this.contours</code> object using a <code>for</code> loop, calculating the area of each contour using <code>cv.contourArea</code>, and checking if the ratio of the area to <code>srcArea</code> is greater than or equal to <code>areaRatioThreshold</code>. If it is, it pushes an object containing the contour and its area to the <code>contoursArray</code>.</p>
-                    <p>Here's a refactored version of the code:</p>
+                <div class="response m-1 p-1 bg-slate-800">
                     <div class="toolbar flex items-center">
-                                        <button title="Insert" class="toolbar-btn insert-btn bg-gray-600 hover:bg-gray-700 focus:bg-gray-700 text-white font-medium transition-colors">
-                                            <span class="insert-icon"></span>
-                                        </button>
-                                        <button title="Copy" class="toolbar-btn copy-btn bg-gray-600 hover:bg-gray-700 focus:bg-gray-700 text-white font-medium transition-colors">
-                                            <span class="copy-icon"></span>
-                                        </button>
-                                        <button title="Edit" class="toolbar-btn edit-btn bg-gray-600 hover:bg-gray-700 focus:bg-gray-700 text-white font-medium transition-colors">
-                                            <span class="edit-icon"></span>
-                                        </button>
-                                    </div><pre><code class="hljs language-javascript">      const contoursArray = <span class="hljs-built_in">Array</span>.from({ <span class="hljs-attr">length</span>: this.contours.size() })
-                            .<span class="hljs-built_in">map</span>(<span class="hljs-function">(<span class="hljs-params">_, i</span>) =&gt;</span> this.contours.get(i))
-                            .<span class="hljs-built_in">map</span>(<span class="hljs-function">(<span class="hljs-params">contour</span>) =&gt;</span> ({
-                              contour,
-                              <span class="hljs-attr">area</span>: cv.contourArea(contour),
-                            }))
-                            .<span class="hljs-built_in">filter</span>(<span class="hljs-function">(<span class="hljs-params">{ <span class="hljs-built_in">area</span> }</span>) =&gt;</span> <span class="hljs-built_in">area</span> / srcArea &gt;= areaRatioThreshold);
-                    </code></pre>
-                    <div class="timestamp text-xs text-gray-500">3/21/2023, 6:40:26 PM</div></div>
+                        <button
+                            class="toolbar-btn toolbar-btn-message toggle-btn text-white font-medium transition-colors">
+                            <span class="markdown-icon"></span>
+                        </button>
+                        <button
+                            class="toolbar-btn toolbar-btn-message delete-btn text-white font-medium transition-colors">
+                            <span class="delete-icon"></span>
+                        </button>
+                    </div>
+                    <p>The code snippet provided is iterating over the <code>this.contours</code> object using a <code>for</code> loop,
+                        calculating the area of each contour using <code>cv.contourArea</code>, and checking if the ratio of the area to
+                        <code>srcArea</code> is greater than or equal to <code>areaRatioThreshold</code>. If it is, it pushes an object
+                        containing the contour and its area to the <code>contoursArray</code>.</p>
+                    <p>Here's a refactored version of the code:</p>
+<div class="toolbar flex items-center">
+    <button title="Insert"
+        class="toolbar-btn toolbar-btn-code insert-btn text-white font-medium transition-colors">
+        <span class="insert-icon"></span>
+    </button>
+    <button title="Copy"
+        class="toolbar-btn toolbar-btn-code opy-btn text-white font-medium transition-colors">
+        <span class="copy-icon"></span>
+    </button>
+    <button title="Edit"
+        class="toolbar-btn toolbar-btn-code edit-btn text-white font-medium transition-colors">
+        <span class="edit-icon"></span>
+    </button>
+</div>
+                    <pre><code class="hljs language-javascript">      const contoursArray = <span class="hljs-built_in">Array</span>.from({ <span class="hljs-attr">length</span>: this.contours.size() })
+                                            .<span class="hljs-built_in">map</span>(<span class="hljs-function">(<span class="hljs-params">_, i</span>) =&gt;</span> this.contours.get(i))
+                                            .<span class="hljs-built_in">map</span>(<span class="hljs-function">(<span class="hljs-params">contour</span>) =&gt;</span> ({
+                                              contour,
+                                              <span class="hljs-attr">area</span>: cv.contourArea(contour),
+                                            }))
+                                            .<span class="hljs-built_in">filter</span>(<span class="hljs-function">(<span class="hljs-params">{ <span class="hljs-built_in">area</span> }</span>) =&gt;</span> <span class="hljs-built_in">area</span> / srcArea &gt;= areaRatioThreshold);
+                                    </code></pre>
+                    <div class="timestamp text-xs text-gray-500">3/21/2023, 6:40:26 PM</div>
+                </div>
             </div>            
             <div id="responses" class="text-sm scroll">
                 <div class="response">
