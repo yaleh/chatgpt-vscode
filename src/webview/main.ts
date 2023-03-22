@@ -142,18 +142,44 @@ interface ChatEvent {
     var fixedResponseText = fixCodeBlocks(text);
     const html = marked.parse(fixedResponseText);
 
-    div.html(html);
+    // Create a new div with ID "rendered"
+    const renderedDiv = $('<div>').attr('id', 'rendered');
+    renderedDiv.html(html);
+
+    // Create a new div with ID "raw"
+    const rawDiv = $('<div>').attr('id', 'raw');
+
+    // Create a new pre tag for the code snippet and add CSS to wrap the content and enable x-axis overflow scrollbar
+    const preTag = $('<pre>').addClass('hljs').css({'overflow-x': 'auto' }).appendTo(rawDiv);
+
+    // Create a new code tag for the code snippet
+    const codeTag = $('<code>').addClass('markdown').text(text).appendTo(preTag);
+
+    // Highlight the code snippet using hljs
+    hljs.highlightBlock(codeTag[0]);
 
     const toolbarMessageCopy = $('div#response_templates > div#toolbar-message').clone();
     const deleteBtn = toolbarMessageCopy.find('button.delete-btn');
+    const markdownBtn = toolbarMessageCopy.find('button.markdown-btn');
+
+    // Add click event listener to markdownBtn
+    markdownBtn.on('click', function () {
+      renderedDiv.toggle();
+      rawDiv.toggle();
+    });
 
     deleteBtn.on('click', function () {
       toolbarMessageCopy.parent().remove();
     });
 
+    div.empty(); // Clear the content of the "div" element
     div.prepend(toolbarMessageCopy);
+    // Add the "rendered" div to the "div" element
+    div.append(renderedDiv);
+    // Add the "raw" div to the "div" element and hide it
+    div.append(rawDiv.hide());
 
-    div.find('pre > code').each((i, codeBlock) => {
+    renderedDiv.find('pre > code').each((i, codeBlock) => {
       const code = $(codeBlock)?.text();
 
       const toolbarCopy = $('div#response_templates > div#toolbar-code').clone();
