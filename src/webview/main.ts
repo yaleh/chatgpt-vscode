@@ -167,7 +167,7 @@ interface ChatEvent {
     });
 
     toolbarMessageCopy.find('button.delete-btn').on('click', function() {
-      $(this).closest('.toolbar-message').remove();
+      toolbarMessageCopy.parent().remove();
     });
 
     div.empty().prepend(toolbarMessageCopy).append(renderedDiv).append(rawDiv.hide());
