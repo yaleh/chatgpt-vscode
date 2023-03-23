@@ -4,6 +4,7 @@
 ![Visual Studio Marketplace Downloads](https://img.shields.io/visual-studio-marketplace/d/YaleHuang.chatgpt-ai?color=blueviolet&label=Downloads)
 ![Github stars](https://img.shields.io/github/stars/yaleh/chatgpt-vscode?color=blue&label=Github%20Stars)
 
+<img src="examples/copilot.jpg" alt="Refactoring selected code using chatGPT"/>
 
 ChatGPT AI Extension integrates OpenAI's GPT-4, GPT-3.5, GPT-3 and Codex models into Visual Studio Code, providing AI-powered assistance for writing new code, asking questions, finding bugs, refactoring code, and more.
 
