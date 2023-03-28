@@ -2,7 +2,7 @@
 
 import * as marked from 'marked';
 import hljs from 'highlight.js';
-import * as $ from 'jquery';
+import $ from 'jquery';
 import 'jquery-ui/ui/widgets/autocomplete';
 
 declare const acquireVsCodeApi: () => any;

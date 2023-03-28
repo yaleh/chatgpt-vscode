@@ -9,14 +9,15 @@ import * as chatgptai from '../../extension';
 suite('Extension Test Suite', () => {
 	vscode.window.showInformationMessage('Start all tests.');
 
-	// test('Sample test', () => {
-	// 	assert.strictEqual(-1, [1, 2, 3].indexOf(5));
-	// 	assert.strictEqual(-1, [1, 2, 3].indexOf(0));
-	// });
+	test('Sample test', () => {
+		assert.strictEqual(-1, [1, 2, 3].indexOf(5));
+		assert.strictEqual(-1, [1, 2, 3].indexOf(0));
+	});
 
-    test('Extension was loaded', async () => {
-        await vscode.extensions.getExtension('YaleHuang.chatgpt-ai')?.activate();
+	test('Extension is loaded', async () => {
 		const extension = vscode.extensions.getExtension('YaleHuang.chatgpt-ai');
-		assert.ok(extension, 'Extension is not installed.');
-    });
+		assert.ok(extension, 'chatgpt-ai extension should be present');
+		await extension?.activate();
+		assert.ok(extension?.isActive, 'chatgpt-ai extension should be activated');
+	});
 });
