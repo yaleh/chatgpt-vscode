@@ -92,11 +92,30 @@ if (typeof fetch !== "function") {
 }
 ```
 
-You also need to copy `encoder.json` and `vocab.bpe` from `node_modules/gpt-3-encoder/` into `dist/` folder. You can do this by running the following commands:
+You also need to replace the following part near the top of the file:
 
-```bash
-cp node_modules/gpt-3-encoder/{encoder.json,vocab.bpe} dist/
+```js
+// src/tokenizer.ts
+import { encoding_for_model } from "@dqbd/tiktoken";
+var tokenizer = encoding_for_model("text-davinci-003");
+function encode(input) {
+  return tokenizer.encode(input);
+}
 ```
+
+with
+
+```js
+// src/tokenizer.ts
+import GPT3TokenizerImport from "gpt3-tokenizer";
+var GPT3Tokenizer = typeof GPT3TokenizerImport === "function" ? GPT3TokenizerImport : GPT3TokenizerImport.default;
+var tokenizer = new GPT3Tokenizer({ type: "gpt3" });
+function encode(input) {
+  return tokenizer.encode(input).bpe;
+}
+```
+
+due to the fact that the `@dqbd/tiktoken` module is causing problems with the VSCode runtime. *If you know how to fix this, please let me know.*
 
 ## Using the Extension
 
