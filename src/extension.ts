@@ -8,6 +8,7 @@ import {parse} from "csv";
 import fetch from 'node-fetch';
 
 type AuthInfo = {
+	model?:string,
 	mode?: string,
 	apiKey?: string,
 	accessToken?: string,
@@ -33,6 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Put configuration settings into the provider
 	provider.setAuthenticationInfo({
+		model: config.get('model'),
 		mode: config.get('mode'),
 		apiKey: config.get('apiKey'),
 		accessToken: config.get('accessToken'),
@@ -84,6 +86,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// Change the extension's session token or settings when configuration is changed
 	vscode.workspace.onDidChangeConfiguration((event: vscode.ConfigurationChangeEvent) => {
 		if (
+			event.affectsConfiguration('chatgpt-ai.model') ||
 			event.affectsConfiguration('chatgpt-ai.mode') ||
 			event.affectsConfiguration('chatgpt-ai.apiKey') ||
 			event.affectsConfiguration('chatgpt-ai.accessToken') ||
@@ -91,6 +94,7 @@ export function activate(context: vscode.ExtensionContext) {
 		) {
 			const config = vscode.workspace.getConfiguration('chatgpt-ai');
 			provider.setAuthenticationInfo({
+				model: config.get('model'),
 				mode: config.get('mode'),
 				apiKey: config.get('apiKey'),
 				accessToken: config.get('accessToken'),
@@ -174,12 +178,15 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 			return null;
 		}
 
-		const { mode, apiKey, accessToken, proxyUrl } = this._authInfo;
+		const { model, mode, apiKey, accessToken, proxyUrl } = this._authInfo;
 
 		if (mode === "ChatGPTAPI" && apiKey) {
 			this._chatGPTAPI = new ChatGPTAPI({
 				apiKey: apiKey,
-				debug: false
+				debug: false,
+				completionParams:{
+					model: model,
+				}
 			});
 		} else if (mode === "ChatGPTUnofficialProxyAPI" && accessToken && proxyUrl) {
 			this._chatGPTAPI = new ChatGPTUnofficialProxyAPI({

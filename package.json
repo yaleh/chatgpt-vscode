@@ -19,6 +19,7 @@
     "chatgpt",
     "openai",
     "gpt3",
+    "gpt4",
     "copilot",
     "ai",
     "explain",
@@ -167,6 +168,19 @@
       "title": "ChatGPT AI",
       "type": "object",
       "properties": {
+        "chatgpt-ai.model": {
+          "type": "string",
+          "order": 1,
+          "default": "gpt-3.5-turbo",
+          "enum": [
+            "gpt-3.5-turbo",
+            "gpt-4"
+          ],
+          "enumDescriptions": [
+            "GPT-3.5 models can understand and generate natural language or code",
+            "GPT-4 is a large multimodal model (accepting text inputs and emitting text outputs today, with image inputs coming in the future) that can solve difficult problems with greater accuracy than any of our previous models, thanks to its broader general knowledge and advanced reasoning capabilities. "
+          ]
+        },
         "chatgpt-ai.mode": {
           "type": "string",
           "order": 0,
@@ -278,7 +292,7 @@
           "default": true,
           "description": "Append language id of the selected code to the codeblock (```language...code...```)",
           "order": 101
-         }
+        }
       }
     }
   },
