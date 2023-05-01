@@ -75,7 +75,7 @@ Access tokens last for approximately eight hours.
 
 ## Building from source (not applicable for VSCode marketplace version)
 
-To build the extension from source, clone the repository and run `npm install` to install the dependencies. You have to change some code in `chatgpt` module because VSCode runtime does not support `fetch`. Open `node_modules/chatgpt/dist/index.js` and add the following code at the top of the file:
+To build the extension from source, clone the repository and run `npm install` to install the dependencies. You have to change some code in `chatgpt` module because VSCode runtime does not support `fetch`. Open `node_modules/chatgpt/build/index.js` and add the following code at the top of the file:
 
 ```js
 import fetch from 'node-fetch';
@@ -86,9 +86,6 @@ Then remove the following lines (around line 15):
 ```js
 // src/fetch.ts
 var fetch = globalThis.fetch;
-if (typeof fetch !== "function") {
-  throw new Error("Invalid environment: global fetch not defined");
-}
 ```
 
 You also need to copy `encoder.json` and `vocab.bpe` from `node_modules/gpt-3-encoder/` into `dist/` folder. You can do this by running the following commands:

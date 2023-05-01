@@ -19,6 +19,7 @@
     "chatgpt",
     "openai",
     "gpt3",
+    "gpt4",
     "copilot",
     "ai",
     "explain",
@@ -181,6 +182,19 @@
             "Unofficial ChatGPT proxy hosted by 3rd parties."
           ]
         },
+        "chatgpt-ai.model": {
+          "type": "string",
+          "order": 1,
+          "default": "gpt-3.5-turbo",
+          "enum": [
+            "gpt-3.5-turbo",
+            "gpt-4"
+          ],
+          "enumDescriptions": [
+            "GPT-3.5 models can understand and generate natural language or code",
+            "GPT-4 currently can't use if you don't have the whitelist to access to GPT-4 API, you may need to join the waitlist for the API. "
+          ]
+        },
         "chatgpt-ai.apiKey": {
           "markdownDescription": "OpenAI API key from [https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys)",
           "type": "string",
@@ -278,7 +292,7 @@
           "default": true,
           "description": "Append language id of the selected code to the codeblock (```language...code...```)",
           "order": 101
-         }
+        }
       }
     }
   },
