@@ -192,7 +192,8 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 			this._chatGPTAPI = new ChatGPTUnofficialProxyAPI({
 				accessToken: accessToken,
 				apiReverseProxyUrl: proxyUrl,
-				debug: false
+				debug: false,
+				model: model,
 			});
 		} else {
 			console.warn("Invalid auth info, please set working mode and related auth info.");
