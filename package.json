@@ -2,7 +2,7 @@
   "name": "chatgpt-ai",
   "displayName": "ChatGPT AI",
   "description": "Automatically write new code, ask questions, find bugs, and more with ChatGPT AI",
-  "version": "0.7.12",
+  "version": "0.7.13",
   "publisher": "YaleHuang",
   "icon": "resources/extensionIcon.png",
   "license": "MIT",
@@ -167,51 +167,35 @@
       "title": "ChatGPT AI",
       "type": "object",
       "properties": {
-        "chatgpt-ai.mode": {
-          "type": "string",
-          "order": 0,
-          "markdownDescription": "API mode",
-          "default": "ChatGPTAPI",
-          "enum": [
-            "ChatGPTAPI",
-            "ChatGPTUnofficialProxyAPI"
-          ],
-          "enumDescriptions": [
-            "Official OpenAI API.",
-            "Unofficial ChatGPT proxy hosted by 3rd parties."
-          ]
-        },
         "chatgpt-ai.apiKey": {
           "markdownDescription": "OpenAI API key from [https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys)",
           "type": "string",
           "order": 10
         },
-        "chatgpt-ai.accessToken": {
-          "markdownDescription": "ChatGPT access token from [https://chat.openai.com/api/auth/session](https://chat.openai.com/api/auth/session), lasts for ~8 hours",
+        "chatgpt-ai.apiBaseUrl": {
           "type": "string",
-          "order": 15
+          "default": "https://api.openai.com/v1",
+          "description": "The base URL for the OpenAI API",
+          "order": 11
         },
-        "chatgpt-ai.proxyUrl": {
+        "chatgpt-ai.model": {
           "type": "string",
-          "order": 16,
-          "markdownDescription": "URL for the Unofficial ChatGPT proxy hosted by 3rd parties.",
-          "default": "https://bypass.duti.tech/api/conversation",
           "enum": [
-            "https://bypass.duti.tech/api/conversation",
-            "https://gpt.pawan.krd/backend-api/conversation",
-            "Custom"
+            "gpt-3.5-turbo",
+            "gpt-4",
+            "gpt-3.5-turbo-16k",
+            "gpt-3.5-turbo-0613",
+            "gpt-3.5-turbo-16k-0613",
+            "gpt-3.5-turbo-0301",
+            "gpt-4-0613",
+            "gpt-4-32k",
+            "gpt-4-32k-0613",
+            "gpt-4-0314",
+            "gpt-4-32k-0314"
           ],
-          "enumDescriptions": [
-            "https://bypass.duti.tech/api/conversation",
-            "https://gpt.pawan.krd/backend-api/conversation",
-            "Set a custom API proxy URL below"
-          ]
-        },
-        "chatgpt-ai.customProxyUrl": {
-          "type": "string",
-          "order": 17,
-          "markdownDescription": "Custom URL for an Unofficial ChatGPT proxy hosted by 3rd parties.",
-          "default": ""
+          "default": "gpt-3.5-turbo",
+          "description": "The GPT model to use for chat interactions",
+          "order": 12
         },
         "chatgpt-ai.indentOnInserting": {
           "type": "boolean",
@@ -263,7 +247,7 @@
         },
         "chatgpt-ai.timeoutLength": {
           "type": "number",
-          "default": "120",
+          "default": 120,
           "description": "How long should the request wait for a response before timing out (in seconds)",
           "order": 90
         },
@@ -308,13 +292,14 @@
     "mocha": "^10.1.0",
     "ts-loader": "^9.4.2",
     "typescript": "^4.9.4",
-    "webpack": "^5.75.0",
-    "webpack-cli": "^5.0.1"
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "chatgpt": "^5.1.2",
+    "chatgpt": "^5.2.5",
     "cheerio": "^1.0.0-rc.12",
     "csv": "^6.2.8",
+    "domutils": "^3.1.0",
     "fetch": "^1.1.0",
     "gpt3-tokenizer": "^1.1.5",
     "highlight.js": "^11.7.0",

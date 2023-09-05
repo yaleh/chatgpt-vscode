@@ -7,11 +7,13 @@ import * as cheerio from 'cheerio';
 import {parse} from "csv";
 import fetch from 'node-fetch';
 
-type AuthInfo = {
-	mode?: string,
+type OpenAIAPIInfo = {
+	// mode?: string,
 	apiKey?: string,
-	accessToken?: string,
-	proxyUrl?: string
+	// accessToken?: string,
+	// proxyUrl?: string
+	apiBaseUrl?: string,
+	model?: string
 };
 interface Settings {
   selectedInsideCodeblock?: boolean;
@@ -32,11 +34,13 @@ export function activate(context: vscode.ExtensionContext) {
 	const provider = new ChatGPTViewProvider(context.extensionPath, context.extensionUri);
 
 	// Put configuration settings into the provider
-	provider.setAuthenticationInfo({
-		mode: config.get('mode'),
+	provider.setOpenAIAPIInfo({
+		// mode: config.get('mode'),
 		apiKey: config.get('apiKey'),
-		accessToken: config.get('accessToken'),
-		proxyUrl: config.get('proxyUrl') === "Custom" ? config.get('customProxyUrl') : config.get('proxyUrl')
+		apiBaseUrl: config.get('apiBaseUrl'),
+		model: config.get('model')
+		// accessToken: config.get('accessToken'),
+		// proxyUrl: config.get('proxyUrl') === "Custom" ? config.get('customProxyUrl') : config.get('proxyUrl')
 	});
 	provider.setSettings({
 		selectedInsideCodeblock: config.get('selectedInsideCodeblock') || false,
@@ -84,17 +88,22 @@ export function activate(context: vscode.ExtensionContext) {
 	// Change the extension's session token or settings when configuration is changed
 	vscode.workspace.onDidChangeConfiguration((event: vscode.ConfigurationChangeEvent) => {
 		if (
-			event.affectsConfiguration('chatgpt-ai.mode') ||
 			event.affectsConfiguration('chatgpt-ai.apiKey') ||
-			event.affectsConfiguration('chatgpt-ai.accessToken') ||
-			event.affectsConfiguration('chatgpt-ai.proxyUrl')
+			event.affectsConfiguration('chatgpt-ai.apiBaseUrl') ||
+			event.affectsConfiguration('chatgpt-ai.model')
+			// event.affectsConfiguration('chatgpt-ai.mode') ||
+			// event.affectsConfiguration('chatgpt-ai.apiKey') ||
+			// event.affectsConfiguration('chatgpt-ai.accessToken') ||
+			// event.affectsConfiguration('chatgpt-ai.proxyUrl')
 		) {
 			const config = vscode.workspace.getConfiguration('chatgpt-ai');
-			provider.setAuthenticationInfo({
-				mode: config.get('mode'),
+			provider.setOpenAIAPIInfo({
+				// mode: config.get('mode'),
 				apiKey: config.get('apiKey'),
-				accessToken: config.get('accessToken'),
-				proxyUrl: config.get('proxyUrl') === "Custom" ? config.get('customProxyUrl') : config.get('proxyUrl')
+				apiBaseUrl: config.get('apiBaseUrl'),
+				model: config.get('model'),
+				// accessToken: config.get('accessToken'),
+				// proxyUrl: config.get('proxyUrl') === "Custom" ? config.get('customProxyUrl') : config.get('proxyUrl')
 			});
 
 			// clear conversation
@@ -141,7 +150,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 		timeoutLength: 60,
 		indentOnInserting: true
 	};
-	private _authInfo?: AuthInfo;
+	private _openaiAPIInfo?: OpenAIAPIInfo;
 
 	// In the constructor, we store the URI of the extension
 	constructor(private readonly _extensionPath: string, private readonly _extensionUri: vscode.Uri) {
@@ -149,8 +158,8 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 	}
 	
 	// Set the API key and create a new API instance based on this key
-	public setAuthenticationInfo(authInfo: AuthInfo) {
-		this._authInfo = authInfo;
+	public setOpenAIAPIInfo(openaiapiInfo: OpenAIAPIInfo) {
+		this._openaiAPIInfo = openaiapiInfo;
 		this._newAPI();
 	}
 
@@ -168,28 +177,44 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 	}
 
 	private _newAPI() {
-		if (!this._authInfo) {
-			console.warn("Invalid auth info, please set working mode and related auth info.");
+		if (!this._openaiAPIInfo) {
+			console.warn("Invalid OpenAI API info, please set working mode and related OpenAI API info.");
 			return null;
 		}
 
-		const { mode, apiKey, accessToken, proxyUrl } = this._authInfo;
+		const { 
+			// mode, 
+			apiKey, 
+			// accessToken, 
+			// proxyUrl
+			apiBaseUrl,
+			model
+		} = this._openaiAPIInfo;
 
-		if (mode === "ChatGPTAPI" && apiKey) {
+		// if (mode === "ChatGPTAPI" && apiKey) {
+		if (apiKey) {
 			this._chatGPTAPI = new ChatGPTAPI({
 				apiKey: apiKey,
-				debug: false
-			});
-		} else if (mode === "ChatGPTUnofficialProxyAPI" && accessToken && proxyUrl) {
-			this._chatGPTAPI = new ChatGPTUnofficialProxyAPI({
-				accessToken: accessToken,
-				apiReverseProxyUrl: proxyUrl,
-				debug: false
+				apiBaseUrl: apiBaseUrl,
+				debug: false,
+				completionParams: {
+					model
+				},
 			});
 		} else {
-			console.warn("Invalid auth info, please set working mode and related auth info.");
-			return null;
+			// Handle the case where apiKey is undefined or falsy
+			console.error("API key is missing or invalid.");
 		}
+		// } else if (mode === "ChatGPTUnofficialProxyAPI" && accessToken && proxyUrl) {
+		// 	this._chatGPTAPI = new ChatGPTUnofficialProxyAPI({
+		// 		accessToken: accessToken,
+		// 		apiReverseProxyUrl: proxyUrl,
+		// 		debug: false
+		// 	});
+		// } else {
+		// 	console.warn("Invalid auth info, please set working mode and related auth info.");
+		// 	return null;
+		// }
 
 		this._conversation = null;
 		this._currentMessageNumber = 0;
